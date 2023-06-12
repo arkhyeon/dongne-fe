@@ -5,9 +5,9 @@ function Progressbar({ exp, maxExp }) {
   return (
     <ProgressbarWrap>
       <GaugeWrap>
-        <Gauge style={{ width: `${exp / maxExp}px` }}></Gauge>
+        <Gauge style={{ width: `${(exp / maxExp) * 100}px` }}></Gauge>
       </GaugeWrap>
-      <p>{exp / maxExp}%</p>
+      <p>{(exp / maxExp) * 100}%</p>
     </ProgressbarWrap>
   );
 }
@@ -26,7 +26,7 @@ const ProgressbarWrap = styled.div`
 const GaugeWrap = styled.div`
   width: 100%;
   height: 6px;
-  background-color: white;
+  background-color: #ebebeb;
   position: relative;
   border-radius: 3px;
   overflow: hidden;
@@ -38,7 +38,7 @@ const Gauge = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  background-color: darkorange;
+  background-color: #ffc045;
   border-radius: 3px;
 `;
 

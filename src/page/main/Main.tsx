@@ -14,9 +14,7 @@ function Main(props) {
 
 const MainWrap = styled.div`
   width: 1230px;
-  height: 600px;
-  background-color: bisque;
-  margin: 0 auto;
+  margin: 30px auto 0;
   display: flex;
   gap: 30px;
 `;

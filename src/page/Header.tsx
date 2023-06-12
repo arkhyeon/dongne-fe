@@ -23,7 +23,7 @@ function Header(props) {
   return (
     <HeaderWrap>
       <LogoWrap>
-        <img src={'/'} />
+        <img src="img" />
         <TopWriterWrap>
           <p>Top Writers</p>
           <div>
@@ -54,7 +54,7 @@ const HeaderWrap = styled.div`
   width: 100%;
   height: 60px;
   background-color: #ffc045;
-  color: #0a91ab;
+  //color: #0a91ab;
   display: flex;
   align-items: center;
   padding-right: 40px;
