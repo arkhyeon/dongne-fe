@@ -64,7 +64,7 @@ const SideMainWrap = styled.div`
 
 const ProfileWrap = styled.div`
   width: 100%;
-  border: 1px solid #ddd;
+  border: 1px solid #0a91ab;
   padding: 16px;
   margin-bottom: 30px;
   border-radius: 10px;

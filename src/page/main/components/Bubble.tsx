@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { prepare } from './BubbleAsset';
 import styled from '@emotion/styled';
 
-const Bubble = ({ labelScale, textColor, items, bounds }) => {
+const Bubble = ({ labelScale, items, bounds }) => {
   const containerRef = useRef(null);
 
   const resize = () => {
@@ -57,7 +57,11 @@ const Bubble = ({ labelScale, textColor, items, bounds }) => {
         {items.map(({ x, y, r, backgroundColor, text }, index) => (
           <g key={index}>
             <circle fill={backgroundColor} id={`circle${index}`} />
-            <text textAnchor="middle" fill={textColor} id={`text${index}`}>
+            <text
+              textAnchor="middle"
+              fill={getTextColorByBackgroundColor(backgroundColor)}
+              id={`text${index}`}
+            >
               {text}
             </text>
           </g>
@@ -67,7 +71,18 @@ const Bubble = ({ labelScale, textColor, items, bounds }) => {
   );
 };
 
-const ChartBubble = ({ items, palette, textColor = 'black', labelScale = 0.8 }) => {
+function getTextColorByBackgroundColor(hexColor) {
+  const c = hexColor.substring(1); // 색상 앞의 # 제거
+  const rgb = parseInt(c, 16); // rrggbb를 10진수로 변환
+  const r = (rgb >> 16) & 0xff; // red 추출
+  const g = (rgb >> 8) & 0xff; // green 추출
+  const b = (rgb >> 0) & 0xff; // blue 추출
+  const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
+  // 색상 선택
+  return luma < 127.5 ? 'white' : 'black'; // 글자색이
+}
+
+const ChartBubble = ({ items, palette, labelScale = 0.8 }) => {
   const { preparedItems, bounds } = prepare({
     items,
     palette,
@@ -75,7 +90,7 @@ const ChartBubble = ({ items, palette, textColor = 'black', labelScale = 0.8 }) 
 
   return (
     <BubbleWrap>
-      <Bubble items={preparedItems} bounds={bounds} textColor={textColor} labelScale={labelScale} />
+      <Bubble items={preparedItems} bounds={bounds} labelScale={labelScale} />
     </BubbleWrap>
   );
 };
