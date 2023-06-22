@@ -1,13 +1,12 @@
-import React from 'react';
 import styled from '@emotion/styled';
 import SideMain from './SideMain';
-import BoardMain from './BoardMain';
+import { Outlet } from 'react-router-dom';
 
 function Main(props) {
   return (
     <MainWrap>
       <SideMain></SideMain>
-      <BoardMain></BoardMain>
+      <Outlet />
     </MainWrap>
   );
 }

@@ -1,9 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
-import { MainButton } from './CommonComponents/Button';
-import { HeaderInput } from './CommonComponents/InputText';
-import { AiOutlineSearch } from 'react-icons/ai';
 import { FiLogOut } from 'react-icons/fi';
+import { HeaderSearchInput } from '../component/CommonComponents/SearchInput';
 
 function Header(props) {
   const [topWriterList, setTopWriterList] = useState([...initTopWriters]);
@@ -36,13 +34,7 @@ function Header(props) {
         </TopWriterWrap>
       </LogoWrap>
 
-      <SearchWrap>
-        <HeaderInput />
-        <MainButton>
-          <AiOutlineSearch />
-          검색
-        </MainButton>
-      </SearchWrap>
+      <HeaderSearchInput />
       <WidgetWrap>
         <FiLogOut />
       </WidgetWrap>

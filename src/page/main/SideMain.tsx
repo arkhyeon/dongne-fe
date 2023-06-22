@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import Progressbar from '../CommonComponents/Progressbar';
+import Progressbar from '../../component/CommonComponents/Progressbar';
 import ChartBubble from './components/Bubble';
 
 const items = [

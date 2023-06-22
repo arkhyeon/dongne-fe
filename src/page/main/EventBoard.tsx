@@ -28,7 +28,6 @@ const EventBoardWrap = styled.ul`
   width: 100%;
   display: flex;
   gap: 18px;
-  margin-bottom: 30px;
 `;
 
 const EventBoardItem = styled.li`

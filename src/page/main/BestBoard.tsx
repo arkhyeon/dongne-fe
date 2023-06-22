@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from '@emotion/styled';
 import { TbTriangleFilled } from 'react-icons/tb';
 
@@ -45,6 +44,10 @@ function BestBoard(props) {
 
 const BestBoardWrap = styled.div`
   width: 441px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 30px;
 
   & a:first-of-type span:first-of-type {
     color: red;
@@ -56,6 +59,7 @@ const TodayTalkPost = styled.div`
   align-items: center;
 
   & span:nth-of-type(1) {
+    width: 18px;
     font-style: italic;
     margin-right: 10px;
   }
@@ -84,4 +88,9 @@ const bestList = [
   { id: 3, title: 'manner makes man manner makes man333', recommend: 32 },
   { id: 4, title: 'manner makes man manner makes man', recommend: 32 },
   { id: 5, title: 'manner makes man manner makes man', recommend: 32 },
+  { id: 6, title: 'manner makes man manner makes man2222323232323233232323', recommend: 32 },
+  { id: 7, title: 'manner makes man', recommend: 32 },
+  { id: 8, title: 'manner makes man manner makes man333', recommend: 32 },
+  { id: 9, title: 'manner makes man manner makes man', recommend: 32 },
+  { id: 10, title: 'manner makes man manner makes man', recommend: 32 },
 ];

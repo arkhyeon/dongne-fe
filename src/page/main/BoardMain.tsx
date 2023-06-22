@@ -1,15 +1,16 @@
 import styled from '@emotion/styled';
 import EventBoard from './EventBoard';
-import RecentBoard from './RecentBoard';
+import MainPostList from '../../component/post/MainPostList';
 import TodayTalk from './TodayTalk';
 import BestBoard from './BestBoard';
+import { recentList } from '../../../data';
 
 function BoardMain(props) {
   return (
     <BoardMainWrap>
       <EventBoard />
       <BoardWrap>
-        <RecentBoard />
+        <MainPostList postList={recentList} />
         <TodayTalk />
       </BoardWrap>
       <BoardWrap>
@@ -27,6 +28,7 @@ const BoardWrap = styled.div`
   width: 100%;
   display: flex;
   gap: 18px;
+  margin-top: 30px;
 `;
 
 export default BoardMain;
