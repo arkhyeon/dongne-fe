@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import EventBoardItem from './components/EventBoardItem';
 
 const eventList = [
   { id: 1, img: '', title: 'R2WARE', text: 'r2ware123' },
@@ -9,16 +10,8 @@ const eventList = [
 function EventBoard(props) {
   return (
     <EventBoardWrap>
-      {eventList.map(e => {
-        return (
-          <EventBoardItem key={e.id}>
-            <img src={e.img} />
-            <a href="#">
-              <p className="text-ellipsis">{e.title}</p>
-              <span className="text-ellipsis">{e.text}</span>
-            </a>
-          </EventBoardItem>
-        );
+      {eventList.map(el => {
+        return <EventBoardItem key={el.id} eventBoard={el} />;
       })}
     </EventBoardWrap>
   );
@@ -28,16 +21,6 @@ const EventBoardWrap = styled.ul`
   width: 100%;
   display: flex;
   gap: 18px;
-`;
-
-const EventBoardItem = styled.li`
-  width: 288px;
-  background-color: #ffc045;
-
-  & img {
-    width: 100%;
-    height: 265px;
-  }
 `;
 
 export default EventBoard;

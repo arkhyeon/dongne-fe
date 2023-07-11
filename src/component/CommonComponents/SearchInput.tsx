@@ -37,7 +37,7 @@ const SearchInput = styled.input`
 `;
 
 const HeaderSearch = styled(SearchInput)`
-  font-size: 16px;
+  font-size: 14px;
 `;
 
 const BoardSearchInputWrap = styled.div`
@@ -45,11 +45,11 @@ const BoardSearchInputWrap = styled.div`
   height: 40px;
   padding: 0 18px;
   background-color: white;
-  border-radius: 10px;
+  border-radius: 5px;
   display: flex;
   border: 1px solid #0a91ab;
 `;
 const HeaderSearchInputWrap = styled(BoardSearchInputWrap)`
   width: 50%;
-  border-radius: 50px;
+  border-radius: 5px;
 `;

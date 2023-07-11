@@ -14,7 +14,10 @@ function Header(props) {
       if (moveRange <= topWriterList.length * -20) {
         moveRange = 0;
       }
-      topWriterRef.current.style.transform = `translateY(${moveRange}px)`;
+
+      if (topWriterRef.current) {
+        topWriterRef.current.style.transform = `translateY(${moveRange}px)`;
+      }
     }, 1000);
   }, []);
 
@@ -44,6 +47,7 @@ function Header(props) {
 
 const HeaderWrap = styled.div`
   width: 100%;
+  min-width: 1230px;
   height: 60px;
   background-color: #ffc045;
   //color: #0a91ab;
@@ -79,16 +83,6 @@ const SlideWriter = styled.div`
   width: 100%;
   position: relative;
   transition: 1s;
-`;
-
-const SearchWrap = styled.div`
-  width: 50%;
-  height: 40px;
-  padding: 0 18px;
-  background-color: white;
-  border-radius: 50px;
-  display: flex;
-  border: 1px solid #0a91ab;
 `;
 
 const WidgetWrap = styled.div`

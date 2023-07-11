@@ -11,6 +11,19 @@
 
 a {
   color: black;
+  display: block;
+}
+
+.error-title-text {
+  font-size: 13px;
+  color: red;
+  line-height: 1.25rem;
+}
+
+.error-text {
+  font-size: 12px;
+  color: red;
+  line-height: 1.25rem;
 }
 
 .main-title-text {
@@ -26,10 +39,54 @@ a {
 .list-text {
   font-size: 14px;
 }
+
 .text-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
   white-space: nowrap;
-  display: inline-block;
+  display: block;
+}
+
+.flex-cc {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/**React - Quill*/
+
+.readonly-quill .ql-container.ql-snow.ql-disabled {
+  margin: 12px 0;
+  font-size: 14px;
+  border: none;
+}
+
+.readonly-quill .ql-container.ql-snow.ql-disabled .ql-editor {
+  padding: 0;
+}
+
+/**SVG ANIMATE UP AND DOWN**/
+
+.animate-up,
+.animate-down,
+.animate-up > svg,
+.animate-down > svg {
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.animate-up:hover,
+.animate-down:hover {
+  color: #ffc045;
+}
+
+div.animate-up:hover > svg,
+svg.animate-up:hover {
+  transform: translate(0, -2px);
+}
+
+div.animate-down:hover > svg,
+svg.animate-down:hover {
+  transform: translate(0, 2px);
 }

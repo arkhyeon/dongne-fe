@@ -10,7 +10,7 @@ function BoardMain(props) {
     <BoardMainWrap>
       <EventBoard />
       <BoardWrap>
-        <MainPostList postList={recentList} />
+        <MainPostList title="Recent Board" postList={recentList} />
         <TodayTalk />
       </BoardWrap>
       <BoardWrap>

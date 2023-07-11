@@ -3,7 +3,33 @@ import { AiOutlineMinusSquare, AiOutlinePlusSquare } from 'react-icons/ai';
 import { useState } from 'react';
 import { css } from '@emotion/react';
 
-function DongComTalk({ channelList = [] }) {
+const channelList = [
+  { id: 0, channel: '기술연구소', postCnt: 4 },
+  { id: 1, channel: '기술지원팀', postCnt: 5 },
+  { id: 2, channel: '영업관리팀', postCnt: 6 },
+  { id: 3, channel: '유지보수팀', postCnt: 7 },
+  { id: 4, channel: '알투웨어', postCnt: 8 },
+  { id: 5, channel: '부설연구소', postCnt: 9 },
+  { id: 6, channel: '한산기', postCnt: 14 },
+  { id: 7, channel: '에어컨', postCnt: 24 },
+  { id: 8, channel: '서울숲IT', postCnt: 34 },
+  { id: 9, channel: '캐슬', postCnt: 4 },
+  { id: 10, channel: '동네들', postCnt: 45 },
+  { id: 11, channel: '기술연구', postCnt: 12 },
+  { id: 12, channel: '기술지원', postCnt: 6 },
+  { id: 13, channel: '영업관리', postCnt: 9 },
+  { id: 14, channel: '유지보수', postCnt: 8 },
+  { id: 15, channel: '알투웨어1', postCnt: 3 },
+  { id: 16, channel: '부설연구', postCnt: 18 },
+  { id: 17, channel: '한산기1', postCnt: 22 },
+  { id: 18, channel: '에어컨1', postCnt: 19 },
+  { id: 19, channel: '서울숲', postCnt: 33 },
+  { id: 20, channel: '캐슬1', postCnt: 21 },
+  { id: 21, channel: '동네들1', postCnt: 15 },
+];
+
+// function DongComTalk({ channelList = [] }) {
+function DongComTalk({ onClick }) {
   const [view, setView] = useState(0);
   const [orderedList, setOrderedList] = useState(channelList);
 
@@ -26,7 +52,7 @@ function DongComTalk({ channelList = [] }) {
       </DongComCategory>
       <DongComTalkItemWrap view={view}>
         {orderedList.map(dl => (
-          <DongComTalkItem key={dl.id}>
+          <DongComTalkItem key={dl.id} onClick={() => onClick(dl)}>
             {dl.channel}
             <span>({dl.postCnt})</span>
           </DongComTalkItem>
@@ -98,6 +124,7 @@ const DongComTalkItem = styled.div`
   font-size: 13px;
   color: #aaa;
   gap: 2px;
+  cursor: pointer;
 
   & span {
     font-size: 12px;

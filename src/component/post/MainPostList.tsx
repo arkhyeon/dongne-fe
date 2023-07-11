@@ -1,16 +1,16 @@
 import { TbTriangleFilled } from 'react-icons/tb';
 import styled from '@emotion/styled';
-import boardList from '../../page/board/BoardList';
+import boardList from '../../page/boardList/BoardList';
 
-function MainPostList({ postList = [] }) {
+function MainPostList({ title = '', postList = [] }) {
   return (
     <MainPostListWrap>
-      <p className="main-title-text">Recent Board</p>
+      <p className="main-title-text">{title}</p>
       {postList.map(wl => {
         return (
           <a href="src/page/main#" key={wl.id}>
             <MainPostItem>
-              <RecommendWrap>
+              <RecommendWrap className="flex-cc">
                 <TbTriangleFilled />
                 {wl.rec}
               </RecommendWrap>
@@ -44,6 +44,7 @@ const MainPostListWrap = styled.ul`
   flex-direction: column;
   gap: 6px;
   padding: 8px 16px;
+  border-radius: 5px;
 `;
 
 const MainPostItem = styled.li`
@@ -70,10 +71,7 @@ const MainPostItem = styled.li`
 const RecommendWrap = styled.div`
   width: 82px;
   gap: 2px;
-  display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
 `;
 
 const MainPostWrap = styled.div`

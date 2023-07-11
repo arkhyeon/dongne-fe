@@ -28,7 +28,9 @@ export function SubButton(props) {
   );
 }
 
-const Button = styled.button``;
+const Button = styled.button`
+  cursor: pointer;
+`;
 
 const SearchBtn = styled(Button)`
   width: 60px;
@@ -38,7 +40,6 @@ const SearchBtn = styled(Button)`
   background-color: white;
   border: none;
   color: #525252;
-  cursor: pointer;
 
   & svg {
     font-size: 20px;
@@ -49,14 +50,21 @@ const SearchBtn = styled(Button)`
 
 const MainBtn = styled(Button)`
   width: 100px;
-  border-radius: 10px;
-  border: 1px solid #0a91ab;
+  border-radius: 5px;
+  border: none;
+  background-color: #ffc045;
+
+  &:hover {
+    background-color: #fab631;
+    transition: 0.3s;
+  }
 `;
 
 const SubBtn = styled(Button)`
   width: 100px;
-  border-radius: 10px;
+  border-radius: 5px;
   border: 1px solid #aaa;
+  background-color: white;
 `;
 
 SearchButton.propTypes = {
