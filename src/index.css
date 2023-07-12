@@ -90,3 +90,13 @@ div.animate-down:hover > svg,
 svg.animate-down:hover {
   transform: translate(0, 2px);
 }
+
+/**TUI**/
+
+.toastui-editor-toolbar:has(.toastui-editor-toolbar-group[style='display: none;']) {
+  display: none;
+}
+
+.toastui-editor-defaultUI .ProseMirror {
+  padding: 12px 16px 0;
+}

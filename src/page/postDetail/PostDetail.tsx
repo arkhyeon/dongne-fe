@@ -56,7 +56,7 @@ function PostDetail(props) {
 }
 
 const PostWrap = styled.div`
-  width: 100%;
+  width: 900px;
   display: flex;
   flex-direction: column;
   gap: 15px;

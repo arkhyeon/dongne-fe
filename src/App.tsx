@@ -23,7 +23,7 @@ function App() {
           <Route path="/" element={<Main />}>
             <Route index path="/" element={<BoardMain />} />
             <Route path="board" element={<BoardList />} />
-            <Route path="eventBoard" element={<EventBoardList />} />
+            <Route path="eventboard" element={<EventBoardList />} />
             <Route path="post" element={<PostDetail />} />
           </Route>
           <Route path="postwrite" element={<PostWrite />} />
@@ -31,8 +31,8 @@ function App() {
           <Route path="join" element={<MemberJoin />} />
           <Route path="memberDetail" element={<MemberDetail />}>
             <Route index element={<MyPost />} />
-            <Route path="myComment" element={<MyComment />} />
-            <Route path="postReaction" element={<PostReaction />} />
+            <Route path="mycomment" element={<MyComment />} />
+            <Route path="postreaction" element={<PostReaction />} />
             <Route path="memberEdit" element={<MemberEdit />} />
           </Route>
           <Route path="rank" element={<MemberRanking />} />

@@ -26,7 +26,7 @@ const ModalHeader = ({ closeButton, children }) => {
   return (
     <ModalHeaderWrap>
       {children}
-      {closeButton && <IoClose onClick={handleClose} />}
+      {closeButton && <IoClose className="close-btn" onClick={handleClose} />}
     </ModalHeaderWrap>
   );
 };
@@ -56,13 +56,22 @@ const ModalContent = styled.div`
   background-color: white;
   position: relative;
   z-index: 1;
+  border-radius: 10px;
 `;
 
 const ModalHeaderWrap = styled.div`
   width: 100%;
-  height: 60px;
-  padding: 15px 15px;
+  height: 55px;
+  padding: 16px 15px;
+  font-size: 18px;
   box-sizing: border-box;
+  background-color: #ffc045;
+  border-radius: 10px 10px 0 0;
+
+  & .close-btn {
+    font-size: 28px;
+    float: right;
+  }
 `;
 
 const ModalBackDrop = styled.div`
@@ -77,11 +86,17 @@ const ModalBackDrop = styled.div`
 
 const ModalBodyWrap = styled.div`
   width: 100%;
+  padding: 15px 20px;
 `;
 
 const ModalFooterWrap = styled.div`
   width: 100%;
-  height: 80px;
+  height: 60px;
+  padding: 12px 15px;
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #dadde6;
+  gap: 10px;
 `;
 
 export default Object.assign(Modal, {

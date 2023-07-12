@@ -65,6 +65,11 @@ const SubBtn = styled(Button)`
   border-radius: 5px;
   border: 1px solid #aaa;
   background-color: white;
+
+  &:hover {
+    background-color: #fafafa;
+    transition: 0.3s;
+  }
 `;
 
 SearchButton.propTypes = {
