@@ -34,11 +34,11 @@ function SirenReport(props) {
           />
         </Modal.Body>
         <Modal.Footer>
-          <SubButton>취소</SubButton>
+          <SubButton onClick={() => setOpen(false)}>취소</SubButton>
           <MainButton onClick={insertPost}>신고</MainButton>
         </Modal.Footer>
       </Modal>
-      <SirenReportWrap className="flex-cc" onClick={() => setOpen(true)}>
+      <SirenReportWrap role="button" className="flex-cc" onClick={() => setOpen(true)}>
         <PiSirenFill />
         신고
       </SirenReportWrap>

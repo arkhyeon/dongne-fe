@@ -26,7 +26,7 @@ const ModalHeader = ({ closeButton, children }) => {
   return (
     <ModalHeaderWrap>
       {children}
-      {closeButton && <IoClose className="close-btn" onClick={handleClose} />}
+      {closeButton && <IoClose role="button" className="close-btn" onClick={handleClose} />}
     </ModalHeaderWrap>
   );
 };
