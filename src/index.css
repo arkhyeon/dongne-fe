@@ -68,27 +68,25 @@ a {
 
 /**SVG ANIMATE UP AND DOWN**/
 
-.animate-up,
-.animate-down,
-.animate-up > svg,
-.animate-down > svg {
-  cursor: pointer;
-  transition: 0.2s;
+.animation-like {
+  animation: like 1s;
 }
 
-.animate-up:hover,
-.animate-down:hover {
-  color: #ffc045;
-}
+@keyframes like {
+  33% {
+    scale: 1.2;
+    transform: rotate(15deg);
+  }
 
-div.animate-up:hover > svg,
-svg.animate-up:hover {
-  transform: translate(0, -2px);
-}
+  66% {
+    scale: 1.2;
+    transform: rotate(-15deg);
+  }
 
-div.animate-down:hover > svg,
-svg.animate-down:hover {
-  transform: translate(0, 2px);
+  100% {
+    scale: 1;
+    transform: rotate(0deg);
+  }
 }
 
 /**TUI**/

@@ -84,6 +84,9 @@ const PostMain = styled.div`
   padding-bottom: 10px;
   border-top: 1px solid #0a91ab;
   border-bottom: 1px solid #0a91ab;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 `;
 
 export default PostDetail;

@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import { PiListBold } from 'react-icons/pi';
 import { BsList } from 'react-icons/bs';
 
 function PostNavigation(props) {
@@ -9,9 +8,9 @@ function PostNavigation(props) {
     <PostNavigationWrap className="list-text">
       <Navigation>
         <IoIosArrowBack />
-        <PageLabel>
-          <span>이전글</span>
-          <p className="text-ellipsis">2019 대학정보화 심포지엄 및 정기총회 개최 참여 200억 수주</p>
+        <PageLabel className="text-ellipsis">
+          <span>이전글</span> <br />
+          2019 대학정보화 심포지엄 및 정기총회 개최 참여 200억 수주
         </PageLabel>
         <div />
       </Navigation>
@@ -19,9 +18,9 @@ function PostNavigation(props) {
         <BsList />
       </PostListWrap>
       <Navigation>
-        <PageLabel>
-          <span>다음글</span>
-          <p className="text-ellipsis">알투웨어, 테스트데이터 변환솔루션 시장 주도력 강화</p>
+        <PageLabel className="text-ellipsis">
+          <span>다음글</span> <br />
+          알투웨어, 테스트데이터 변환솔루션 시장 주도력 강화
         </PageLabel>
         <IoIosArrowForward />
         <div />
@@ -80,15 +79,11 @@ const Navigation = styled.div`
 `;
 
 const PageLabel = styled.p`
-  width: 100%;
+  width: 360px;
 
   & span {
     font-size: 12px;
     color: #0a91ab;
-  }
-
-  & p {
-    width: 360px;
   }
 `;
 
