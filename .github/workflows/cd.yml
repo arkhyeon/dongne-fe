@@ -1,0 +1,50 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+# action 이름
+name: dongne-CD
+
+# action 트리거 조건 (release 브랜치에 푸쉬될 때)
+on:
+  push:
+    branches: [push]
+
+# action 동작
+jobs:
+  # OS 환경
+  build:
+    runs-on: ubuntu-16.04
+    
+    # 경고 무시
+    env: 
+      CI: false
+
+    # Nodejs 런타임 정보 설정
+    strategy:
+      matrix:
+        node-version: [14.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+      - name: Install modules
+        run: npm install
+      - name: Run test codes
+        run: npm run test
+      - name: Build project
+        run: npm run build
+      - name: Deploy build outputs
+        uses: appleboy/scp-action@master
+        with:
+          host: 15.165.156.228
+          username: ec2-user
+          key: ${{ secrets.SSH_PEM_KEY }}
+          port: 22
+          source: "build/*"
+          strip_components: 1
+          target: "/var/www/html"
