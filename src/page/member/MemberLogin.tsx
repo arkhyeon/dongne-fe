@@ -3,8 +3,11 @@ import { FormInput } from '../../component/CommonComponents/TextInput';
 import { useForm } from 'react-hook-form';
 import { MainButton } from '../../component/CommonComponents/Button';
 import AlertBox from '../../component/AlertBox';
+import { loginAxios } from '../../common/axios';
+import { useNavigate } from 'react-router-dom';
 
-function MemberLogin(props) {
+function MemberLogin() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -12,9 +15,26 @@ function MemberLogin(props) {
     formState: { errors },
   } = useForm({ mode: 'onChange' });
 
-  const onSubmit = data => {
-    setError('userid', { message: 'hala' });
-    console.log(data);
+  const onSubmit = ({ userId, password }) => {
+    if (!userId || !password) {
+      setError('userId', { message: '아이디와 비밀번호를 입력해 주세요.' });
+      return;
+    }
+    // axios
+    //   .get('api/city')
+    //   .then(res => console.log(res))
+    //   .catch(err => console.log(err));
+    loginAxios
+      .post('api/user/login', { userId, password })
+      .then(() => navigate('/'))
+      .catch(err => {
+        console.log(err);
+        if (err.response.data.statusCode === 400) {
+          setError('userId', { message: '아이디와 비밀번호를 확인해 주세요.' });
+        } else {
+          setError('userId', { message: '로그인 오류로 인해 현재 접속할 수 없습니다.' });
+        }
+      });
   };
 
   return (
@@ -25,10 +45,10 @@ function MemberLogin(props) {
           로그인
         </p>
         <FormInput
-          id="userid"
+          id="userId"
           label="아이디"
           reg={{
-            ...register('userid'),
+            ...register('userId'),
           }}
         />
         <FormInput
@@ -39,11 +59,11 @@ function MemberLogin(props) {
             ...register('password'),
           }}
         />
-        {errors.userid && (
+        {errors.userId && (
           <AlertBox>
             <div>
               <p className="error-title-text">로그인 실패</p>
-              <p className="error-text">아이디 또는 비밀번호가 틀렸습니다.</p>
+              <p className="error-text">{errors.userId.message}</p>
             </div>
           </AlertBox>
         )}

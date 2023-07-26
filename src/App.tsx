@@ -14,6 +14,7 @@ import PostReaction from './page/member/components/PostReaction';
 import MemberEdit from './page/member/components/MemberEdit';
 import EventBoardList from './page/boardList/EventBoardList';
 import MemberRanking from './page/member/MemberRanking';
+import { HasLogin, PrivateRouter } from './component/router/RouterBranch';
 
 function App() {
   return (
@@ -26,14 +27,14 @@ function App() {
             <Route path="eventboard" element={<EventBoardList />} />
             <Route path="post" element={<PostDetail />} />
           </Route>
-          <Route path="postwrite" element={<PostWrite />} />
-          <Route path="login" element={<MemberLogin />} />
-          <Route path="join" element={<MemberJoin />} />
+          <Route path="postwrite" element={<PrivateRouter element={<PostWrite />} />} />
+          <Route path="login" element={<HasLogin element={<MemberLogin />} />} />
+          <Route path="join" element={<HasLogin element={<MemberJoin />} />} />
           <Route path="memberDetail" element={<MemberDetail />}>
             <Route index element={<MyPost />} />
-            <Route path="mycomment" element={<MyComment />} />
+            <Route path="mycomment" element={<PrivateRouter element={<MyComment />} />} />
             <Route path="postreaction" element={<PostReaction />} />
-            <Route path="memberEdit" element={<MemberEdit />} />
+            <Route path="memberEdit" element={<PrivateRouter element={<MemberEdit />} />} />
           </Route>
           <Route path="rank" element={<MemberRanking />} />
         </Route>

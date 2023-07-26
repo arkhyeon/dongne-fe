@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { FiLogOut } from 'react-icons/fi';
 import { HeaderSearchInput } from '../component/CommonComponents/SearchInput';
+import { loginAxios } from '../common/axios';
+import { removeCookie } from '../common/Cookie';
 
 function Header(props) {
   const [topWriterList, setTopWriterList] = useState([...initTopWriters]);
@@ -21,10 +23,20 @@ function Header(props) {
     }, 1000);
   }, []);
 
+  const logout = () => {
+    removeCookie('accessToken');
+    removeCookie('refreshToken');
+
+    loginAxios
+      .post('api/user/logout')
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+  };
+
   return (
     <HeaderWrap>
       <LogoWrap>
-        <img src="img" />
+        <img src="./src/asset/img/logo.png" />
         <TopWriterWrap>
           <p>Top Writers</p>
           <div>
@@ -39,7 +51,7 @@ function Header(props) {
 
       <HeaderSearchInput />
       <WidgetWrap>
-        <FiLogOut />
+        <FiLogOut onClick={() => logout()} />
       </WidgetWrap>
     </HeaderWrap>
   );

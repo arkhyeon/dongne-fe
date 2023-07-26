@@ -1,12 +1,11 @@
 import React, { forwardRef } from 'react';
 import styled from '@emotion/styled';
 
-export const TextInput = forwardRef(props => {
-  console.log(props);
+export const TextInput = forwardRef((props, ref) => {
   return (
     <TextInputWrap>
       <label htmlFor={props.label}>{props.label}</label>
-      <TextInputComp id={props.label} type="text" {...props} ref={props.inputRef} />
+      <TextInputComp id={props.label} type="text" {...props} ref={ref} />
     </TextInputWrap>
   );
 });
@@ -21,6 +20,8 @@ const TextInputWrap = styled.label`
 
   & label {
     font-size: 14px;
+    display: flex;
+    gap: 5px;
   }
 `;
 
@@ -39,7 +40,7 @@ const TextInputComp = styled.input`
 
 export default TextInput;
 
-export const DataListInput = forwardRef(props => {
+export const DataListInput = forwardRef((props, ref) => {
   const enterEvent = e => {
     if (e.key === 'Enter' && props.enterEvent) {
       props.enterEvent();
@@ -48,7 +49,7 @@ export const DataListInput = forwardRef(props => {
   return (
     <TextInputWrap>
       <label htmlFor={props.id}>{props.id}</label>
-      <TextInputComp ref={props.inputRef} {...props} />
+      <TextInputComp ref={ref} {...props} />
     </TextInputWrap>
   );
 });
