@@ -1,52 +1,84 @@
 import styled from '@emotion/styled';
 import { FormInput } from '../../component/CommonComponents/TextInput';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import DataList from '../../component/CommonComponents/DataList';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { MainButton } from '../../component/CommonComponents/Button';
 import AnimationCheck from '../../component/CommonComponents/AnimationCheck';
 import { axios, loginAxios } from '../../common/axios';
+import { UserType } from '../../type/UserType';
+import { AxiosResponse } from 'axios';
 
-function MemberJoin(props) {
-  const [districtList, setDistrictList] = useState({ cityList: [], zoneList: [] });
-  const [city, setCity] = useState('');
-  const [zone, setZone] = useState('');
-  const [dupCheck, setDupCheck] = useState(false);
+interface districtType {
+  cityList: CityType[];
+  zoneList: ZoneType[];
+}
+
+interface CityType {
+  cityCode: string;
+  name: string;
+}
+
+interface ZoneType {
+  zoneCode: string;
+  name: string;
+}
+
+function MemberJoin() {
+  const [districtList, setDistrictList] = useState<districtType>({ cityList: [], zoneList: [] });
+  const [city, setCity] = useState<string>('');
+  const [zone, setZone] = useState<string>('');
+  const [dupCheck, setDupCheck] = useState<boolean>(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     getValues,
-  } = useForm({ mode: 'onChange' });
+    setError,
+  } = useForm<UserType>({ mode: 'onChange' });
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     getZoneList('11');
-    axios.get('api/city').then(({ cityCodeNames }) => {
+    axios.get<CityType[]>('api/city').then(res => {
       setDistrictList(prevState => {
         return {
           ...prevState,
-          cityList: cityCodeNames,
+          cityList: res.cityCodeNames,
         };
       });
-      setCity(cityCodeNames[0].cityCode);
+      setCity(res.cityCodeNames[0].cityCode);
     });
   }, []);
 
-  const getZoneList = cityCode => {
-    axios.get(`api/zone/${cityCode || city}`).then(({ zoneCodeNames }) => {
-      setDistrictList(prevState => {
-        return {
-          ...prevState,
-          zoneList: zoneCodeNames,
-        };
-      });
-      setZone(zoneCodeNames[0].zoneCode);
+  const getZoneList = async (cityCode: string) => {
+    const { zoneCodeNames }: AxiosResponse<ZoneType[]> = await axios.get(
+      `api/zone/${cityCode || city}`,
+    );
+    setDistrictList(prevState => {
+      return {
+        ...prevState,
+        zoneList: zoneCodeNames,
+      };
     });
+    setZone(zoneCodeNames[0].zoneCode);
+    // await axios.get<ZoneType[]>(`api/zone/${cityCode || city}`).then(res => {
+    //   const { zoneCodeNames }: ZoneType[] = res;
+    //   setDistrictList(prevState => {
+    //     return {
+    //       ...prevState,
+    //       zoneList: zoneCodeNames,
+    //     };
+    //   });
+    //   setZone(zoneCodeNames[0].zoneCode);
+    // });
   };
 
-  const onSubmit = data => {
-    console.log(data);
+  const onSubmit: SubmitHandler<UserType> = data => {
+    if (!dupCheck) {
+      setError('userId', { message: '아이디 중복 확인을 해주세요.' });
+      return;
+    }
     loginAxios
       .post('api/user/sign-up', { ...data, cityCode: city, zoneCode: zone })
       .then(res => console.log(res));

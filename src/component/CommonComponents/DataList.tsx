@@ -2,6 +2,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { DataListInput } from './TextInput';
 
+interface DataListType {
+  id?: string;
+  valueList: string[];
+  labelList: string[];
+  setData: (value: string) => void;
+  select: boolean;
+  defaultValue: string;
+  height: string;
+  disabled?: boolean;
+}
+
 function DataList({
   id,
   valueList,
@@ -11,7 +22,7 @@ function DataList({
   defaultValue = '',
   height = '400px',
   disabled = false,
-}) {
+}: DataListType) {
   const ref = useRef();
   const dataListWrapRef = useRef();
   const dataList = valueList.map((value, i) => {

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
-import { BiSolidDownArrow, BiSolidUpArrow } from 'react-icons/bi';
 import { GoThumbsup } from 'react-icons/go';
 import { useState } from 'react';
+
 function PostRecommend({ recommend }) {
   const [like, setLike] = useState(false);
   return (

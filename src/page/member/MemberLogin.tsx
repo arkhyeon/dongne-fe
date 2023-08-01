@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
 import { FormInput } from '../../component/CommonComponents/TextInput';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { MainButton } from '../../component/CommonComponents/Button';
 import AlertBox from '../../component/AlertBox';
 import { loginAxios } from '../../common/axios';
 import { useNavigate } from 'react-router-dom';
+import { UserType } from '../../type/UserType';
 
 function MemberLogin() {
   const navigate = useNavigate();
@@ -13,17 +14,14 @@ function MemberLogin() {
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm({ mode: 'onChange' });
+  } = useForm<UserType>({ mode: 'onChange' });
 
-  const onSubmit = ({ userId, password }) => {
+  const onSubmit: SubmitHandler<UserType> = ({ userId, password }) => {
     if (!userId || !password) {
       setError('userId', { message: '아이디와 비밀번호를 입력해 주세요.' });
       return;
     }
-    // axios
-    //   .get('api/city')
-    //   .then(res => console.log(res))
-    //   .catch(err => console.log(err));
+
     loginAxios
       .post('api/user/login', { userId, password })
       .then(() => navigate('/'))

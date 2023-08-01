@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 export function SearchButton(props) {
   const children = props.children;
@@ -10,7 +11,13 @@ export function SearchButton(props) {
   );
 }
 
-export function MainButton(props) {
+interface MainButtonProps {
+  children: React.ReactNode;
+  type: string;
+  onClick?: (value: string) => void;
+}
+
+export function MainButton(props: MainButtonProps) {
   const children = props.children;
   return (
     <MainBtn type="button" {...props}>

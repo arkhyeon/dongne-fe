@@ -36,7 +36,7 @@ function Header(props) {
   return (
     <HeaderWrap>
       <LogoWrap>
-        <img src="./src/asset/img/logo.png" />
+        <img src="./src/asset/img/logo2.png" />
         <TopWriterWrap>
           <p>Top Writers</p>
           <div>
@@ -74,7 +74,7 @@ const LogoWrap = styled.div`
   display: flex;
   gap: 30px;
   & img {
-    width: 100px;
+    margin: 0 25px;
   }
 `;
 
