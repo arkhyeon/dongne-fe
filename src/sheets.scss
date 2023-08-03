@@ -1,0 +1,34 @@
+@mixin flex {
+  //@includes flex;
+  display: flex;
+}
+
+.flex, .flex-rc, .flex-cc, .flex-rcc, .flex-end, .flex-col {
+  display: flex;
+}
+
+.flex-rc {
+  justify-content: center;
+}
+
+.flex-cc{
+  align-items: center;
+}
+
+.flex-rcc {
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-end {
+  justify-content: end;
+  align-items: center;
+}
+
+.flex-col{
+  flex-direction: column;
+}
+
+.link{
+  text-decoration: underline;
+}

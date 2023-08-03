@@ -1,11 +1,24 @@
-import React, { forwardRef } from 'react';
+import React, { DetailedHTMLProps, FC, forwardRef, InputHTMLAttributes, ReactElement } from 'react';
 import styled from '@emotion/styled';
-
-export const TextInput = forwardRef((props, ref) => {
+import { UseFormRegister } from 'react-hook-form/dist/types/form';
+import { DeepMap, FieldError, Path, RegisterOptions } from 'react-hook-form';
+import { ErrorMessage } from '@hookform/error-message';
+export const TextInput: FC<InputProps> = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
+  const enterEvent = e => {
+    if (e.key === 'Enter' && props.enterEvent) {
+      props.enterEvent();
+    }
+  };
   return (
     <TextInputWrap>
       <label htmlFor={props.label}>{props.label}</label>
-      <TextInputComp id={props.label} type="text" {...props} ref={ref} />
+      <TextInputComp
+        id={props.label}
+        type="text"
+        {...props}
+        ref={ref}
+        onKeyDown={e => enterEvent(e)}
+      />
     </TextInputWrap>
   );
 });
@@ -41,11 +54,6 @@ const TextInputComp = styled.input`
 export default TextInput;
 
 export const DataListInput = forwardRef((props, ref) => {
-  const enterEvent = e => {
-    if (e.key === 'Enter' && props.enterEvent) {
-      props.enterEvent();
-    }
-  };
   return (
     <TextInputWrap>
       <label htmlFor={props.id}>{props.id}</label>
@@ -56,11 +64,49 @@ export const DataListInput = forwardRef((props, ref) => {
 
 DataListInput.displayName = 'DataListInput';
 
-export const FormInput = props => {
+type InputProps = {
+  id: string;
+  name: string;
+  label: string;
+  className?: string;
+  enterEvent?: () => void;
+} & Omit<DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, 'size'>;
+
+export type FormInputProps<TFormValues> = {
+  name: Path<TFormValues>;
+  rules?: RegisterOptions;
+  register?: UseFormRegister<TFormValues>;
+  errors?: Partial<DeepMap<TFormValues, FieldError>>;
+} & Omit<InputProps, 'name'>;
+
+export const FormInput = <TFormValues extends Record<string, unknown>>({
+  name,
+  register,
+  rules,
+  errors,
+  ...props
+}: FormInputProps<TFormValues>): ReactElement => {
+  if (!name) {
+    throw new Error('FormInput Must Have Name Parameter');
+  }
+
   return (
     <TextInputWrap>
-      <label htmlFor={props.label}>{props.label}</label>
-      <TextInputComp type="text" {...props} {...props.reg} />
+      <label htmlFor={props.id}>
+        {props.label}
+        {errors && (
+          <ErrorMessage
+            errors={errors}
+            name={name}
+            render={({ message }) => (
+              <p className="error-text" role="alert">
+                {message}
+              </p>
+            )}
+          />
+        )}
+      </label>
+      <TextInputComp type="text" {...props} {...(register && register(name, rules))} />
     </TextInputWrap>
   );
 };

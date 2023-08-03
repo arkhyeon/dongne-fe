@@ -1,15 +1,28 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { getCookie, removeCookie, setCookie } from './Cookie';
 
-const BASEURL = 'http://dongne-env.eba-xestx4zp.ap-northeast-2.elasticbeanstalk.com/';
-const AUTH = getCookie('authorization');
-const connectedLogin = true;
+interface CustomInstance extends AxiosInstance {
+  get<T>(...params: Parameters<AxiosInstance['get']>): Promise<T>;
+  delete<T>(...params: Parameters<AxiosInstance['delete']>): Promise<T>;
+  post<T>(...params: Parameters<AxiosInstance['post']>): Promise<T>;
+  put<T>(...params: Parameters<AxiosInstance['put']>): Promise<T>;
+  patch<T>(...params: Parameters<AxiosInstance['patch']>): Promise<T>;
+}
 
-axios.defaults.baseURL = BASEURL;
-axios.defaults.withCredentials = true;
-axios.defaults.headers.common.authorization = AUTH;
+export interface GetResponse {
+  responseMessage?: string;
+  statusCode?: number;
+}
+
+const BASEURL = 'http://192.168.10.126:8787/api/';
+// const AUTH = getCookie('authorization');
+const connectedLogin = true;
+const client: CustomInstance = axios.create();
+client.defaults.baseURL = BASEURL;
+client.defaults.withCredentials = true;
+// client.defaults.headers.common.authorization = AUTH;
 // const sourceRequest = {};
-axios.interceptors.request.use(
+client.interceptors.request.use(
   function (config) {
     // if (config.method === 'post') {
     //   const key = `${config.url}$${JSON.stringify(config.data)}`;
@@ -28,9 +41,10 @@ axios.interceptors.request.use(
   },
 );
 
-axios.interceptors.response.use(
+client.interceptors.response.use(
   function (response) {
-    const url = response.config.url || response.url;
+    console.log(response);
+    const url = response.config.url;
 
     console.log(
       `%cURL Info : ${url}-------------------------------------`,
@@ -63,9 +77,9 @@ axios.interceptors.response.use(
   },
 );
 
-export { axios };
+export { client };
 
-const loginAxios = axios.create();
+const loginAxios: CustomInstance = axios.create();
 
 loginAxios.defaults.baseURL = BASEURL;
 loginAxios.defaults.withCredentials = true;

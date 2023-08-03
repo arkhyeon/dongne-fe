@@ -28,8 +28,6 @@ function App() {
             <Route path="post" element={<PostDetail />} />
           </Route>
           <Route path="postwrite" element={<PrivateRouter element={<PostWrite />} />} />
-          <Route path="login" element={<HasLogin element={<MemberLogin />} />} />
-          <Route path="join" element={<HasLogin element={<MemberJoin />} />} />
           <Route path="memberDetail" element={<MemberDetail />}>
             <Route index element={<MyPost />} />
             <Route path="mycomment" element={<PrivateRouter element={<MyComment />} />} />
@@ -38,6 +36,8 @@ function App() {
           </Route>
           <Route path="rank" element={<MemberRanking />} />
         </Route>
+        <Route path="login" element={<HasLogin element={<MemberLogin />} />} />
+        <Route path="join" element={<HasLogin element={<MemberJoin />} />} />
       </Routes>
     </Router>
   );

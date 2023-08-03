@@ -28,7 +28,7 @@ function Header(props) {
     removeCookie('refreshToken');
 
     loginAxios
-      .post('api/user/logout')
+      .post('user/logout')
       .then(res => console.log(res))
       .catch(err => console.log(err));
   };

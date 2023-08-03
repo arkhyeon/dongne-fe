@@ -4,7 +4,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { MainButton } from '../../component/CommonComponents/Button';
 import AlertBox from '../../component/AlertBox';
 import { loginAxios } from '../../common/axios';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { UserType } from '../../type/UserType';
 
 function MemberLogin() {
@@ -23,7 +23,7 @@ function MemberLogin() {
     }
 
     loginAxios
-      .post('api/user/login', { userId, password })
+      .post('user/login', { userId, password })
       .then(() => navigate('/'))
       .catch(err => {
         console.log(err);
@@ -37,25 +37,20 @@ function MemberLogin() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="logo-wrap">
+        <img src="./src/asset/img/logo2.png" />
+      </div>
       <JoinWrap>
         <p className="main-title-text" style={{ textAlign: 'center' }}>
-          <img src="" />
           로그인
         </p>
-        <FormInput
-          id="userId"
-          label="아이디"
-          reg={{
-            ...register('userId'),
-          }}
-        />
-        <FormInput
+        <FormInput<UserType> id="userId" name="userId" label="아이디" register={register} />
+        <FormInput<UserType>
           id="password"
           type="password"
+          name="password"
           label="비밀번호"
-          reg={{
-            ...register('password'),
-          }}
+          register={register}
         />
         {errors.userId && (
           <AlertBox>
@@ -66,6 +61,9 @@ function MemberLogin() {
           </AlertBox>
         )}
         <MainButton type="submit">로그인</MainButton>
+        <NavLink className="list-text flex-end" to={'/join'}>
+          회원가입
+        </NavLink>
       </JoinWrap>
     </form>
   );

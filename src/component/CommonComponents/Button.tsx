@@ -11,11 +11,7 @@ export function SearchButton(props) {
   );
 }
 
-interface MainButtonProps {
-  children: React.ReactNode;
-  type: string;
-  onClick?: (value: string) => void;
-}
+type MainButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export function MainButton(props: MainButtonProps) {
   const children = props.children;

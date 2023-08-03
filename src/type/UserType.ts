@@ -1,4 +1,4 @@
-export interface UserType {
+export type UserType = {
   userId: string;
   password: string;
   passwordConfirm: string;
@@ -6,4 +6,4 @@ export interface UserType {
   nickname: string;
   cityCode: string;
   zoneCode: string;
-}
+};
