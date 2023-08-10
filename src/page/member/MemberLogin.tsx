@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { FormInput } from '../../component/CommonComponents/TextInput';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { MainButton } from '../../component/CommonComponents/Button';
-import AlertBox from '../../component/AlertBox';
 import { loginAxios } from '../../common/axios';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { UserType } from '../../type/UserType';
@@ -17,8 +16,13 @@ function MemberLogin() {
   } = useForm<UserType>({ mode: 'onChange' });
 
   const onSubmit: SubmitHandler<UserType> = ({ userId, password }) => {
-    if (!userId || !password) {
-      setError('userId', { message: '아이디와 비밀번호를 입력해 주세요.' });
+    if (!userId) {
+      setError('userId', { message: '아이디를 입력해 주세요.' });
+      return;
+    }
+
+    if (!password) {
+      setError('password', { message: '비밀번호를 입력해 주세요.' });
       return;
     }
 
@@ -27,10 +31,12 @@ function MemberLogin() {
       .then(() => navigate('/'))
       .catch(err => {
         console.log(err);
-        if (err.response.data.statusCode === 400) {
-          setError('userId', { message: '아이디와 비밀번호를 확인해 주세요.' });
+        if (err.response.data.responseMessage === 'User Id Not Found') {
+          setError('userId', { message: '존재하지 않는 아이디입니다.' });
+        } else if (err.response.data.responseMessage === 'Incorrect Password') {
+          setError('password', { message: '비밀번호가 틀렸습니다.' });
         } else {
-          setError('userId', { message: '로그인 오류로 인해 현재 접속할 수 없습니다.' });
+          alert('로그인 오류로 인해 현재 접속할 수 없습니다.');
         }
       });
   };
@@ -44,22 +50,21 @@ function MemberLogin() {
         <p className="main-title-text" style={{ textAlign: 'center' }}>
           로그인
         </p>
-        <FormInput<UserType> id="userId" name="userId" label="아이디" register={register} />
+        <FormInput<UserType>
+          id="userId"
+          name="userId"
+          label="아이디"
+          register={register}
+          errors={errors}
+        />
         <FormInput<UserType>
           id="password"
           type="password"
           name="password"
           label="비밀번호"
+          errors={errors}
           register={register}
         />
-        {errors.userId && (
-          <AlertBox>
-            <div>
-              <p className="error-title-text">로그인 실패</p>
-              <p className="error-text">{errors.userId.message}</p>
-            </div>
-          </AlertBox>
-        )}
         <MainButton type="submit">로그인</MainButton>
         <NavLink className="list-text flex-end" to={'/join'}>
           회원가입

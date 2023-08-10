@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
-function Progressbar({ exp, maxExp }) {
+function Progressbar({ progress }: number) {
   return (
     <ProgressbarWrap>
       <GaugeWrap>
-        <Gauge style={{ width: `${(exp / maxExp) * 100}px` }}></Gauge>
+        <Gauge style={{ width: `${progress * 100}%` }}></Gauge>
       </GaugeWrap>
-      <p>{(exp / maxExp) * 100}%</p>
+      <p>{progress * 100}%</p>
     </ProgressbarWrap>
   );
 }

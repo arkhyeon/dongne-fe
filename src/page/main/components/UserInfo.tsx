@@ -1,27 +1,39 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Progressbar from '../../../component/CommonComponents/Progressbar';
 import styled from '@emotion/styled';
 import Identicon from 'identicon.js';
 import SHA256 from '../../../common/Sha256';
 import toHex from '../../../common/toHex';
+import { client } from '../../../common/axios';
+import { userLevel, UserMainInfo } from '../../../type/UserType';
 
-function UserInfo(props) {
-  const data = new Identicon(SHA256(toHex('아돌프히틀러')), 420).toString();
+function UserInfo() {
+  const [userInfo, setUserInfo]: UserMainInfo = useState({});
 
-  useEffect(() => {
-    console.log(toHex('asd'));
+  useLayoutEffect(() => {
+    client.get<UserMainInfo>('user-main?page=0&size=3').then(res => {
+      if (!res.profileImg) {
+        res.profileImg = `data:image/png;base64,${new Identicon(
+          SHA256(toHex(res.userId)),
+          420,
+        ).toString()}`;
+      }
+      setUserInfo(res);
+    });
   }, []);
 
   return (
     <UserInfoWrap>
-      <img width="420" height="420" src={`data:image/png;base64,${data}`} />
+      {/*<img width="420" height="420" src={userInfo.profileImg} />*/}
       <div>
-        <p className="title-text">알투웨어(r2ware123)</p>
+        <p className="title-text">
+          {userInfo.nickname}({userInfo.userId})
+        </p>
         <ExperienceWrap>
-          <p className="list-text">LV : 88</p>
-          <p className="list-text">POINT : 12321</p>
+          <p className="list-text">LV : {userLevel(120)}</p>
+          <p className="list-text">POINT : {userInfo.point}</p>
         </ExperienceWrap>
-        <Progressbar exp={30} maxExp={100} />
+        <Progressbar progress={12} />
       </div>
     </UserInfoWrap>
   );

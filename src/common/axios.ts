@@ -1,5 +1,7 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { getCookie, removeCookie, setCookie } from './Cookie';
+import { Simulate } from 'react-dom/test-utils';
+import error = Simulate.error;
 
 interface CustomInstance extends AxiosInstance {
   get<T>(...params: Parameters<AxiosInstance['get']>): Promise<T>;
@@ -15,24 +17,17 @@ export interface GetResponse {
 }
 
 const BASEURL = 'http://192.168.10.126:8787/api/';
-// const AUTH = getCookie('authorization');
-const connectedLogin = true;
 const client: CustomInstance = axios.create();
 client.defaults.baseURL = BASEURL;
 client.defaults.withCredentials = true;
-// client.defaults.headers.common.authorization = AUTH;
-// const sourceRequest = {};
+
 client.interceptors.request.use(
-  function (config) {
-    // if (config.method === 'post') {
-    //   const key = `${config.url}$${JSON.stringify(config.data)}`;
-    //
-    //   if (sourceRequest[key]) {
-    //     throw new Error('Automatic cancellation'); // If the request exists cancel
-    //   } else {
-    //     sourceRequest[key] = new Date(); // Store request key
-    //   }
-    // }
+  function (config: InternalAxiosRequestConfig) {
+    const accessToken = getCookie('accessToken');
+
+    if (accessToken) {
+      config.headers['Authorization'] = 'Bearer ' + accessToken;
+    }
 
     return config;
   },
@@ -43,9 +38,8 @@ client.interceptors.request.use(
 
 client.interceptors.response.use(
   function (response) {
-    console.log(response);
     const url = response.config.url;
-
+    console.log(response);
     console.log(
       `%cURL Info : ${url}-------------------------------------`,
       'background: #000; color: #bada55',
@@ -59,21 +53,20 @@ client.interceptors.response.use(
       'background: #000; color: #bada55',
     );
 
-    // setCookie('authorization', response.headers.authorization);
-    // axios.defaults.headers.common.authorization = response.headers.authorization;
-    // pollingAxios.defaults.headers.common.authorization = response.headers.authorization;
-
     if (response.data === null) {
       return response;
     }
 
     return response.data;
   },
-  error => {
-    // unAuthorization(error);
+  async error => {
     errorLog(error);
+    if (error.response.status !== 401 || error.config.sent) {
+      return Promise.reject(error);
+    }
 
-    return Promise.reject(error);
+    error.config.sent = true;
+    return await unAuthProcess(error).catch(() => logout());
   },
 );
 
@@ -86,9 +79,6 @@ loginAxios.defaults.withCredentials = true;
 
 loginAxios.interceptors.response.use(
   function (response) {
-    axios.defaults.headers.common['A-AUTH-TOKEN'] = response.data.accessToken;
-    loginAxios.defaults.headers.common['A-AUTH-TOKEN'] = response.data.accessToken;
-    // loginAxios.defaults.headers.common['A-AUTH-TOKEN'] = response.data.refreshToken;
     setCookie('accessToken', response.data.accessToken);
     setCookie('refreshToken', response.data.refreshToken);
 
@@ -106,30 +96,118 @@ loginAxios.interceptors.response.use(
 
 export { loginAxios };
 
-const unAuthorization = error => {
-  if (error.response.status && error.response.status === 401) {
-    setCookie('authorization', 'none');
-    if (connectedLogin) {
-      // connectedLogin = false;
-      alert('로그인이 만료되었습니다.');
-      removeCookie('authorization');
-      removeCookie('uid');
-      removeCookie('ulevel');
-      window.location.href = `${process.env.PUBLIC_URL}/Logout`;
+const errorLog = (error: AxiosError | Error) => {
+  if (axios.isAxiosError(error)) {
+    const { message, config, response } = error;
+
+    console.log(message);
+    console.log(config.url);
+    console.log(response);
+  }
+
+  if (axios.isAxiosError(error)) {
+    console.log(
+      `%cURL Info : ${error?.config?.url}-------------------------------------`,
+      'background: #000; color: #2CD4A8',
+    );
+    if (error.response) {
+      console.log(error.response);
+      console.log(
+        `%cError Code : ${error?.response.status} ${error.response.statusText}\nError Msg  : ${error.response.data.responseMessage}`,
+        'background: #000; color: #2CD4A8',
+      );
+    } else if (error.request) {
+      console.log(error.request.statusText);
+      console.log(error);
+      console.log(
+        `%cError Code : ${error.request.status} ${
+          error.request.statusText || error.message
+        }\nError Msg  :`,
+        'background: #000; color: #2CD4A8',
+      );
     }
+  } else {
+    console.log(error);
   }
 };
 
-const errorLog = error => {
-  console.log(error);
-  console.log(
-    `%cURL Info : ${error.config.url}-------------------------------------`,
-    'background: #000; color: #2CD4A8',
-  );
-  console.log(error);
-  console.log(error.response);
-  console.log(
-    `%cError Code : ${error.response.status} ${error.response.statusText}\nError Msg  : ${error.response.data.responseMessage}`,
-    'background: #000; color: #2CD4A8',
-  );
+const tokenAxios: CustomInstance = axios.create();
+
+tokenAxios.defaults.baseURL = BASEURL;
+tokenAxios.defaults.withCredentials = true;
+
+let subscribers: Array<() => void> = [];
+let lock = false;
+
+tokenAxios.interceptors.request.use(
+  function (config) {
+    config.headers['Authorization'] = 'Bearer ' + getCookie('refreshToken');
+    return config;
+  },
+  error => {
+    return Promise.reject(error);
+  },
+);
+
+function onSubscribe(cb: () => void) {
+  subscribers.push(cb);
+}
+
+function onPublish() {
+  subscribers.forEach(cb => cb());
+}
+
+const unAuthProcess = async ({
+  config,
+}: {
+  config: InternalAxiosRequestConfig;
+}): Promise<void | AxiosResponse> => {
+  // const unAuthProcess = async (error: AxiosError): Promise<void | AxiosResponse> => {
+  const originalRequest = <InternalAxiosRequestConfig>config;
+
+  if (lock) {
+    return onSubscribe(() => client(originalRequest));
+    // return new Promise(resolve => onSubscribe(() => resolve(client(config))));
+  }
+
+  lock = true;
+  await reissueAccessToken();
+  return client(config);
+  // const config = error.config as InternalAxiosRequestConfig;
+  // const originalRequest: InternalAxiosRequestConfig = config;
+  // console.log(error);
+  // if (lock) {
+  //   return onSubscribe(() => client(originalRequest));
+  //   // return new Promise(resolve => onSubscribe(() => resolve(client(config))));
+  // }
+  //
+  // lock = true;
+  // await reissueAccessToken();
+  // return client(config);
 };
+
+interface TokenType extends GetResponse {
+  data: { accessToken: string; refreshToken?: string };
+}
+
+const reissueAccessToken = async (): Promise<string | void> => {
+  try {
+    const { data } = await tokenAxios.post<TokenType>('user/reissue');
+    lock = false;
+    onPublish();
+    subscribers = [];
+    setCookie('accessToken', data.accessToken);
+
+    return data.accessToken;
+  } catch (e) {
+    subscribers = [];
+    logout();
+  }
+};
+
+function logout() {
+  window.location.href = '/login';
+  lock = false;
+  removeCookie('accessToken');
+  removeCookie('refreshToken');
+}

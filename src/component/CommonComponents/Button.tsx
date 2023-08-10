@@ -74,15 +74,3 @@ const SubBtn = styled(Button)`
     transition: 0.3s;
   }
 `;
-
-SearchButton.propTypes = {
-  children: PropTypes.node.isRequired,
-};
-
-MainButton.propTypes = {
-  children: PropTypes.node.isRequired,
-};
-
-SubButton.propTypes = {
-  children: PropTypes.node.isRequired,
-};
