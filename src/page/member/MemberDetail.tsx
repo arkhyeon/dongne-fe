@@ -1,15 +1,33 @@
 import styled from '@emotion/styled';
 import UserInfo from '../main/components/UserInfo';
-import BoardList from '../boardList/BoardList';
-import MainPostList from '../../component/post/MainPostList';
-import { recentList } from '../../../data';
 import { NavLink, Outlet } from 'react-router-dom';
+import { useLayoutEffect, useState } from 'react';
+import { client } from '../../common/axios';
+import { UserMainInfo } from '../../type/UserType';
+import Identicon from 'identicon.js';
+import SHA256 from '../../common/Sha256';
+import toHex from '../../common/toHex';
+import { userInitValue } from '../../common/userCommon';
 
-function MemberDetail(props) {
+function MemberDetail() {
+  const [userInfo, setUserInfo] = useState<UserMainInfo>(userInitValue);
+
+  useLayoutEffect(() => {
+    client.get<UserMainInfo>('user-main?page=0&size=3').then(res => {
+      console.log(res);
+      if (!res.profileImg) {
+        res.profileImg = `data:image/png;base64,${new Identicon(
+          SHA256(toHex(res.userId)),
+          420,
+        ).toString()}`;
+      }
+      setUserInfo(res);
+    });
+  }, []);
   return (
     <MemberDetailWrap>
       <MemberSideWrap>
-        <UserInfo />
+        <UserInfo userInfo={userInfo} />
         <ul>
           <NavLink to="" end>
             작성 글

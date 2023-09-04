@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, MutableRefObject, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { DataListInput } from './TextInput';
 
 interface DataListType {
-  id?: string;
+  id: string;
   valueList: string[];
   labelList: string[];
   setData: (value: string) => void;
@@ -23,22 +23,16 @@ function DataList({
   height = '400px',
   disabled = false,
 }: DataListType) {
-  const ref = useRef();
-  const dataListWrapRef = useRef();
+  const ref = useRef() as MutableRefObject<HTMLInputElement>;
+  const dataListWrapRef = useRef() as MutableRefObject<HTMLUListElement>;
   const dataList = valueList.map((value, i) => {
     return { value, label: labelList[i] || value };
   });
   const [dataListState, setDataListState] = useState(dataList);
 
   useEffect(() => {
-    document.addEventListener('mousedown', e => {
-      exitDataList(e);
-    });
-    return () => {
-      document.removeEventListener('mousedown', e => {
-        exitDataList(e);
-      });
-    };
+    document.addEventListener('mousedown', e => exitDataList(e));
+    return () => document.removeEventListener('mousedown', e => exitDataList(e));
   }, []);
 
   useEffect(() => {
@@ -68,18 +62,18 @@ function DataList({
     }
   }, [defaultValue]);
 
-  const exitDataList = e => {
+  const exitDataList = (e: MouseEvent) => {
     if (
       dataListWrapRef.current === null ||
-      dataListWrapRef.current.contains(e.target) ||
-      ref.current.contains(e.target)
+      dataListWrapRef.current.contains(e.target as Node) ||
+      ref.current.contains(e.target as Node)
     ) {
       return;
     }
     dataListWrapRef.current.style.display = 'none';
   };
 
-  const searchData = (value, label) => {
+  const searchData = (value: string, label: string) => {
     setData(value);
     if (select) {
       return;
@@ -91,7 +85,7 @@ function DataList({
 
     dataListWrapRef.current.style.display = 'block';
 
-    if (searchList[0] === undefined) {
+    if (!searchList[0]) {
       dataListWrapRef.current.style.display = 'none';
       setDataListState([]);
       return;
@@ -105,7 +99,7 @@ function DataList({
     setDataListState(searchList);
   };
 
-  const setTextData = (value, label) => {
+  const setTextData = (value: string, label: string) => {
     ref.current.value = label;
     searchData(value, label);
     dataListWrapRef.current.style.display = 'none';
@@ -113,48 +107,46 @@ function DataList({
 
   let moveCount = -1;
 
-  const arrowMove = e => {
-    for (let i = 0; i < dataListWrapRef.current.children.length; i++) {
-      dataListWrapRef.current.children[i].classList.remove('activeDataList');
+  const arrowMove = (e: React.KeyboardEvent<HTMLLIElement | HTMLInputElement>) => {
+    const dataListItemList = dataListWrapRef.current.children;
+
+    for (let i = 0; i < dataListItemList.length; i++) {
+      dataListItemList[i].classList.remove('activeDataList');
     }
+
     // 위
-    if (e.keyCode === 38) {
+    if (e.key === 'ArrowUp') {
       e.preventDefault();
       if (moveCount <= 0) {
-        dataListWrapRef.current.children[dataListWrapRef.current.children.length - 1].focus();
-        dataListWrapRef.current.children[dataListWrapRef.current.children.length - 1].classList.add(
-          'activeDataList',
-        );
-        moveCount = dataListWrapRef.current.children.length - 1;
+        (dataListItemList[dataListItemList.length - 1] as HTMLElement).focus();
+        dataListItemList[dataListItemList.length - 1].classList.add('activeDataList');
+        moveCount = dataListItemList.length - 1;
       } else {
         moveCount--;
-        dataListWrapRef.current.children[moveCount].focus();
-        dataListWrapRef.current.children[moveCount]?.classList.add('activeDataList');
+        (dataListItemList[moveCount] as HTMLElement).focus();
+        dataListItemList[moveCount]?.classList.add('activeDataList');
       }
     }
 
     // 아래
-    if (e.keyCode === 40) {
+    if (e.key === 'ArrowDown') {
       e.preventDefault();
-      if (moveCount >= dataListWrapRef.current.children.length - 1) {
-        dataListWrapRef.current.children[0].focus();
-        dataListWrapRef.current.children[0].classList.add('activeDataList');
+      if (moveCount >= dataListItemList.length - 1) {
+        (dataListItemList[0] as HTMLElement).focus();
+        dataListItemList[0].classList.add('activeDataList');
         moveCount = 0;
       } else {
         moveCount++;
-        dataListWrapRef.current.children[moveCount].focus();
-        dataListWrapRef.current.children[moveCount]?.classList.add('activeDataList');
+        (dataListItemList[moveCount] as HTMLElement).focus();
+        dataListItemList[moveCount]?.classList.add('activeDataList');
       }
     }
 
-    if (e.keyCode === 13) {
-      if (dataListWrapRef.current.children[moveCount]?.attributes.value.value === undefined) {
-        return;
-      }
-      setTextData(
-        dataListWrapRef.current.children[moveCount]?.attributes.value.value,
-        dataListWrapRef.current.children[moveCount]?.attributes.value.ownerElement.innerText,
-      );
+    if (e.key === 'Enter') {
+      const dataListItemValue = dataListItemList[moveCount]?.attributes.getNamedItem('value');
+      if (!dataListItemValue?.value || !dataListItemValue?.ownerElement?.textContent) return;
+
+      setTextData(dataListItemValue.value, dataListItemValue.ownerElement.textContent);
     }
   };
 
@@ -164,13 +156,14 @@ function DataList({
         <DataListInput
           id={id}
           ref={ref}
-          type="text"
-          onChange={e => searchData(e.target.value, e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            searchData(e.target.value, e.target.value)
+          }
           autoComplete="off"
           onFocus={() => (dataListWrapRef.current.style.display = 'block')}
           onKeyDown={e => arrowMove(e)}
           readOnly={select}
-          disabled={disabled}
+          disabled={disabled ?? false}
         />
         <DataListItemWrap ref={dataListWrapRef} height={height}>
           {dataListState.map((data, i) => {
@@ -198,7 +191,7 @@ const DataListWrap = styled.div`
   display: flex;
 `;
 
-const DataListItemWrap = styled.ul`
+const DataListItemWrap = styled.ul<{ height: string }>`
   width: 100%;
   max-height: ${({ height }) => height};
   display: none;

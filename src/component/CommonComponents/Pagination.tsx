@@ -1,7 +1,19 @@
 import styled from '@emotion/styled';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 
-function Pagination({ totalLength = 0, buttonLength = 5, pageEvent, currentPage = 1 }) {
+interface PaginationType {
+  totalLength: number;
+  buttonLength: number;
+  pageEvent: (pageNum: number) => number;
+  currentPage: number;
+}
+
+export const Pagination = ({
+  totalLength = 0,
+  buttonLength = 5,
+  pageEvent,
+  currentPage = 1,
+}: PaginationType) => {
   const offset = () => {
     if (currentPage < buttonLength) {
       return Math.floor((currentPage - 1) / buttonLength) * buttonLength;
@@ -10,7 +22,7 @@ function Pagination({ totalLength = 0, buttonLength = 5, pageEvent, currentPage 
     return currentPage - Math.ceil(buttonLength / 2);
   };
 
-  const movePage = pageNum => {
+  const movePage = (pageNum: number) => {
     if (currentPage === pageNum || pageNum <= 0 || totalLength < pageNum) {
       return;
     }
@@ -28,7 +40,7 @@ function Pagination({ totalLength = 0, buttonLength = 5, pageEvent, currentPage 
           <>
             <PaginationItem
               onClick={() => movePage(1)}
-              aria-current={currentPage === 1 ? 'page' : null}
+              aria-current={currentPage === 1 ? 'page' : undefined}
             >
               1
             </PaginationItem>
@@ -42,7 +54,7 @@ function Pagination({ totalLength = 0, buttonLength = 5, pageEvent, currentPage 
           .map(arr => (
             <PaginationItem
               onClick={() => movePage(arr)}
-              aria-current={currentPage === arr ? 'page' : null}
+              aria-current={currentPage === arr ? 'page' : undefined}
               key={arr}
             >
               {arr}
@@ -53,7 +65,7 @@ function Pagination({ totalLength = 0, buttonLength = 5, pageEvent, currentPage 
         </PaginationItem>
         <PaginationItem
           onClick={() => movePage(totalLength)}
-          aria-current={currentPage === totalLength ? 'page' : null}
+          aria-current={currentPage === totalLength ? 'page' : undefined}
         >
           {totalLength}
         </PaginationItem>
@@ -64,7 +76,7 @@ function Pagination({ totalLength = 0, buttonLength = 5, pageEvent, currentPage 
       </PaginationItem>
     </PaginationWrap>
   );
-}
+};
 
 const PaginationWrap = styled.ul`
   width: 100%;

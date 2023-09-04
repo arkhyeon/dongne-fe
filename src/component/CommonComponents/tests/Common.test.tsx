@@ -1,4 +1,4 @@
-import { getByText, logRoles, render, screen } from '@testing-library/react';
+import { logRoles, render, screen } from '@testing-library/react';
 import SirenReport from '../SirenReport';
 import userEvent from '@testing-library/user-event';
 import Modal from '../../modal/Modal';
@@ -14,9 +14,8 @@ test.only('신고 버튼 클릭 시 모달 확인', async () => {
 
   user.click(sirenButton);
 
-  const closeButton = document.querySelector('cloes-btn');
-  //
-  logRoles(container);
+  const closeButton = document.querySelector<Element>('cloes-btn');
+  // logRoles(container);
   // screen.debug(container);
   screen.debug(closeButton);
 });
@@ -24,7 +23,7 @@ test.only('신고 버튼 클릭 시 모달 확인', async () => {
 test('모달', async () => {
   const handleClose = jest.fn();
   const user = userEvent.setup();
-  let modalOpen = true;
+  const modalOpen = true;
   render(
     <Modal open={modalOpen} handleClose={handleClose}>
       <Modal.Header closeButton>Header Test</Modal.Header>

@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import SideMain from './SideMain';
 import { Outlet } from 'react-router-dom';
 
-function Main(props) {
+function Main() {
   return (
     <MainWrap>
       <SideMain></SideMain>

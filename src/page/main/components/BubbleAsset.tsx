@@ -1,19 +1,28 @@
-export function prepare({ items, palette, aspectRatio = 1.3 }) {
-  const itemsForRendering = [];
-  let itemsBounds = {};
+import {
+  BoundsType,
+  CandidatType,
+  ItemInitType,
+  ItemsRenderingType,
+} from '../../../type/BubbleType';
+
+export function prepare(items: ItemInitType[]) {
+  const itemsForRendering: ItemsRenderingType[] = [];
+  const aspectRatio = 1.3;
+  let itemsBounds: BoundsType = { bottom: 0, right: 0, left: 0, top: 0 };
 
   for (let i = 0; i < items.length; i++) {
-    let r = items[i].value,
-      text = items[i].text,
-      backgroundColor =
-        '#' +
-        Math.floor(Math.random() * 16777215)
-          .toString(16)
-          .padStart(6, '0')
-          .toUpperCase(),
-      x,
-      y,
-      bounds;
+    const r = items[i].value ?? 0;
+    const text = items[i].text;
+    const backgroundColor =
+      '#' +
+      Math.floor(Math.random() * 16777215)
+        .toString(16)
+        .padStart(6, '0')
+        .toUpperCase();
+    let x;
+    let y;
+    let bounds;
+
     switch (i) {
       case 0:
         x = 0;
@@ -22,26 +31,31 @@ export function prepare({ items, palette, aspectRatio = 1.3 }) {
         itemsBounds = { left: -r, top: -r, right: r, bottom: r };
         break;
       case 1:
+        items[0].value = items[0].value ?? 0;
+        items[1].value = items[1].value ?? 0;
+
         x = items[0].value + items[1].value;
         y = 0;
         bounds = { left: -r, top: -r, right: r, bottom: r };
         itemsBounds = {
+          top: 0,
+          right: 0,
           left: -items[0].value,
           bottom: Math.max(items[0].value, items[1].value),
         };
         break;
-      default:
+      default: {
         let candidats = [];
         for (let j = 0; j < itemsForRendering.length; j++) {
           for (let k = j + 1; k < itemsForRendering.length; k++) {
             const index1 = j;
             const index2 = k;
-            const x1 = itemsForRendering[index1].x;
-            const y1 = itemsForRendering[index1].y;
-            const r1 = itemsForRendering[index1].r + r;
-            const x2 = itemsForRendering[index2].x;
-            const y2 = itemsForRendering[index2].y;
-            const r2 = itemsForRendering[index2].r + r;
+            const x1 = Number(itemsForRendering[index1].x);
+            const y1 = Number(itemsForRendering[index1].y);
+            const r1 = Number(itemsForRendering[index1].r) + r;
+            const x2 = Number(itemsForRendering[index2].x);
+            const y2 = Number(itemsForRendering[index2].y);
+            const r2 = Number(itemsForRendering[index2].r) + r;
 
             const a = r2;
             const b = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
@@ -58,7 +72,7 @@ export function prepare({ items, palette, aspectRatio = 1.3 }) {
               y: y1 + Math.sin(alpha1) * r1,
             });
 
-            let cos2 = (Math.pow(a, 2) - Math.pow(c, 2) + Math.pow(b, 2)) / (2 * a * b);
+            const cos2 = (Math.pow(a, 2) - Math.pow(c, 2) + Math.pow(b, 2)) / (2 * a * b);
             const acos2 = Math.acos(cos2);
             const alpha2 = acos2 + Math.atan2(y1 - y2, x1 - x2);
             candidats.push({
@@ -71,8 +85,8 @@ export function prepare({ items, palette, aspectRatio = 1.3 }) {
           for (let i = itemsForRendering.length; i--; ) {
             const item = itemsForRendering[i];
             if (
-              Math.pow(r + item.r, 2) * 0.95 >
-              Math.pow(candidat.x - item.x, 2) + Math.pow(candidat.y - item.y, 2)
+              Math.pow(r + Number(item.r), 2) * 0.95 >
+              Math.pow(candidat.x - Number(item.x), 2) + Math.pow(candidat.y - Number(item.y), 2)
             ) {
               return false;
             }
@@ -80,7 +94,7 @@ export function prepare({ items, palette, aspectRatio = 1.3 }) {
           return true;
         });
         for (let i = candidats.length; i--; ) {
-          const candidat = candidats[i];
+          const candidat = candidats[i] as CandidatType;
           candidat.bounds = {
             left: candidat.x - r,
             right: candidat.x + r,
@@ -110,41 +124,46 @@ export function prepare({ items, palette, aspectRatio = 1.3 }) {
 
         const results = [];
         for (let index = candidats.length; index--; ) {
-          const candidat = candidats[index];
+          const { bounds } = candidats[index] as CandidatType;
+
           let left = minX,
             right = maxX;
           let top = minY,
             bottom = maxY;
-          if (left > candidat.bounds.left) {
-            left = candidat.bounds.left;
+          if (left > bounds.left) {
+            left = bounds.left;
           }
-          if (right < candidat.bounds.right) {
-            right = candidat.bounds.right;
+          if (right < bounds.right) {
+            right = bounds.right;
           }
-          if (top > candidat.bounds.top) {
-            top = candidat.bounds.top;
+          if (top > bounds.top) {
+            top = bounds.top;
           }
-          if (bottom < candidat.bounds.bottom) {
-            bottom = candidat.bounds.bottom;
+          if (bottom < bounds.bottom) {
+            bottom = bounds.bottom;
           }
           const width = right - left,
             height = bottom - top;
           const value = Math.abs(width / height - aspectRatio) * (width * height);
           results.push({ value, index, bounds: { width, height, left, top } });
         }
-        results.sort(sortByValue);
+        // results.sort(sortByValue);
+        results.sort((a, b) => a.value - b.value);
 
-        const candidat = candidats[results[0].index];
-        itemsBounds = results[0].bounds;
+        const candidat = candidats[results[0].index] as CandidatType;
+
+        itemsBounds = results[0].bounds as BoundsType;
         x = candidat.x;
         y = candidat.y;
         bounds = candidat.bounds;
+      }
     }
     itemsForRendering.push({ x, y, r, text, bounds, backgroundColor });
   }
-  console.log(itemsForRendering);
+
   for (let i = itemsForRendering.length; i--; ) {
-    const item = itemsForRendering[i];
+    const item = itemsForRendering[i] as CandidatType;
+
     item.x -= itemsBounds.left;
     item.y -= itemsBounds.top;
   }
@@ -155,12 +174,15 @@ export function prepare({ items, palette, aspectRatio = 1.3 }) {
   };
 }
 
-function sortByValue(a, b) {
-  if (a.value > b.value) {
-    return 1;
-  } else if (a.value < b.value) {
-    return -1;
-  } else {
-    return 0;
-  }
-}
+// function sortByValue(a: ItemType, b: ItemType) {
+//   const prevValue = a.value ?? 0;
+//   const nextValue = b.value ?? 0;
+//
+//   if (prevValue > nextValue) {
+//     return 1;
+//   } else if (prevValue < nextValue) {
+//     return -1;
+//   } else {
+//     return 0;
+//   }
+// }

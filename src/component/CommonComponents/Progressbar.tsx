@@ -1,13 +1,12 @@
-import React from 'react';
 import styled from '@emotion/styled';
 
-function Progressbar({ progress }: number) {
+export default function Progressbar({ progress }: { progress: string | number }) {
   return (
     <ProgressbarWrap>
       <GaugeWrap>
-        <Gauge style={{ width: `${progress * 100}%` }}></Gauge>
+        <Gauge style={{ width: `${progress}%` }}></Gauge>
       </GaugeWrap>
-      <p>{progress * 100}%</p>
+      <p>{progress}%</p>
     </ProgressbarWrap>
   );
 }
@@ -41,5 +40,3 @@ const Gauge = styled.div`
   background-color: #ffc045;
   border-radius: 3px;
 `;
-
-export default Progressbar;

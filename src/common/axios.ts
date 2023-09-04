@@ -1,7 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { getCookie, removeCookie, setCookie } from './Cookie';
-import { Simulate } from 'react-dom/test-utils';
-import error = Simulate.error;
 
 interface CustomInstance extends AxiosInstance {
   get<T>(...params: Parameters<AxiosInstance['get']>): Promise<T>;
@@ -101,7 +99,7 @@ const errorLog = (error: AxiosError | Error) => {
     const { message, config, response } = error;
 
     console.log(message);
-    console.log(config.url);
+    console.log(config?.url);
     console.log(response);
   }
 

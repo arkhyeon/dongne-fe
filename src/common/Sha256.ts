@@ -1,39 +1,39 @@
-export default function SHA256(s) {
+export default function SHA256(s: string) {
   const chrsz = 8;
   const hexcase = 0;
 
-  function safe_add(x, y) {
+  function safe_add(x: number, y: number) {
     const lsw = (x & 0xffff) + (y & 0xffff);
     const msw = (x >> 16) + (y >> 16) + (lsw >> 16);
     return (msw << 16) | (lsw & 0xffff);
   }
 
-  function S(X, n) {
+  function S(X: number, n: number) {
     return (X >>> n) | (X << (32 - n));
   }
-  function R(X, n) {
+  function R(X: number, n: number) {
     return X >>> n;
   }
-  function Ch(x, y, z) {
+  function Ch(x: number, y: number, z: number) {
     return (x & y) ^ (~x & z);
   }
-  function Maj(x, y, z) {
+  function Maj(x: number, y: number, z: number) {
     return (x & y) ^ (x & z) ^ (y & z);
   }
-  function Sigma0256(x) {
+  function Sigma0256(x: number) {
     return S(x, 2) ^ S(x, 13) ^ S(x, 22);
   }
-  function Sigma1256(x) {
+  function Sigma1256(x: number) {
     return S(x, 6) ^ S(x, 11) ^ S(x, 25);
   }
-  function Gamma0256(x) {
+  function Gamma0256(x: number) {
     return S(x, 7) ^ S(x, 18) ^ R(x, 3);
   }
-  function Gamma1256(x) {
+  function Gamma1256(x: number) {
     return S(x, 17) ^ S(x, 19) ^ R(x, 10);
   }
 
-  function core_sha256(m, l) {
+  function core_sha256(m: number[], l: number) {
     const K = [
       0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4,
       0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe,
@@ -101,8 +101,8 @@ export default function SHA256(s) {
     return HASH;
   }
 
-  function str2binb(str) {
-    const bin = Array();
+  function str2binb(str: string) {
+    const bin: number[] = [];
     const mask = (1 << chrsz) - 1;
     for (let i = 0; i < str.length * chrsz; i += chrsz) {
       bin[i >> 5] |= (str.charCodeAt(i / chrsz) & mask) << (24 - (i % 32));
@@ -110,7 +110,7 @@ export default function SHA256(s) {
     return bin;
   }
 
-  function Utf8Encode(string) {
+  function Utf8Encode(string: string) {
     string = string.replace(/\r\n/g, '\n');
     let utftext = '';
 
@@ -132,7 +132,7 @@ export default function SHA256(s) {
     return utftext;
   }
 
-  function binb2hex(binarray) {
+  function binb2hex(binarray: number[]) {
     const hex_tab = hexcase ? '0123456789ABCDEF' : '0123456789abcdef';
     let str = '';
     for (let i = 0; i < binarray.length * 4; i++) {

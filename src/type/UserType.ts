@@ -13,15 +13,11 @@ export type UserType = {
 
 export interface UserMainInfo extends GetResponse {
   cityName: string;
-  findLatestBoardCommentsByUserDtos: CommentType[];
-  findLatestBoardsByUserDtos: BoardType[];
+  findLatestBoardCommentsByUserDtos?: CommentType[];
+  findLatestBoardsByUserDtos?: BoardType[];
   nickname: string;
   point: number;
-  profileImg: string | null;
+  profileImg: string | undefined;
   userId: string;
   zoneName: string;
 }
-
-export const userLevel = point => (-5 + Math.sqrt(25 + 20 * point)) / 10;
-
-export const userLevelGage = point => userLevel - userLevel;

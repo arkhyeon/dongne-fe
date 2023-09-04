@@ -1,22 +1,32 @@
-import React from 'react';
 import styled from '@emotion/styled';
-import Progressbar from '../../component/CommonComponents/Progressbar';
 import ChartBubble from './components/Bubble';
 import UserInfo from './components/UserInfo';
+import { useLayoutEffect, useState } from 'react';
+import { client } from '../../common/axios';
+import { UserMainInfo } from '../../type/UserType';
+import { getDefaultImage, userInitValue } from '../../common/userCommon';
 
 const items = [
-  { value: 16, text: '웹스톰' },
-  { value: 5, text: '아톰' },
-  { value: 5, text: '노션' },
-  { value: 5, text: '깃허브' },
-  { value: 3, text: '유데미' },
+  { value: 16, text: '서울' },
+  { value: 5, text: '부산' },
+  { value: 5, text: '경기' },
+  { value: 5, text: '인천' },
+  { value: 3, text: '대전' },
 ];
 
-function SideMain(props) {
+function SideMain() {
+  const [userInfo, setUserInfo] = useState<UserMainInfo>(userInitValue);
+
+  useLayoutEffect(() => {
+    client.get<UserMainInfo>('user-main?page=0&size=3').then(res => {
+      setUserInfo({ ...res, profileImg: res.profileImg || getDefaultImage(res.userId) });
+    });
+  }, []);
+
   return (
     <SideMainWrap>
       <ProfileWrap>
-        <UserInfo />
+        <UserInfo userInfo={userInfo} />
         <PostReactWrap>
           <p className="title-text">알투웨어</p>
           <ul>
@@ -44,7 +54,7 @@ function SideMain(props) {
           </ul>
         </PostReactWrap>
       </ProfileWrap>
-      <ChartBubble items={items} />
+      <ChartBubble items={items} labelScale={0.8} />
     </SideMainWrap>
   );
 }

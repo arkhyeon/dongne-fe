@@ -1,4 +1,11 @@
-import React, { DetailedHTMLProps, FC, forwardRef, InputHTMLAttributes, ReactElement } from 'react';
+import React, {
+  ButtonHTMLAttributes,
+  DetailedHTMLProps,
+  FC,
+  forwardRef,
+  InputHTMLAttributes,
+  ReactElement,
+} from 'react';
 import styled from '@emotion/styled';
 import { UseFormRegister } from 'react-hook-form/dist/types/form';
 import { DeepMap, FieldError, Path, RegisterOptions } from 'react-hook-form';
@@ -53,7 +60,7 @@ const TextInputComp = styled.input`
 
 export default TextInput;
 
-export const DataListInput = forwardRef((props, ref) => {
+export const DataListInput = forwardRef((props: InputHTMLAttributes<HTMLInputElement>, ref) => {
   return (
     <TextInputWrap>
       <label htmlFor={props.id}>{props.id}</label>

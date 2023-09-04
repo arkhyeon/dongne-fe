@@ -1,25 +1,29 @@
-import { useEffect, useRef } from 'react';
+import { MutableRefObject, useEffect, useRef } from 'react';
 import { prepare } from './BubbleAsset';
 import styled from '@emotion/styled';
+import { BubbleInitType, BubbleType } from '../../../type/BubbleType';
 
-const Bubble = ({ labelScale, items, bounds }) => {
-  const containerRef = useRef(null);
+const Bubble = ({ labelScale, items, bounds }: BubbleType) => {
+  const containerRef = useRef() as MutableRefObject<HTMLDivElement>;
 
   const resize = () => {
-    const scale = containerRef.current.offsetWidth / bounds.width;
+    const scale = containerRef.current.offsetWidth / Number(bounds.width);
 
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
       const x = item.x * scale;
       const y = item.y * scale;
       const r = item.r * scale;
-      const textRef = containerRef.current.querySelector(`#text${i}`);
-      const circleRef = containerRef.current.querySelector(`#circle${i}`);
+      const textRef = containerRef.current.querySelector<SVGTextElement>(`#text${i}`);
+      const circleRef = containerRef.current.querySelector<SVGCircleElement>(`#circle${i}`);
+
+      if (!textRef || !circleRef) return;
+
       let fontSize = 1;
       for (let j = 1; j < r * 2; j++) {
         textRef.setAttribute('font-size', `${j}px`);
         const bounds = textRef.getBBox();
-        if (bounds.width > r * 2 * labelScale) {
+        if (Number(bounds.width) > r * 2 * labelScale) {
           break;
         }
         fontSize = j;
@@ -36,7 +40,7 @@ const Bubble = ({ labelScale, items, bounds }) => {
   };
 
   useEffect(() => {
-    let resizeTimer;
+    let resizeTimer: NodeJS.Timeout;
     const handleResize = () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(resize, 50);
@@ -54,7 +58,7 @@ const Bubble = ({ labelScale, items, bounds }) => {
   return (
     <div ref={containerRef} style={{ transition: '2s', height: '100%' }}>
       <svg width={'100%'} height={'100%'}>
-        {items.map(({ x, y, r, backgroundColor, text }, index) => (
+        {items.map(({ backgroundColor, text }, index) => (
           <g key={index}>
             <circle fill={backgroundColor} id={`circle${index}`} />
             <text
@@ -71,7 +75,7 @@ const Bubble = ({ labelScale, items, bounds }) => {
   );
 };
 
-function getTextColorByBackgroundColor(hexColor) {
+function getTextColorByBackgroundColor(hexColor: string) {
   const c = hexColor.substring(1); // 색상 앞의 # 제거
   const rgb = parseInt(c, 16); // rrggbb를 10진수로 변환
   const r = (rgb >> 16) & 0xff; // red 추출
@@ -82,11 +86,8 @@ function getTextColorByBackgroundColor(hexColor) {
   return luma < 127.5 ? 'white' : 'black'; // 글자색이
 }
 
-const ChartBubble = ({ items, palette, labelScale = 0.8 }) => {
-  const { preparedItems, bounds } = prepare({
-    items,
-    palette,
-  });
+const ChartBubble = ({ items, labelScale = 0.8 }: BubbleInitType) => {
+  const { preparedItems, bounds } = prepare(items);
 
   return (
     <BubbleWrap>

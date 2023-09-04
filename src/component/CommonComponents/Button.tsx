@@ -1,35 +1,22 @@
 import styled from '@emotion/styled';
-import PropTypes from 'prop-types';
-import React from 'react';
+import { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
 
-export function SearchButton(props) {
+type ButtonProps = DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
+
+export const SearchButton = (props: ButtonProps) => {
   const children = props.children;
-  return (
-    <SearchBtn type="button" {...props}>
-      {children}
-    </SearchBtn>
-  );
-}
+  return <SearchBtn {...props}>{children}</SearchBtn>;
+};
 
-type MainButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
-
-export function MainButton(props: MainButtonProps) {
+export const MainButton = (props: ButtonProps) => {
   const children = props.children;
-  return (
-    <MainBtn type="button" {...props}>
-      {children}
-    </MainBtn>
-  );
-}
+  return <MainBtn {...props}>{children}</MainBtn>;
+};
 
-export function SubButton(props) {
+export const SubButton = (props: ButtonProps) => {
   const children = props.children;
-  return (
-    <SubBtn type="button" {...props}>
-      {children}
-    </SubBtn>
-  );
-}
+  return <SubBtn {...props}>{children}</SubBtn>;
+};
 
 const Button = styled.button`
   cursor: pointer;

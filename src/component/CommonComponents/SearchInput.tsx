@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
 import { SearchButton } from './Button';
 import { AiOutlineSearch } from 'react-icons/ai';
+import { InputHTMLAttributes } from 'react';
 
-export function HeaderSearchInput(props) {
+export function HeaderSearchInput(props: InputHTMLAttributes<HTMLInputElement>) {
   return (
     <HeaderSearchInputWrap>
       <HeaderSearch type="text" {...props} />
@@ -14,7 +15,7 @@ export function HeaderSearchInput(props) {
   );
 }
 
-export function BoardSearchInput(props) {
+export function BoardSearchInput(props: InputHTMLAttributes<HTMLInputElement>) {
   return (
     <BoardSearchInputWrap>
       <HeaderSearch type="text" {...props} />
@@ -26,7 +27,7 @@ export function BoardSearchInput(props) {
   );
 }
 
-export function CategoryInput(props) {
+export function CategoryInput(props: InputHTMLAttributes<HTMLInputElement>) {
   return <HeaderSearch type="text" {...props} />;
 }
 

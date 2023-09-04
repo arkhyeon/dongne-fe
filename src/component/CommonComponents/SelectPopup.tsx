@@ -1,15 +1,29 @@
 import styled from '@emotion/styled';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  AriaAttributes,
+  HTMLAttributes,
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { HiSortDescending } from 'react-icons/hi';
 import { css } from '@emotion/react';
 
-function SelectPopup({ children, value }) {
+interface PopUpType {
+  children: React.ReactNode;
+  value: string;
+}
+
+function SelectPopup({ children, value }: PopUpType) {
+  console.log(typeof children);
   const [show, setShow] = useState(false);
-  const selectRef = useRef(null);
+  const selectRef = useRef() as MutableRefObject<HTMLDivElement>;
 
   const handleOut = useCallback(
-    e => {
-      if (show && !selectRef.current.contains(e.target)) {
+    (e: MouseEvent) => {
+      if (show && !selectRef.current.contains(e.target as Node)) {
         setShow(false);
       }
     },
@@ -17,10 +31,10 @@ function SelectPopup({ children, value }) {
   );
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleOut);
+    document.addEventListener('mousedown', e => handleOut(e));
 
     return () => {
-      document.removeEventListener('mousedown', handleOut);
+      document.removeEventListener('mousedown', e => handleOut(e));
     };
   }, [handleOut]);
 
@@ -36,9 +50,9 @@ function SelectPopup({ children, value }) {
   );
 }
 
-export function SelectPopupOption(props) {
+export function SelectPopupOption(props: HTMLDivElement) {
   return (
-    <SelectOption {...props} aria-selected={props.children}>
+    <SelectOption {...props} aria-controls={props.children}>
       {props.children}
     </SelectOption>
   );
@@ -65,7 +79,7 @@ const SelectPopupLabel = styled.div`
   }
 `;
 
-const SelectOptionWrap = styled.div`
+const SelectOptionWrap = styled.div<{ value: string }>`
   width: 120px;
   position: absolute;
   top: 40px;
@@ -76,7 +90,7 @@ const SelectOptionWrap = styled.div`
 
   ${({ value }) => {
     return css`
-      & [aria-selected=${value}] {
+      & [aria-controls=${value}] {
         color: #0a91ab;
       }
     `;
