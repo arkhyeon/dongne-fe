@@ -1,15 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { FiLogOut } from 'react-icons/fi';
 import { HeaderSearchInput } from '../component/CommonComponents/SearchInput';
 import { loginAxios } from '../common/axios';
 import { removeCookie } from '../common/Cookie';
+import { UserRankType } from '../type/UserType';
 
-function Header(props) {
-  const [topWriterList, setTopWriterList] = useState([...initTopWriters]);
-  const topWriterRef = useRef(null);
+function Header() {
+  const [topWriterList, setTopWriterList] = useState<UserRankType[]>([]);
+  const topWriterRef = useRef() as MutableRefObject<HTMLDivElement>;
 
   useEffect(() => {
+    setTopWriterList(initTopWriters);
     let moveRange = 0;
     setInterval(() => {
       moveRange -= 20;
@@ -42,7 +44,7 @@ function Header(props) {
           <div>
             <SlideWriter ref={topWriterRef}>
               {topWriterList.map(tl => {
-                return <div key={tl.id}>{tl.name}</div>;
+                return <div key={tl.rank}>{tl.userId}</div>;
               })}
             </SlideWriter>
           </div>
@@ -115,15 +117,15 @@ export default Header;
 
 const initTopWriters = [
   {
-    id: 1,
-    name: 'COC',
+    rank: 1,
+    userId: 'COC',
   },
   {
-    id: 2,
-    name: 'ABC',
+    rank: 2,
+    userId: 'ABC',
   },
   {
-    id: 3,
-    name: 'CMS',
+    rank: 3,
+    userId: 'CMS',
   },
 ];

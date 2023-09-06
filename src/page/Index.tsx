@@ -1,10 +1,8 @@
-import { useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import { Outlet } from 'react-router-dom';
 
-function Index(props) {
-  const [count, setCount] = useState(0);
+function Index() {
   return (
     <>
       <Header />

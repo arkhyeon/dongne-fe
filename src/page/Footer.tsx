@@ -1,7 +1,6 @@
-import React from 'react';
 import styled from '@emotion/styled';
 
-function Footer(props) {
+function Footer() {
   return (
     <FooterWrap>
       <img src="" />

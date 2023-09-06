@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
+import { EventPostType } from '../../../type/BoardType';
 
-function EventBoardItem({ eventBoard }) {
+function EventBoardItem({ eventBoard }: { eventBoard: EventPostType }) {
   return (
     <EventBoard>
       <a href="#">

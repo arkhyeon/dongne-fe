@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { MainButton, SubButton } from '../../../component/CommonComponents/Button';
 import { useState } from 'react';
 
-function CommentWrite({ type = 1, cancel }) {
+function CommentWrite({ type = 1, cancel }: { type?: number; cancel?: () => void }) {
   const [comment, setComment] = useState('');
   const registerComment = () => {
     console.log(comment);
@@ -22,7 +22,8 @@ function CommentWrite({ type = 1, cancel }) {
         formats={[]}
         placeholder={'댓글을 작성하세요'}
         value={comment}
-        onChange={(content, delta, source, editor) => setComment(editor.getHTML())}
+        // onChange={(content, delta, source, editor) => setComment(editor.getHTML())}
+        onChange={e => setComment(e)}
       />
       <ButtonWrap>
         <MainButton onClick={registerComment}>등록</MainButton>

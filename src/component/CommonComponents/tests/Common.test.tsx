@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import Modal from '../../modal/Modal';
 
 test.only('신고 버튼 클릭 시 모달 확인', async () => {
-  const { container } = render(<SirenReport />);
+  render(<SirenReport />);
   const user = userEvent.setup();
 
   const sirenButton = screen.getByRole('button');
@@ -15,9 +15,9 @@ test.only('신고 버튼 클릭 시 모달 확인', async () => {
   user.click(sirenButton);
 
   const closeButton = document.querySelector<Element>('cloes-btn');
-  // logRoles(container);
+  logRoles(closeButton as HTMLElement);
   // screen.debug(container);
-  screen.debug(closeButton);
+  // screen.debug(closeButton);
 });
 
 test('모달', async () => {

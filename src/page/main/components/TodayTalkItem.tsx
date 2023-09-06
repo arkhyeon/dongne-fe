@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import { BoardType } from '../../../type/BoardType';
 
-function TodayTalkItem({ talkList }) {
+function TodayTalkItem({ talkList }: { talkList: BoardType[] }) {
   const [talkDivide, setTalkDivide] = useState('hot');
 
   return (
@@ -17,7 +18,7 @@ function TodayTalkItem({ talkList }) {
       <TodayTalkList>
         {talkList.map((tl, i) => {
           return (
-            <a key={tl.id} href="#" className="list-text">
+            <a key={tl.boardId} href="#" className="list-text">
               <TodayTalkPost>
                 <span className="title-text">{i + 1}</span>
                 <span className="text-ellipsis">{tl.title}</span>

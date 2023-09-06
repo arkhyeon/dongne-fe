@@ -1,7 +1,7 @@
 import { recentList } from '../../../../data';
 import MainPostList from '../../../component/post/MainPostList';
 
-function MyPost(props) {
+function MyPost() {
   return <MainPostList postList={recentList} />;
 }
 

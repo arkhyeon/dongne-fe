@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { TbTriangleFilled } from 'react-icons/tb';
 
-function BestBoard(props) {
+function BestBoard() {
   return (
     <>
       <BestBoardWrap>

@@ -1,16 +1,16 @@
 import { PiSirenFill } from 'react-icons/pi';
 import styled from '@emotion/styled';
 import Modal from '../modal/Modal';
-import { useRef, useState } from 'react';
+import { MutableRefObject, useRef, useState } from 'react';
 import { Editor } from '@toast-ui/react-editor';
 import { MainButton, SubButton } from './Button';
 
-function SirenReport(props) {
+function SirenReport() {
   const [open, setOpen] = useState(false);
-  const editorRef = useRef(null);
+  const editorRef = useRef() as MutableRefObject<Editor>;
 
   const insertPost = () => {
-    const getPostContent = editorRef?.current?.getInstance().getHTML();
+    const getPostContent = editorRef.current.getInstance().getHTML();
     console.log(getPostContent);
     if (getPostContent === '<p><br></p>') {
       alert('신고 사유를 작성해 주세요.');

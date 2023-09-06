@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { GoThumbsup } from 'react-icons/go';
 import { useState } from 'react';
 
-function PostRecommend({ recommend }) {
+function PostRecommend({ recommend }: { recommend: number }) {
   const [like, setLike] = useState(false);
   return (
     <PostRecWrap className="flex-cc" onClick={() => setLike(prevState => !prevState)}>

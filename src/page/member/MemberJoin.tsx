@@ -1,27 +1,12 @@
 import styled from '@emotion/styled';
 import { FormInput } from '../../component/CommonComponents/TextInput';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import DataList from '../../component/CommonComponents/DataList';
 import { useEffect, useState } from 'react';
 import { MainButton } from '../../component/CommonComponents/Button';
-import { client, GetResponse } from '../../common/axios';
-import { UserType } from '../../type/UserType';
+import { client } from '../../common/axios';
+import { DistrictType } from '../../type/UserType';
 import { useNavigate } from 'react-router-dom';
-
-type Name = { name: string };
-
-interface DistrictType extends GetResponse {
-  cityCodeNames: CityCodeNames[];
-  zoneCodeNames: ZoneCodeNames[];
-}
-
-interface CityCodeNames extends Name {
-  cityCode: string;
-}
-
-interface ZoneCodeNames extends Name {
-  zoneCode: string;
-}
 
 function MemberJoin() {
   const navigate = useNavigate();
@@ -38,7 +23,7 @@ function MemberJoin() {
     formState: { errors },
     getValues,
     setError,
-  } = useForm<UserType>({ mode: 'onChange' });
+  } = useForm({ mode: 'onChange' });
 
   useEffect(() => {
     getZoneList('11');
@@ -65,7 +50,7 @@ function MemberJoin() {
     });
   };
 
-  const onSubmit: SubmitHandler<UserType> = data => {
+  const onSubmit: SubmitHandler<FieldValues> = data => {
     client
       .post('user/sign-up', { ...data, cityCode: city, zoneCode: zone })
       .then(res => {
@@ -95,7 +80,7 @@ function MemberJoin() {
             동네 이웃들과 이야기하러 오세요.
           </span>
         </p>
-        <FormInput<UserType>
+        <FormInput
           id="userId"
           name="userId"
           label="아이디"
@@ -110,7 +95,7 @@ function MemberJoin() {
             },
           }}
         />
-        <FormInput<UserType>
+        <FormInput
           id="password"
           type="password"
           name="password"
@@ -126,7 +111,7 @@ function MemberJoin() {
           errors={errors}
           register={register}
         />
-        <FormInput<UserType>
+        <FormInput
           id="passwordConfirm"
           type="password"
           name="passwordConfirm"
@@ -145,7 +130,7 @@ function MemberJoin() {
             },
           }}
         />
-        <FormInput<UserType>
+        <FormInput
           id="username"
           name="username"
           label="이름"
@@ -158,7 +143,7 @@ function MemberJoin() {
             },
           }}
         />
-        <FormInput<UserType>
+        <FormInput
           id="nickname"
           name="nickname"
           label="닉네임"
@@ -176,6 +161,7 @@ function MemberJoin() {
         <div>
           <label className="list-text">주소</label>
           <DataList
+            id={'cityList'}
             height={'300px'}
             valueList={districtList.cityCodeNames.map(cl => cl.cityCode)}
             labelList={districtList.cityCodeNames.map(cl => cl.name)}
@@ -188,6 +174,7 @@ function MemberJoin() {
             select
           />
           <DataList
+            id={'zoneList'}
             height={'300px'}
             valueList={districtList.zoneCodeNames.map(zl => zl.zoneCode)}
             labelList={districtList.zoneCodeNames.map(zl => zl.name)}

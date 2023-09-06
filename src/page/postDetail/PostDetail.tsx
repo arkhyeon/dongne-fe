@@ -19,7 +19,7 @@ const post = {
   recommend: 333,
 };
 
-function PostDetail(props) {
+function PostDetail() {
   return (
     <PostWrap>
       <PostHeader>

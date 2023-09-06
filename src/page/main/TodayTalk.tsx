@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import TodayTalkItem from './components/TodayTalkItem';
 
-function TodayTalk(props) {
+function TodayTalk() {
   return (
     <TodayTalkWrap>
       <p className="main-title-text">Today Talk</p>
@@ -28,9 +28,9 @@ const TodayTalkWrap = styled.div`
 export default TodayTalk;
 
 const talkList = [
-  { id: 1, title: 'manner makes man manner makes man222', commentTotal: 32 },
-  { id: 2, title: 'manner makes man', commentTotal: 32 },
-  { id: 3, title: 'manner makes man manner makes man333', commentTotal: 32 },
-  { id: 4, title: 'manner makes man manner makes man', commentTotal: 32 },
-  { id: 5, title: 'manner makes man manner makes man', commentTotal: 32 },
+  { boardId: 1, title: 'manner makes man manner makes man222', commentTotal: 32 },
+  { boardId: 2, title: 'manner makes man', commentTotal: 32 },
+  { boardId: 3, title: 'manner makes man manner makes man333', commentTotal: 32 },
+  { boardId: 4, title: 'manner makes man manner makes man', commentTotal: 32 },
+  { boardId: 5, title: 'manner makes man manner makes man', commentTotal: 32 },
 ];

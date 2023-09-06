@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { AiOutlineMinusSquare, AiOutlinePlusSquare } from 'react-icons/ai';
 import { useState } from 'react';
 import { css } from '@emotion/react';
+import { TalkChannelType } from '../../type/TalkChannelType';
 
 const channelList = [
   { id: 0, channel: '기술연구소', postCnt: 4 },
@@ -29,7 +30,7 @@ const channelList = [
 ];
 
 // function DongComTalk({ channelList = [] }) {
-function DongComTalk({ onClick }) {
+function DongComTalk({ onClick }: { onClick: (e: TalkChannelType) => void }) {
   const [view, setView] = useState(0);
   const [orderedList, setOrderedList] = useState(channelList);
 
@@ -106,7 +107,7 @@ const DongComTalkItemWrap = styled.div`
     background-color: #d3d3d3;
   }
 
-  ${({ view }) => {
+  ${({ view }: { view: number }) => {
     if (view) {
       return css`
         height: 142px;

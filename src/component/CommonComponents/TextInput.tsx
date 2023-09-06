@@ -1,31 +1,25 @@
-import React, {
-  ButtonHTMLAttributes,
-  DetailedHTMLProps,
-  FC,
-  forwardRef,
-  InputHTMLAttributes,
-  ReactElement,
-} from 'react';
+import React, { DetailedHTMLProps, forwardRef, InputHTMLAttributes } from 'react';
 import styled from '@emotion/styled';
-import { UseFormRegister } from 'react-hook-form/dist/types/form';
-import { DeepMap, FieldError, Path, RegisterOptions } from 'react-hook-form';
+import {
+  FieldErrors,
+  FieldValues,
+  RegisterOptions,
+  UseControllerProps,
+  UseFormRegister,
+} from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
-export const TextInput: FC<InputProps> = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const enterEvent = e => {
+
+export const TextInput = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
+  const enterEvent = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && props.enterEvent) {
       props.enterEvent();
     }
   };
+
   return (
     <TextInputWrap>
-      <label htmlFor={props.label}>{props.label}</label>
-      <TextInputComp
-        id={props.label}
-        type="text"
-        {...props}
-        ref={ref}
-        onKeyDown={e => enterEvent(e)}
-      />
+      <label htmlFor={props.id}>{props.label}</label>
+      <TextInputComp type="text" {...props} ref={ref} onKeyDown={e => enterEvent(e)} />
     </TextInputWrap>
   );
 });
@@ -60,39 +54,84 @@ const TextInputComp = styled.input`
 
 export default TextInput;
 
-export const DataListInput = forwardRef((props: InputHTMLAttributes<HTMLInputElement>, ref) => {
-  return (
-    <TextInputWrap>
-      <label htmlFor={props.id}>{props.id}</label>
-      <TextInputComp ref={ref} {...props} />
-    </TextInputWrap>
-  );
-});
+export const DataListInput = forwardRef(
+  (props: InputHTMLAttributes<HTMLInputElement>, ref: React.Ref<HTMLInputElement>) => {
+    return (
+      <TextInputWrap>
+        <label htmlFor={props.id}>{props.id}</label>
+        <TextInputComp ref={ref} {...props} />
+      </TextInputWrap>
+    );
+  },
+);
 
 DataListInput.displayName = 'DataListInput';
 
-type InputProps = {
-  id: string;
-  name: string;
-  label: string;
+interface InputProps
+  extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
+  id?: string;
+  name?: string;
+  label?: string;
   className?: string;
   enterEvent?: () => void;
-} & Omit<DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, 'size'>;
+}
 
-export type FormInputProps<TFormValues> = {
-  name: Path<TFormValues>;
+// export type FormInputProps<TFormValues> = {
+//   name: Path<TFormValues>;
+//   rules?: RegisterOptions;
+//   register?: UseFormRegister<FieldValues>;
+//   errors?: Partial<DeepMap<TFormValues, FieldError>>;
+// } & Omit<InputProps, 'name'>;
+//
+// // export const FormInput = <TFormValues extends Record<string, unknown>>({
+// //   name,
+// //   register,
+// //   rules,
+// //   errors,
+// //   ...props
+// // }: FormInputProps<TFormValues>): ReactElement => {
+// //   if (!name) {
+// //     throw new Error('FormInput Must Have Name Parameter');
+// //   }
+// //
+// //   return (
+// //     <TextInputWrap>
+// //       <label htmlFor={props.id}>
+// //         {props.label}
+// //         {errors && (
+// //           <ErrorMessage
+// //             errors={errors}
+// //             name={name as any}
+// //             render={({ message }) => (
+// //               <p className="error-text" role="alert">
+// //                 {message}
+// //               </p>
+// //             )}
+// //           />
+// //         )}
+// //       </label>
+// //       <TextInputComp type="text" {...props} {...(register && register(name, rules))} />
+// //     </TextInputWrap>
+// //   );
+// // };
+interface FormInputProps<T extends FieldValues>
+  extends Omit<UseControllerProps<T>, 'defaultValue' | 'name'>,
+    InputHTMLAttributes<HTMLInputElement> {
+  id: string;
+  label: string;
+  value?: string;
+  readOnly?: boolean;
+  errors?: FieldErrors;
   rules?: RegisterOptions;
-  register?: UseFormRegister<TFormValues>;
-  errors?: Partial<DeepMap<TFormValues, FieldError>>;
-} & Omit<InputProps, 'name'>;
-
-export const FormInput = <TFormValues extends Record<string, unknown>>({
+  register?: UseFormRegister<FieldValues>;
+}
+export const FormInput = <T extends FieldValues>({
   name,
   register,
   rules,
   errors,
   ...props
-}: FormInputProps<TFormValues>): ReactElement => {
+}: FormInputProps<T>) => {
   if (!name) {
     throw new Error('FormInput Must Have Name Parameter');
   }

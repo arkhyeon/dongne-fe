@@ -1,11 +1,17 @@
 import styled from '@emotion/styled';
-import { createContext, useContext } from 'react';
+import React, { createContext, useContext } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { createPortal } from 'react-dom';
 
-const ModalContext = createContext(null);
+interface ModalType {
+  open?: boolean;
+  handleClose: () => void;
+  children?: React.ReactNode;
+}
 
-const Modal = ({ open, handleClose, children }) => {
+const ModalContext = createContext<ModalType | null>(null);
+
+const Modal = ({ open, handleClose, children }: ModalType) => {
   const contextValue = { open, handleClose };
   return (
     <ModalContext.Provider value={contextValue}>
@@ -21,8 +27,20 @@ const Modal = ({ open, handleClose, children }) => {
   );
 };
 
-const ModalHeader = ({ closeButton, children }) => {
-  const { handleClose } = useContext(ModalContext);
+const ModalHeader = ({
+  closeButton,
+  children,
+}: {
+  closeButton: boolean;
+  children: React.ReactNode;
+}) => {
+  const modalContext = useContext(ModalContext);
+
+  if (!modalContext) {
+    throw new Error('MyConsumer must be used within a MyProvider');
+  }
+
+  const { handleClose } = modalContext;
   return (
     <ModalHeaderWrap>
       {children}
@@ -31,11 +49,11 @@ const ModalHeader = ({ closeButton, children }) => {
   );
 };
 
-const ModalBody = ({ children }) => {
+const ModalBody = ({ children }: { children: React.ReactNode }) => {
   return <ModalBodyWrap>{children}</ModalBodyWrap>;
 };
 
-const ModalFooter = ({ children }) => {
+const ModalFooter = ({ children }: { children: React.ReactNode }) => {
   return <ModalFooterWrap>{children}</ModalFooterWrap>;
 };
 

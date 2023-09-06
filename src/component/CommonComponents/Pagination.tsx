@@ -2,9 +2,9 @@ import styled from '@emotion/styled';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 
 interface PaginationType {
-  totalLength: number;
-  buttonLength: number;
-  pageEvent: (pageNum: number) => number;
+  totalLength?: number;
+  buttonLength?: number;
+  pageEvent: (pageNum: number) => void;
   currentPage: number;
 }
 

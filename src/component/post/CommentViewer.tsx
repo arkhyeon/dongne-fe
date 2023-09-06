@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { Viewer } from '@toast-ui/react-editor';
 
-function CommentViewer({ initialValue = '' }) {
+function CommentViewer({ initialValue = '' }: { initialValue: string }) {
   const [collapse, setCollapse] = useState(true);
   const [canCollapse, setCanCollapse] = useState(false);
-  const viewerRef = useRef(null);
+  const viewerRef = useRef() as MutableRefObject<HTMLDivElement>;
 
   useEffect(() => {
     if (!viewerRef) return;

@@ -1,9 +1,8 @@
-import React from 'react';
 import styled from '@emotion/styled';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { BsList } from 'react-icons/bs';
 
-function PostNavigation(props) {
+function PostNavigation() {
   return (
     <PostNavigationWrap className="list-text">
       <Navigation>

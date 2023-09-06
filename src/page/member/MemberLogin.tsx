@@ -1,10 +1,9 @@
 import styled from '@emotion/styled';
 import { FormInput } from '../../component/CommonComponents/TextInput';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { MainButton } from '../../component/CommonComponents/Button';
 import { loginAxios } from '../../common/axios';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { UserType } from '../../type/UserType';
 
 function MemberLogin() {
   const navigate = useNavigate();
@@ -13,9 +12,9 @@ function MemberLogin() {
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<UserType>({ mode: 'onChange' });
+  } = useForm({ mode: 'onChange' });
 
-  const onSubmit: SubmitHandler<UserType> = ({ userId, password }) => {
+  const onSubmit: SubmitHandler<FieldValues> = ({ userId, password }) => {
     if (!userId) {
       setError('userId', { message: '아이디를 입력해 주세요.' });
       return;
@@ -50,14 +49,8 @@ function MemberLogin() {
         <p className="main-title-text" style={{ textAlign: 'center' }}>
           로그인
         </p>
-        <FormInput<UserType>
-          id="userId"
-          name="userId"
-          label="아이디"
-          register={register}
-          errors={errors}
-        />
-        <FormInput<UserType>
+        <FormInput id="userId" name="userId" label="아이디" register={register} errors={errors} />
+        <FormInput
           id="password"
           type="password"
           name="password"

@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import TextInput from '../../component/CommonComponents/TextInput';
 import { useState } from 'react';
-import Modal from '../../component/modal/Modal';
 
 const userList = [
   {
@@ -168,9 +167,9 @@ const userList = [
   },
 ];
 
-function MemberRanking(props) {
+function MemberRanking() {
   const [rankList, setRankList] = useState(userList);
-  const searchRanking = value => {
+  const searchRanking = (value: string) => {
     const filteredList = userList.filter(rl => rl.nickname.includes(value));
     setRankList(filteredList);
   };
@@ -178,7 +177,7 @@ function MemberRanking(props) {
   return (
     <RankWrap>
       <TextInput placeholder="검색" onChange={e => searchRanking(e.target.value)} />
-      {rankList.map((ul, i) => {
+      {rankList.map(ul => {
         return (
           <UserRank key={ul.id}>
             <Ranking className={`rank-${ul.id}`}>{ul.id > 3 && ul.id}</Ranking>

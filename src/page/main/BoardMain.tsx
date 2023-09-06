@@ -5,7 +5,7 @@ import TodayTalk from './TodayTalk';
 import BestBoard from './BestBoard';
 import { recentList } from '../../../data';
 
-function BoardMain(props) {
+function BoardMain() {
   return (
     <BoardMainWrap>
       <EventBoard />

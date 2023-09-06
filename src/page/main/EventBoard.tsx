@@ -7,7 +7,7 @@ const eventList = [
   { id: 3, img: '/img', title: 'R2WARE', text: 'r2ware123r2ware123r2ware123r2ware123r2ware123' },
 ];
 
-function EventBoard(props) {
+function EventBoard() {
   return (
     <EventBoardWrap>
       {eventList.map(el => {

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, {
-  AriaAttributes,
+  DetailedHTMLProps,
   HTMLAttributes,
   MutableRefObject,
   useCallback,
@@ -17,7 +17,6 @@ interface PopUpType {
 }
 
 function SelectPopup({ children, value }: PopUpType) {
-  console.log(typeof children);
   const [show, setShow] = useState(false);
   const selectRef = useRef() as MutableRefObject<HTMLDivElement>;
 
@@ -50,9 +49,11 @@ function SelectPopup({ children, value }: PopUpType) {
   );
 }
 
-export function SelectPopupOption(props: HTMLDivElement) {
+export function SelectPopupOption(
+  props: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+) {
   return (
-    <SelectOption {...props} aria-controls={props.children}>
+    <SelectOption {...props} data-selected={props.children}>
       {props.children}
     </SelectOption>
   );
@@ -90,7 +91,7 @@ const SelectOptionWrap = styled.div<{ value: string }>`
 
   ${({ value }) => {
     return css`
-      & [aria-controls=${value}] {
+      & [data-selected=${value}] {
         color: #0a91ab;
       }
     `;

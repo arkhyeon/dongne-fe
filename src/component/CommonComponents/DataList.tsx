@@ -7,9 +7,9 @@ interface DataListType {
   valueList: string[];
   labelList: string[];
   setData: (value: string) => void;
-  select: boolean;
+  select?: boolean;
   defaultValue: string;
-  height: string;
+  height?: string;
   disabled?: boolean;
 }
 

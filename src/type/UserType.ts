@@ -21,3 +21,23 @@ export interface UserMainInfo extends GetResponse {
   userId: string;
   zoneName: string;
 }
+
+export interface UserRankType {
+  rank: number;
+  userId: string;
+}
+
+type Name = { name: string };
+
+export interface DistrictType extends GetResponse {
+  cityCodeNames: CityCodeNames[];
+  zoneCodeNames: ZoneCodeNames[];
+}
+
+interface CityCodeNames extends Name {
+  cityCode: string;
+}
+
+interface ZoneCodeNames extends Name {
+  zoneCode: string;
+}

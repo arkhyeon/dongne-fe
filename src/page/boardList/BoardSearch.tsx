@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import { BoardSearchInput } from '../../component/CommonComponents/SearchInput';
-import { MainButton, SubButton } from '../../component/CommonComponents/Button';
+import { MainButton } from '../../component/CommonComponents/Button';
 import SelectPopup, { SelectPopupOption } from '../../component/CommonComponents/SelectPopup';
 import { useState } from 'react';
 
-function BoardSearch(props) {
+function BoardSearch() {
   const [orderOption, setOrderOption] = useState('최신순');
   return (
     <BoardSearchWrap>

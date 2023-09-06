@@ -2,18 +2,26 @@ import { elapsedDate } from '../../../common/common';
 import SirenReport from '../../../component/CommonComponents/SirenReport';
 import styled from '@emotion/styled';
 import CommentViewer from '../../../component/post/CommentViewer';
+import { BoardCommentType, ReplyType } from '../../../type/BoardType';
+import React from 'react';
 
-function CommentTextBox({ content, children }) {
+function CommentTextBox({
+  content,
+  children,
+}: {
+  content: BoardCommentType | ReplyType;
+  children?: React.ReactNode;
+}) {
   const myName = 'r2ware';
   return (
     <CommentMain>
       <div className="list-text">
         <span>LV.{content.level}</span>
-        <span>{content.name}</span>
-        <span> | {elapsedDate(content.input_dt)}</span>
-        {myName !== content.name && <SirenReport />}
+        <span>{content.userId}</span>
+        <span> | {elapsedDate(new Date(content.input_dt))}</span>
+        {myName !== content.userId && <SirenReport />}
       </div>
-      <CommentViewer initialValue={content.comment} />
+      <CommentViewer initialValue={content.content} />
       {children}
     </CommentMain>
   );

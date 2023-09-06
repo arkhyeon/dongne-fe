@@ -1,8 +1,8 @@
 import { TbTriangleFilled } from 'react-icons/tb';
 import styled from '@emotion/styled';
-import boardList from '../../page/boardList/BoardList';
+import { PostType } from '../../type/BoardType';
 
-function MainPostList({ title = '', postList = [] }) {
+function MainPostList({ title = '', postList = [] }: { title?: string; postList: PostType[] }) {
   return (
     <MainPostListWrap>
       <p className="main-title-text">{title}</p>

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useRef, useState } from 'react';
+import { MutableRefObject, useRef, useState } from 'react';
 import TextInput from '../../component/CommonComponents/TextInput';
 import { channelList } from '../../../data';
 import DongComTalk from '../../component/dongcomtalk/DongComTalk';
@@ -11,9 +11,9 @@ import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import { MainButton, SubButton } from '../../component/CommonComponents/Button';
 
-function PostWrite(props) {
+function PostWrite() {
   const [channel, setChannel] = useState(2);
-  const editorRef = useRef(null);
+  const editorRef = useRef() as MutableRefObject<Editor>;
 
   const insertPost = () => {
     const getPostContent = editorRef?.current?.getInstance().getHTML();
@@ -28,11 +28,11 @@ function PostWrite(props) {
       <DataList
         id="동커톡"
         labelList={channelList.map(cl => cl.channel)}
-        valueList={channelList.map(cl => cl.id)}
-        setData={value => setChannel(value)}
-        defaultValue={channel}
+        valueList={channelList.map(cl => cl.id.toString())}
+        setData={value => setChannel(Number(value))}
+        defaultValue={String(channel)}
       />
-      <DongComTalk channelList={channelList} onClick={value => setChannel(value.id)} />
+      <DongComTalk onClick={value => setChannel(value.id)} />
       <TextInput label="제목" />
       <Editor
         ref={editorRef}

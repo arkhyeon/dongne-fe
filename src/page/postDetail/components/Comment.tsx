@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { BiSolidDownArrow, BiSolidUpArrow } from 'react-icons/bi';
 import { MainButton } from '../../../component/CommonComponents/Button';
 import CommentWrite from './CommentWrite';
 import styled from '@emotion/styled';
 import CommentTextBox from './CommentTextBox';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
+import { BoardCommentType } from '../../../type/BoardType';
 
-function Comment({ comment, canCommentActive = true }) {
+function Comment({
+  comment,
+  canCommentActive = true,
+}: {
+  comment: BoardCommentType;
+  canCommentActive?: boolean;
+}) {
   const [commentWrite, setCommentWrite] = useState(false);
   const [replyShow, setReplyShow] = useState(false);
   return (
