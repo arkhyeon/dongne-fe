@@ -1,8 +1,3 @@
-@mixin flex {
-  //@includes flex;
-  display: flex;
-}
-
 .flex, .flex-rc, .flex-cc, .flex-rcc, .flex-end, .flex-col {
   display: flex;
 }
