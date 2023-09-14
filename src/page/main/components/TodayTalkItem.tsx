@@ -18,11 +18,11 @@ function TodayTalkItem({ talkList }: { talkList: BoardType[] }) {
       <TodayTalkList>
         {talkList.map((tl, i) => {
           return (
-            <a key={tl.boardId} href="#" className="list-text">
+            <a key={tl.boardId} href={`post/${tl.boardId}`} className="list-text">
               <TodayTalkPost>
                 <span className="title-text">{i + 1}</span>
                 <span className="text-ellipsis">{tl.title}</span>
-                <span>({tl.commentTotal})</span>
+                <span>({tl.boardLikesCount})</span>
               </TodayTalkPost>
             </a>
           );
@@ -90,6 +90,11 @@ const TodayTalkList = styled.div`
 const TodayTalkPost = styled.div`
   display: flex;
   align-items: center;
+
+  &:hover {
+    font-weight: bold;
+  }
+
   & span {
     width: max-content;
   }

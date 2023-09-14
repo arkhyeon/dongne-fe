@@ -27,14 +27,11 @@ export function BoardSearchInput(props: InputHTMLAttributes<HTMLInputElement>) {
   );
 }
 
-export function CategoryInput(props: InputHTMLAttributes<HTMLInputElement>) {
-  return <HeaderSearch type="text" {...props} />;
-}
-
 const SearchInput = styled.input`
   width: 100%;
-  border: none;
-  outline: none;
+  border: none !important;
+  outline: none !important;
+  padding: 0 !important;
 `;
 
 const HeaderSearch = styled(SearchInput)`

@@ -1,53 +1,130 @@
 import styled from '@emotion/styled';
-import { MutableRefObject, useRef, useState } from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import TextInput from '../../component/CommonComponents/TextInput';
-import { channelList } from '../../../data';
 import DongComTalk from '../../component/dongcomtalk/DongComTalk';
-import DataList from '../../component/CommonComponents/DataList';
-import { Editor } from '@toast-ui/react-editor';
-import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
-import '@toast-ui/editor/dist/toastui-editor.css';
-import 'tui-color-picker/dist/tui-color-picker.css';
-import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import { MainButton, SubButton } from '../../component/CommonComponents/Button';
+import { client } from '../../common/axios';
+import { getCookie } from '../../common/Cookie';
+import ReactDatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import QuillCustom from '../../common/QuillCustom';
+import { useLocation } from 'react-router-dom';
 
 function PostWrite() {
-  const [channel, setChannel] = useState(2);
-  const editorRef = useRef() as MutableRefObject<Editor>;
+  const { state } = useLocation();
+  const [title, setTitle] = useState('');
+  const [mainCategoryId, setMainCategory] = useState(0);
+  const [subCategoryId, setSubCategory] = useState(0);
+  const [boardType, setBoardType] = useState('NORMAL');
+  const [content, setContent] = useState('');
+  const [deadLineAt, setDeadLineAt] = useState(new Date());
 
-  const insertPost = () => {
-    const getPostContent = editorRef?.current?.getInstance().getHTML();
-    console.log(getPostContent);
-    if (getPostContent === '<p><br></p>') {
-      alert('빈 게시글을 등록할 수 없습니다.');
+  useEffect(() => {
+    if (state) {
+      setTitle(state.title);
+      setMainCategory(state.mainCategoryId ?? 0);
+      setSubCategory(state.subCategoryId ?? 0);
+      setBoardType(state.boardType);
+      setContent(state.content);
+      setDeadLineAt(state.boardType === 2 ? '' : state.deadLineAt);
     }
+  }, []);
+
+  const handlerBoardData = () => {
+    if (content === '<p><br></p>') {
+      alert('빈 게시글을 등록할 수 없습니다.');
+      return;
+    }
+    const formData = new FormData();
+
+    const writeBoardRequestDto = {
+      title,
+      content,
+      boardType,
+      mainCategoryId,
+      subCategoryId,
+      cityCode: getCookie('cityCode'),
+      zoneCode: getCookie('zoneCode'),
+      deadLineAt,
+    };
+    console.log(fileRef.current?.files);
+    const files = fileRef.current?.files[0];
+
+    // formData.append('writeBoardRequestDto', writeBoardRequestDto);
+    formData.append('files', files);
+    formData.append(
+      'writeBoardRequestDto',
+      new Blob([JSON.stringify(writeBoardRequestDto)], {
+        type: 'application/json',
+      }),
+    );
+
+    state?.boardId ? updateBoard(formData) : insertBoard(formData);
   };
+
+  const insertBoard = formData => {
+    client
+      .post('board', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(r => console.log(r));
+  };
+
+  const updateBoard = formData => {
+    client
+      .patch(`board/${state.boardId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(r => console.log(r));
+  };
+
+  const fileRef = useRef() as MutableRefObject<HTMLInputElement>;
 
   return (
     <PostWriteWrap>
-      <DataList
-        id="동커톡"
-        labelList={channelList.map(cl => cl.channel)}
-        valueList={channelList.map(cl => cl.id.toString())}
-        setData={value => setChannel(Number(value))}
-        defaultValue={String(channel)}
+      <input type={'file'} ref={fileRef} accept="image/*" />
+      <TypeButtonWrap className="flex">
+        <p className="list-text">게시글 타입</p>
+        <SubButton
+          className={boardType === 'NORMAL' ? 'type-on' : ''}
+          onClick={() => setBoardType('NORMAL')}
+        >
+          일반 게시글
+        </SubButton>
+        <SubButton
+          className={boardType === 'EVENT' ? 'type-on' : ''}
+          onClick={() => setBoardType('EVENT')}
+        >
+          이벤트 게시글
+        </SubButton>
+        {boardType === 'EVENT' && (
+          <TypeButtonWrap className="flex">
+            <p className="list-text">이벤트 종료 시간</p>
+            <ReactDatePicker
+              selected={deadLineAt}
+              onChange={date => setDeadLineAt(date)}
+              timeInputLabel="시간 :"
+              dateFormat="yyyy-MM-dd HH:mm"
+              showTimeInput
+            />
+          </TypeButtonWrap>
+        )}
+      </TypeButtonWrap>
+      <DongComTalk
+        mainCategory={mainCategoryId}
+        subCategory={subCategoryId}
+        setMainCategory={setMainCategory}
+        setSubCategory={setSubCategory}
       />
-      <DongComTalk onClick={value => setChannel(value.id)} />
-      <TextInput label="제목" />
-      <Editor
-        ref={editorRef}
-        initialValue=" " // 글 수정 시 사용
-        placeholder="게시글을 작성해 주세요"
-        initialEditType="wysiwyg" // wysiwyg & markdown
-        hideModeSwitch={true} // wysiwyg & markdown 변경 버튼
-        height="550px"
-        usageStatistics={false} // 구글 애널리틱스에 호스트 이름 전송
-        toolbarItems={toolbarItems}
-        plugins={[colorSyntax]} //text color choice
-      />
+      <TextInput label="제목" value={title} onChange={e => setTitle(e.target.value)} />
+      <QuillCustom content={content} setContent={setContent} />
       <ButtonWrap>
         <SubButton>취소</SubButton>
-        <MainButton onClick={insertPost}>작성</MainButton>
+        <MainButton onClick={handlerBoardData}>작성</MainButton>
       </ButtonWrap>
     </PostWriteWrap>
   );
@@ -59,6 +136,23 @@ const PostWriteWrap = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
+  & .ql-editor {
+    height: 550px;
+  }
+`;
+
+const TypeButtonWrap = styled.div`
+  height: 36px;
+  gap: 15px;
+
+  & p {
+    display: flex;
+    align-items: center;
+  }
+
+  & .type-on {
+    background-color: #ffc045 !important;
+  }
 `;
 
 const ButtonWrap = styled.div`
@@ -69,13 +163,3 @@ const ButtonWrap = styled.div`
 `;
 
 export default PostWrite;
-
-const toolbarItems = [
-  ['heading', 'bold', 'italic', 'strike'],
-  ['hr'],
-  ['ul', 'ol', 'task'],
-  ['table', 'link'],
-  ['image'],
-  ['code'],
-  ['scrollSync'],
-];

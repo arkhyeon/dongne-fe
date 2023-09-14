@@ -1,34 +1,48 @@
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import 'react-quill/dist/quill.bubble.css';
 import styled from '@emotion/styled';
 import { MainButton, SubButton } from '../../../component/CommonComponents/Button';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { getCookie } from '../../../common/Cookie';
+import { client } from '../../../common/axios';
+import { useParams } from 'react-router-dom';
 
 function CommentWrite({ type = 1, cancel }: { type?: number; cancel?: () => void }) {
+  const { boardId } = useParams();
   const [comment, setComment] = useState('');
   const registerComment = () => {
-    console.log(comment);
+    client.post('boardComment', { boardId, content: comment });
   };
+  function handleTags() {
+    console.log('HANDLE TAG CLICK');
+  }
 
+  const modules = useMemo(() => {
+    return {
+      toolbar: {
+        container: [['tags']],
+        handlers: {
+          tags: handleTags,
+        },
+      },
+    };
+  }, []);
   return (
     <CommentWriteWrap>
-      <CommentWriteHeader id="toolbar">LV.88 가나다라</CommentWriteHeader>
+      <CommentWriteHeader id="toolbar">LV.88 {getCookie('userId')}</CommentWriteHeader>
       <ReactQuill
-        modules={{
-          toolbar: {
-            container: '#toolbar',
-          },
-        }}
-        formats={[]}
-        placeholder={'댓글을 작성하세요'}
+        placeholder="댓글을 작성하세요"
+        theme="bubble"
         value={comment}
-        // onChange={(content, delta, source, editor) => setComment(editor.getHTML())}
+        formats={[]}
+        modules={modules}
         onChange={e => setComment(e)}
       />
       <ButtonWrap>
         <MainButton onClick={registerComment}>등록</MainButton>
         {type === 2 && <SubButton onClick={cancel}>취소</SubButton>}
       </ButtonWrap>
+      <div>{comment}</div>
     </CommentWriteWrap>
   );
 }

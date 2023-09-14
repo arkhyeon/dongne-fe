@@ -1,33 +1,33 @@
 import { TbTriangleFilled } from 'react-icons/tb';
 import styled from '@emotion/styled';
-import { PostType } from '../../type/BoardType';
+import { BoardType, PostType } from '../../type/BoardType';
 
-function MainPostList({ title = '', postList = [] }: { title?: string; postList: PostType[] }) {
+function MainPostList({ title = '', postList = [] }: { title?: string; postList: BoardType[] }) {
   return (
     <MainPostListWrap>
       <p className="main-title-text">{title}</p>
       {postList.map(wl => {
         return (
-          <a href="src/page/main#" key={wl.id}>
+          <a href={`post/${wl.boardId}`} key={wl.boardId}>
             <MainPostItem>
               <RecommendWrap className="flex-cc">
                 <TbTriangleFilled />
-                {wl.rec}
+                {/*{wl.rec}*/}
               </RecommendWrap>
               <MainPostWrap>
                 <p className="title-text">
                   {wl.title}
-                  <span>[{wl.commentTotal}]</span>
+                  <span>[{wl.boardCommentCount}]</span>
                 </p>
                 <div>
-                  <span>{wl.toc}</span>
-                  <span>{wl.inputDate}</span>
-                  <span>
-                    {wl.writer} LV.{wl.level}
-                  </span>
+                  <span>{wl.channelName}</span>
+                  {/*<span>{wl.inputDate}</span>*/}
+                  {/*<span>*/}
+                  {/*  {wl.writer} LV.{wl.level}*/}
+                  {/*</span>*/}
                 </div>
               </MainPostWrap>
-              <img src={wl.img} />
+              {/*<img src={wl.img} />*/}
             </MainPostItem>
           </a>
         );

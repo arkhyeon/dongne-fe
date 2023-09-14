@@ -1,11 +1,13 @@
-import { useState } from 'react';
-import { BiSolidDownArrow, BiSolidUpArrow } from 'react-icons/bi';
+import { useEffect, useState } from 'react';
+import { BiSolidUpArrow } from 'react-icons/bi';
 import { MainButton } from '../../../component/CommonComponents/Button';
 import CommentWrite from './CommentWrite';
 import styled from '@emotion/styled';
 import CommentTextBox from './CommentTextBox';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
-import { BoardCommentType } from '../../../type/BoardType';
+import { APIReplyType, BoardCommentType, ReplyType } from '../../../type/BoardType';
+import { client } from '../../../common/axios';
+import { useParams } from 'react-router-dom';
 
 function Comment({
   comment,
@@ -14,14 +16,35 @@ function Comment({
   comment: BoardCommentType;
   canCommentActive?: boolean;
 }) {
+  const { boardId } = useParams();
+  const [replyList, setReplyList] = useState<ReplyType[]>([]);
   const [commentWrite, setCommentWrite] = useState(false);
   const [replyShow, setReplyShow] = useState(false);
+  const [isLiked, setIsLiked] = useState(comment.isLiked);
+
+  useEffect(() => {
+    getReplyList();
+  }, []);
+
+  const getReplyList = () => {
+    client
+      .get<APIReplyType>(`replyComment/${comment.boardCommentId}`)
+      .then(res => setReplyList(res.findReplyCommentDtos));
+  };
+
+  const setCommentLike = () => {
+    const url = `boardCommentLikes/${isLiked ? 'cancel' : 'check'}/${comment.boardCommentId}`;
+    client.post(url, { boardId, content: comment.content }).then(() => {
+      setIsLiked(prevState => !prevState);
+      isLiked ? (comment.boardCommentLikesCount -= 1) : (comment.boardCommentLikesCount += 1);
+    });
+  };
+
   return (
     <CommentWrap>
       <CommentRecommendWrap>
-        <BiSolidUpArrow className="animate-up" />
-        {comment.recommend}
-        <BiSolidDownArrow className="animate-down" />
+        <BiSolidUpArrow className={isLiked ? 'like-on' : ''} onClick={setCommentLike} />
+        {comment.boardCommentLikesCount}
       </CommentRecommendWrap>
       <CommentTextBox content={comment}>
         {canCommentActive && (
@@ -31,15 +54,15 @@ function Comment({
             ) : (
               <MainButton onClick={() => setCommentWrite(true)}>댓글 작성</MainButton>
             )}
-            {comment.replyList.length > 0 && (
+            {comment.replyCommentCount > 0 && (
               <span className="list-text" onClick={() => setReplyShow(prevState => !prevState)}>
                 {replyShow ? <IoIosArrowDown /> : <IoIosArrowUp />}
-                댓글 {comment.replyList.length}개
+                댓글 {comment.replyCommentCount}개
               </span>
             )}
           </CommentReply>
         )}
-        {replyShow && comment.replyList.map(rl => <CommentTextBox content={rl} key={rl.id} />)}
+        {replyShow && replyList.map(rl => <CommentTextBox content={rl} key={rl.replyCommentId} />)}
       </CommentTextBox>
     </CommentWrap>
   );
@@ -57,9 +80,16 @@ const CommentRecommendWrap = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5px;
+  text-align: center;
 
   & svg {
+    cursor: pointer;
     color: #333;
+
+    &:hover,
+    &.like-on {
+      color: #ffc045;
+    }
   }
 `;
 

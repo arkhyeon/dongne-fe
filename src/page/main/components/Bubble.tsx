@@ -36,6 +36,12 @@ const Bubble = ({ labelScale, items, bounds }: BubbleType) => {
       textRef.setAttribute('dy', `${fontSize / 3}px`);
       textRef.setAttribute('x', `${x}px`);
       textRef.setAttribute('y', `${y}px`);
+      circleRef.addEventListener('mouseover', () =>
+        circleRef.style.setProperty('r', `${r + 10}px`),
+      );
+      circleRef.addEventListener('mouseout', () => circleRef.style.setProperty('r', `${r}px`));
+      textRef.addEventListener('mouseover', () => circleRef.style.setProperty('r', `${r + 10}px`));
+      textRef.addEventListener('mouseout', () => circleRef.style.setProperty('r', `${r}px`));
     }
   };
 
@@ -99,6 +105,15 @@ const ChartBubble = ({ items, labelScale = 0.8 }: BubbleInitType) => {
 const BubbleWrap = styled.div`
   width: 100%;
   height: 250px;
+
+  & svg {
+    overflow: visible;
+    user-select: none;
+    cursor: pointer;
+    & g circle {
+      transition: 0.5s;
+    }
+  }
 `;
 
 export default ChartBubble;

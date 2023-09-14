@@ -4,10 +4,10 @@ import toHex from './toHex';
 
 const levelTable = (point: number) => (-5 + Math.sqrt(25 + 20 * point)) / 10;
 
-export const userLevel = (point: number) => Math.round(levelTable(point));
+export const userLevel = (point: number) => Math.floor(levelTable(point));
 
 export const userLevelGage = (point: number) =>
-  Number((levelTable(point) - userLevel(point)).toFixed(2)) * 100;
+  Math.floor(Number(levelTable(point) - userLevel(point)) * 100);
 
 export const userInitValue = {
   cityName: '',

@@ -3,9 +3,11 @@ import { BoardSearchInput } from '../../component/CommonComponents/SearchInput';
 import { MainButton } from '../../component/CommonComponents/Button';
 import SelectPopup, { SelectPopupOption } from '../../component/CommonComponents/SelectPopup';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function BoardSearch() {
   const [orderOption, setOrderOption] = useState('최신순');
+  const navigate = useNavigate();
   return (
     <BoardSearchWrap>
       <BoardSearchInput />
@@ -18,7 +20,7 @@ function BoardSearch() {
           );
         })}
       </SelectPopup>
-      <MainButton>작성하기</MainButton>
+      <MainButton onClick={() => navigate('/postwrite')}>작성하기</MainButton>
     </BoardSearchWrap>
   );
 }

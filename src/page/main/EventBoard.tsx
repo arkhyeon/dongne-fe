@@ -1,17 +1,28 @@
 import styled from '@emotion/styled';
 import EventBoardItem from './components/EventBoardItem';
-
-const eventList = [
-  { id: 1, img: '', title: 'R2WARE', text: 'r2ware123' },
-  { id: 2, img: '/img', title: 'R2WARE', text: 'r2ware123' },
-  { id: 3, img: '/img', title: 'R2WARE', text: 'r2ware123r2ware123r2ware123r2ware123r2ware123' },
-];
+import { useEffect, useState } from 'react';
+import { client } from '../../common/axios';
+import { getCookie } from '../../common/Cookie';
+import { APIEventBoardType, EventBoardType } from '../../type/BoardType';
 
 function EventBoard() {
+  const [eventBoardList, setEventBoardList] = useState<EventBoardType[]>([]);
+
+  useEffect(() => {
+    getEventBoardList();
+  }, []);
+
+  const getEventBoardList = () => {
+    const userCode = { cityCode: getCookie('cityCode'), zoneCode: getCookie('zoneCode') };
+    client
+      .post<APIEventBoardType>(`board/event?page=0&size=3`, { ...userCode, period: 'WEEK' })
+      .then(res => setEventBoardList(res.findEventBoardsByPeriodDtos));
+  };
+
   return (
     <EventBoardWrap>
-      {eventList.map(el => {
-        return <EventBoardItem key={el.id} eventBoard={el} />;
+      {eventBoardList.map(el => {
+        return <EventBoardItem key={el.boardId} eventBoard={el} />;
       })}
     </EventBoardWrap>
   );

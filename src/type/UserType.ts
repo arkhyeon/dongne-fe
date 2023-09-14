@@ -1,7 +1,17 @@
 import { GetResponse } from '../common/axios';
 import { BoardType, CommentType } from './BoardType';
 
-export type UserType = {
+export interface UserType extends GetResponse {
+  nickname: string;
+  cityName: string;
+  cityCode: string;
+  zoneName: string;
+  zoneCode: string;
+  profileImg: string | null;
+  point: number;
+}
+
+export type UserLoginType = {
   userId: string;
   password: string;
   passwordConfirm: string;

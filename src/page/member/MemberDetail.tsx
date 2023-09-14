@@ -14,7 +14,6 @@ function MemberDetail() {
 
   useLayoutEffect(() => {
     client.get<UserMainInfo>('user-main?page=0&size=3').then(res => {
-      console.log(res);
       if (!res.profileImg) {
         res.profileImg = `data:image/png;base64,${new Identicon(
           SHA256(toHex(res.userId)),
@@ -35,6 +34,7 @@ function MemberDetail() {
           <NavLink to="myComment">작성 댓글</NavLink>
           <NavLink to="postReaction">내 글 반응</NavLink>
           <NavLink to="memberEdit">내 정보 수정</NavLink>
+          <NavLink to="/">돌아가기</NavLink>
         </ul>
       </MemberSideWrap>
       <MemberInfoWrap>

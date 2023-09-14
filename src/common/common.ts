@@ -1,3 +1,6 @@
+import { useEffect, useState } from 'react';
+import { client } from './axios';
+
 export const elapsedDate = (date: Date) => {
   const TIME_ZONE = 3240 * 10000;
   const start = new Date(date).getTime();
@@ -23,3 +26,46 @@ export const elapsedDate = (date: Date) => {
 
   return '방금 전';
 };
+
+const promiseWrapper = promise => {
+  let status = 'pending';
+  let result;
+
+  const s = promise.then(
+    value => {
+      status = 'success';
+      result = value;
+    },
+    error => {
+      status = 'error';
+      result = error;
+    },
+  );
+
+  return () => {
+    switch (status) {
+      case 'pending':
+        throw s;
+      case 'success':
+        return result;
+      case 'error':
+        throw result;
+      default:
+        throw new Error('Unknown status');
+    }
+  };
+};
+export function useGetData(url) {
+  const [resource, setResource] = useState(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      const promise = client.get(url).then(response => response);
+      setResource(promiseWrapper(promise));
+    };
+
+    getData();
+  }, [url]);
+  console.log(resource);
+  return resource;
+}

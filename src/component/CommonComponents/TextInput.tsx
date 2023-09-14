@@ -19,7 +19,7 @@ export const TextInput = forwardRef<HTMLInputElement, InputProps>((props, ref) =
   return (
     <TextInputWrap>
       <label htmlFor={props.id}>{props.label}</label>
-      <TextInputComp type="text" {...props} ref={ref} onKeyDown={e => enterEvent(e)} />
+      <input type="text" {...props} ref={ref} onKeyDown={e => enterEvent(e)} />
     </TextInputWrap>
   );
 });
@@ -39,19 +39,6 @@ const TextInputWrap = styled.label`
   }
 `;
 
-const TextInputComp = styled.input`
-  width: 100%;
-  border-radius: 5px;
-  outline: none;
-  border: 1px solid #ccc;
-  padding: 8px 40px 8px 12px;
-
-  &:active,
-  &:focus {
-    border-color: #aaa;
-  }
-`;
-
 export default TextInput;
 
 export const DataListInput = forwardRef(
@@ -59,7 +46,7 @@ export const DataListInput = forwardRef(
     return (
       <TextInputWrap>
         <label htmlFor={props.id}>{props.id}</label>
-        <TextInputComp ref={ref} {...props} />
+        <input type="text" ref={ref} {...props} />
       </TextInputWrap>
     );
   },
@@ -152,7 +139,7 @@ export const FormInput = <T extends FieldValues>({
           />
         )}
       </label>
-      <TextInputComp type="text" {...props} {...(register && register(name, rules))} />
+      <input type="text" {...props} {...(register && register(name, rules))} />
     </TextInputWrap>
   );
 };

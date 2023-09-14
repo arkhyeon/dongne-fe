@@ -2,8 +2,10 @@ import styled from '@emotion/styled';
 import { FormInput } from '../../component/CommonComponents/TextInput';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { MainButton } from '../../component/CommonComponents/Button';
-import { loginAxios } from '../../common/axios';
+import { client, loginAxios } from '../../common/axios';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { UserType } from '../../type/UserType';
+import { setCookie } from '../../common/Cookie';
 
 function MemberLogin() {
   const navigate = useNavigate();
@@ -27,9 +29,11 @@ function MemberLogin() {
 
     loginAxios
       .post('user/login', { userId, password })
-      .then(() => navigate('/'))
+      .then(() => {
+        getUserInfo(userId);
+        navigate('/');
+      })
       .catch(err => {
-        console.log(err);
         if (err.response.data.responseMessage === 'User Id Not Found') {
           setError('userId', { message: '존재하지 않는 아이디입니다.' });
         } else if (err.response.data.responseMessage === 'Incorrect Password') {
@@ -38,6 +42,14 @@ function MemberLogin() {
           alert('로그인 오류로 인해 현재 접속할 수 없습니다.');
         }
       });
+  };
+
+  const getUserInfo = (userId: string) => {
+    client.get<UserType>(`user-basic/${userId}`).then(res => {
+      setCookie('cityCode', res.cityCode);
+      setCookie('zoneCode', res.zoneCode);
+      setCookie('userId', userId);
+    });
   };
 
   return (

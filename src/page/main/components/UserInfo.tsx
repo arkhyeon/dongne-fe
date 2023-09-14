@@ -8,9 +8,9 @@ function UserInfo({ userInfo }: { userInfo: UserMainInfo }) {
     <UserInfoWrap>
       <img width="420" height="420" src={userInfo.profileImg} />
       <div>
-        <p className="title-text">
+        <a className="title-text" href="/memberDetail">
           {userInfo.nickname}({userInfo.userId})
-        </p>
+        </a>
         <ExperienceWrap>
           <p className="list-text">LV : {userLevel(userInfo.point)}</p>
           <p className="list-text">POINT : {userInfo.point}</p>

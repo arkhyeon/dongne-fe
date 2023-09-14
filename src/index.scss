@@ -1,4 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+@font-face {
+  font-family: 'NanumSquareNeo-Variable';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/NanumSquareNeo-Variable.woff2')
+    format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
 
 * {
   margin: 0;
@@ -6,7 +12,7 @@
   list-style: none;
   text-decoration: none;
   box-sizing: border-box;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'NanumSquareNeo-Variable', sans-serif;
 }
 
 a {
@@ -77,6 +83,28 @@ a {
   padding: 0;
 }
 
+.ql-bubble:not(.ql-disabled) {
+  border: 1px solid #ccc;
+
+  & .ql-editor::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  & .ql-editor::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: #eeeeee;
+  }
+
+  & .ql-editor::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #d3d3d3;
+  }
+}
+
+.ql-bubble .ql-tooltip {
+  display: none;
+}
+
 /**SVG ANIMATE UP AND DOWN**/
 
 .animation-like {
@@ -98,14 +126,4 @@ a {
     scale: 1;
     transform: rotate(0deg);
   }
-}
-
-/**TUI**/
-
-.toastui-editor-toolbar:has(.toastui-editor-toolbar-group[style='display: none;']) {
-  display: none;
-}
-
-.toastui-editor-defaultUI .ProseMirror {
-  padding: 12px 16px 0;
 }

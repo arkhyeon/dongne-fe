@@ -1,6 +1,7 @@
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
-import { Viewer } from '@toast-ui/react-editor';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.bubble.css';
 
 function CommentViewer({ initialValue = '' }: { initialValue: string }) {
   const [collapse, setCollapse] = useState(true);
@@ -17,7 +18,7 @@ function CommentViewer({ initialValue = '' }: { initialValue: string }) {
 
   return (
     <ViewerWrap ref={viewerRef} className={collapse ? 'collapse-on' : ''}>
-      <Viewer initialValue={initialValue} />
+      <ReactQuill readOnly theme="bubble" value={initialValue} />
       {canCollapse && (
         <span onClick={() => setCollapse(prevState => !prevState)}>
           {collapse ? '자세히보기' : '간략히'}
@@ -40,15 +41,6 @@ const ViewerWrap = styled.div`
   &.collapse-on > div {
     max-height: 215px;
     overflow: hidden;
-  }
-
-  &.collapse-on .toastui-editor-contents {
-    overflow-wrap: break-word;
-    display: -webkit-box;
-    -webkit-line-clamp: 7;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 `;
 

@@ -1,18 +1,16 @@
 import { PiSirenFill } from 'react-icons/pi';
 import styled from '@emotion/styled';
 import Modal from '../modal/Modal';
-import { MutableRefObject, useRef, useState } from 'react';
-import { Editor } from '@toast-ui/react-editor';
+import { useState } from 'react';
 import { MainButton, SubButton } from './Button';
+import ReactQuill from 'react-quill';
 
 function SirenReport() {
   const [open, setOpen] = useState(false);
-  const editorRef = useRef() as MutableRefObject<Editor>;
 
   const insertPost = () => {
-    const getPostContent = editorRef.current.getInstance().getHTML();
-    console.log(getPostContent);
-    if (getPostContent === '<p><br></p>') {
+    // const getPostContent = editorRef.current.getInstance().getHTML();
+    if ('' === '<p><br></p>') {
       alert('신고 사유를 작성해 주세요.');
     }
   };
@@ -22,8 +20,7 @@ function SirenReport() {
       <Modal open={open} handleClose={() => setOpen(false)}>
         <Modal.Header closeButton>신고하기</Modal.Header>
         <Modal.Body>
-          <Editor
-            ref={editorRef}
+          <ReactQuill
             initialValue=" " // 글 수정 시 사용
             placeholder="신고 사유를 작성해 주세요"
             initialEditType="wysiwyg" // wysiwyg & markdown

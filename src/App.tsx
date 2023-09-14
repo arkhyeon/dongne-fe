@@ -14,7 +14,7 @@ import MemberEdit from './page/member/components/MemberEdit';
 import EventBoardList from './page/boardList/EventBoardList';
 import MemberRanking from './page/member/MemberRanking';
 import { HasLogin, PrivateRouter } from './component/router/RouterBranch';
-import { ComponentType, lazy, LazyExoticComponent } from 'react';
+import { ComponentType, lazy, LazyExoticComponent, Suspense } from 'react';
 import Main from './page/main/Main';
 
 // const [Main, preload] = getLazyComponentAndPreload(() => import('./page/main/Main'));
@@ -49,7 +49,14 @@ function App() {
             <Route index path="/" element={<BoardMain />} />
             <Route path="board" element={<BoardList />} />
             <Route path="eventboard" element={<EventBoardList />} />
-            <Route path="post" element={<PostDetail />} />
+            <Route
+              path="post/:boardId"
+              element={
+                <Suspense fallback={<div />}>
+                  <PostDetail />
+                </Suspense>
+              }
+            />
           </Route>
           <Route path="postwrite" element={<PrivateRouter element={<PostWrite />} />} />
           <Route path="memberDetail" element={<MemberDetail />}>

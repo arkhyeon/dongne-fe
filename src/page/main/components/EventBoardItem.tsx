@@ -1,13 +1,14 @@
 import styled from '@emotion/styled';
-import { EventPostType } from '../../../type/BoardType';
+import { EventBoardType } from '../../../type/BoardType';
 
-function EventBoardItem({ eventBoard }: { eventBoard: EventPostType }) {
+function EventBoardItem({ eventBoard }: { eventBoard: EventBoardType }) {
   return (
     <EventBoard>
-      <a href="#">
-        <img src={eventBoard.img} />
+      <a href={`post/${eventBoard.boardId}`}>
+        <div>
+          <img src={eventBoard.fileImg} />
+        </div>
         <p className="text-ellipsis">{eventBoard.title}</p>
-        <span className="text-ellipsis list-text">{eventBoard.text}</span>
       </a>
     </EventBoard>
   );
@@ -16,10 +17,23 @@ function EventBoardItem({ eventBoard }: { eventBoard: EventPostType }) {
 const EventBoard = styled.li`
   width: 288px;
   background-color: #ffc045;
+  border: 3px solid #ffc045;
+  border-radius: 5px;
+  overflow: hidden;
+  &:hover div img {
+    scale: 1.05;
+    transition: 0.3s;
+  }
 
-  & img {
+  & img,
+  & div {
     width: 100%;
     height: 265px;
+    overflow: hidden;
+  }
+
+  & p {
+    padding: 5px 0;
   }
 `;
 

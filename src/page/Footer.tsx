@@ -14,7 +14,7 @@ function Footer() {
         <FooterMenu>
           <div>
             <a>XX이벤트</a>
-            <a>XX최신글</a>
+            <a href="/board">동네 최신글</a>
           </div>
           <div>
             <a>개인정보 처리방침</a>

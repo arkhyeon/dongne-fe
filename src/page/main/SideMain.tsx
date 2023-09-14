@@ -4,7 +4,7 @@ import UserInfo from './components/UserInfo';
 import { useLayoutEffect, useState } from 'react';
 import { client } from '../../common/axios';
 import { UserMainInfo } from '../../type/UserType';
-import { getDefaultImage, userInitValue } from '../../common/userCommon';
+import { getDefaultImage } from '../../common/userCommon';
 
 const items = [
   { value: 16, text: '서울' },
@@ -15,45 +15,51 @@ const items = [
 ];
 
 function SideMain() {
-  const [userInfo, setUserInfo] = useState<UserMainInfo>(userInitValue);
+  const [userInfo, setUserInfo] = useState<UserMainInfo>();
 
   useLayoutEffect(() => {
-    client.get<UserMainInfo>('user-main?page=0&size=3').then(res => {
+    client.get<UserMainInfo>('user-main?page=0&size=5').then(res => {
       setUserInfo({ ...res, profileImg: res.profileImg || getDefaultImage(res.userId) });
     });
   }, []);
 
   return (
     <SideMainWrap>
-      <ProfileWrap>
-        <UserInfo userInfo={userInfo} />
-        <PostReactWrap>
-          <p className="title-text">알투웨어</p>
-          <ul>
-            {postList.map(pl => {
-              return (
-                <li key={pl.id}>
-                  <a href="#" className="list-text text-ellipsis">
-                    {pl.title}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-          <p className="title-text">알투웨어</p>
-          <ul>
-            {postList.map(pl => {
-              return (
-                <li key={pl.id}>
-                  <a href="#" className="list-text text-ellipsis">
-                    {pl.title}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        </PostReactWrap>
-      </ProfileWrap>
+      {userInfo ? (
+        <ProfileWrap>
+          <UserInfo userInfo={userInfo} />
+          <PostReactWrap>
+            <p className="title-text">최근 작성글</p>
+            <ul>
+              {userInfo.findLatestBoardsByUserDtos?.map(pl => {
+                return (
+                  <li key={pl.boardId}>
+                    <a href={`/post/${pl.boardId}`} className="list-text text-ellipsis">
+                      {pl.title}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+            <p className="title-text">최근 작성 댓글</p>
+            <ul>
+              {userInfo.findLatestBoardCommentsByUserDtos?.map(pl => {
+                return (
+                  <li key={pl.boardCommentId}>
+                    <a href={`/post/${pl.boardId}`} className="list-text text-ellipsis">
+                      {pl.content.replace(/<[^>]*>?/g, '')}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </PostReactWrap>
+        </ProfileWrap>
+      ) : (
+        <ProfileWrap>
+          <Skeleton />
+        </ProfileWrap>
+      )}
       <ChartBubble items={items} labelScale={0.8} />
     </SideMainWrap>
   );
@@ -71,18 +77,21 @@ const ProfileWrap = styled.div`
   border-radius: 5px;
 `;
 
+const Skeleton = styled.div`
+  width: 100%;
+  height: 300px;
+`;
+
 const PostReactWrap = styled.div`
   width: 100%;
 
   & p {
     margin: 16px 0 6px 0;
   }
+
+  & ul li {
+    margin-bottom: 5px;
+  }
 `;
 
 export default SideMain;
-
-const postList = [
-  { id: 1, title: '알투웨어1알투웨어1알투웨어1알투웨어1알투웨어1알투웨어1' },
-  { id: 2, title: '알투웨어2' },
-  { id: 3, title: '알투웨어3' },
-];

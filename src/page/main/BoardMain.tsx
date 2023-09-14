@@ -3,9 +3,25 @@ import EventBoard from './EventBoard';
 import MainPostList from '../../component/post/MainPostList';
 import TodayTalk from './TodayTalk';
 import BestBoard from './BestBoard';
-import { recentList } from '../../../data';
+import { useEffect, useState } from 'react';
+import { client } from '../../common/axios';
+import { getCookie } from '../../common/Cookie';
+import { APILatestBoardType, BoardType } from '../../type/BoardType';
 
 function BoardMain() {
+  const [recentList, setRecentList] = useState<BoardType[]>([]);
+
+  useEffect(() => {
+    getRecentList();
+  }, []);
+
+  const getRecentList = () => {
+    const userCode = { cityCode: getCookie('cityCode'), zoneCode: getCookie('zoneCode') };
+    client
+      .post<APILatestBoardType>(`board/latest?page=0&size=10`, userCode)
+      .then(res => setRecentList(res.findLatestBoardsDtos));
+  };
+
   return (
     <BoardMainWrap>
       <EventBoard />

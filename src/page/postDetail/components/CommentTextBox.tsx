@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import CommentViewer from '../../../component/post/CommentViewer';
 import { BoardCommentType, ReplyType } from '../../../type/BoardType';
 import React from 'react';
+import { getCookie } from '../../../common/Cookie';
 
 function CommentTextBox({
   content,
@@ -12,14 +13,13 @@ function CommentTextBox({
   content: BoardCommentType | ReplyType;
   children?: React.ReactNode;
 }) {
-  const myName = 'r2ware';
   return (
     <CommentMain>
       <div className="list-text">
-        <span>LV.{content.level}</span>
+        {/*<span>LV.{content.level}</span>*/}
         <span>{content.userId}</span>
-        <span> | {elapsedDate(new Date(content.input_dt))}</span>
-        {myName !== content.userId && <SirenReport />}
+        <span>| {elapsedDate(new Date(content.createDate))}</span>
+        {getCookie('userId') !== content.userId && <SirenReport />}
       </div>
       <CommentViewer initialValue={content.content} />
       {children}
