@@ -1,9 +1,21 @@
 import styled from '@emotion/styled';
 import { GoThumbsup } from 'react-icons/go';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-function PostRecommend({ isLiked, recommend }: { isLiked: boolean; recommend: number }) {
-  const [like, setLike] = useState(isLiked);
+function PostRecommend({
+  boardId,
+  isLiked,
+  recommend,
+}: {
+  boardId: string | undefined;
+  isLiked: boolean;
+  recommend: number;
+}) {
+  const [like, setLike] = useState(false);
+
+  useEffect(() => {
+    setLike(isLiked);
+  }, [boardId]);
   return (
     <PostRecWrap className="flex-cc" onClick={() => setLike(prevState => !prevState)}>
       <GoThumbsup className={like ? 'animation-like' : ''} />

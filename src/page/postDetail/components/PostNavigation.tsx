@@ -1,25 +1,56 @@
 import styled from '@emotion/styled';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { BsList } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
+import { getCookie } from '../../../common/Cookie';
+import { client } from '../../../common/axios';
+import { APILatestBoardType, BoardType } from '../../../type/BoardType';
+import { useEffect, useState } from 'react';
 
-function PostNavigation() {
+function PostNavigation({ boardId }: { boardId: string }) {
+  const navigate = useNavigate();
+  const [nextPost, setNextPost] = useState<BoardType>();
+  const [prevPost, setPrevPost] = useState<BoardType>();
+
+  useEffect(() => {
+    getNextPrev();
+  }, [boardId]);
+
+  const getNextPrev = () => {
+    const numberBid = Number(boardId);
+    const userCode = { cityCode: getCookie('cityCode'), zoneCode: getCookie('zoneCode') };
+    client.post<APILatestBoardType>('board/latest?page=0&size=99999', userCode).then(res => {
+      for (let i = 0; i < res.findLatestBoardsDtos.length; i++) {
+        if (numberBid === res.findLatestBoardsDtos[i].boardId) {
+          setNextPost(res.findLatestBoardsDtos[i + 1]);
+          setPrevPost(res.findLatestBoardsDtos[i - 1]);
+        }
+      }
+    });
+  };
+
+  const navigatePost = (boardId: number | undefined) => {
+    if (!boardId) return;
+    navigate(`/post/${boardId}`);
+  };
+
   return (
     <PostNavigationWrap className="list-text">
-      <Navigation>
+      <Navigation onClick={() => navigatePost(prevPost?.boardId)}>
         <IoIosArrowBack />
         <PageLabel className="text-ellipsis">
           <span>이전글</span> <br />
-          2019 대학정보화 심포지엄 및 정기총회 개최 참여 200억 수주
+          {prevPost?.title ? prevPost.title : '없음'}
         </PageLabel>
         <div />
       </Navigation>
-      <PostListWrap className="flex-cc">
+      <PostListWrap className="flex-cc" onClick={() => navigate('/board')}>
         <BsList />
       </PostListWrap>
-      <Navigation>
+      <Navigation onClick={() => navigatePost(nextPost?.boardId)}>
         <PageLabel className="text-ellipsis">
           <span>다음글</span> <br />
-          알투웨어, 테스트데이터 변환솔루션 시장 주도력 강화
+          {nextPost?.title ? nextPost.title : '없음'}
         </PageLabel>
         <IoIosArrowForward />
         <div />
@@ -78,8 +109,8 @@ const Navigation = styled.div`
 `;
 
 const PageLabel = styled.p`
-  width: 360px;
-
+  width: 100%;
+  font-size: 13px;
   & span {
     font-size: 12px;
     color: #0a91ab;

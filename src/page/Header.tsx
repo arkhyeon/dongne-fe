@@ -1,29 +1,23 @@
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { FiLogOut } from 'react-icons/fi';
 import { HeaderSearchInput } from '../component/CommonComponents/SearchInput';
-import { loginAxios } from '../common/axios';
+import { client, loginAxios } from '../common/axios';
 import { removeCookie } from '../common/Cookie';
-import { UserRankType } from '../type/UserType';
+import { APIUserRankingType, UserRankingType } from '../type/UserType';
 
 function Header() {
-  const [topWriterList, setTopWriterList] = useState<UserRankType[]>([]);
-  const topWriterRef = useRef() as MutableRefObject<HTMLDivElement>;
+  const [topWriterList, setTopWriterList] = useState<UserRankingType[]>([]);
 
-  useEffect(() => {
-    setTopWriterList(initTopWriters);
-    let moveRange = 0;
-    setInterval(() => {
-      moveRange -= 20;
-      if (moveRange <= topWriterList.length * -20) {
-        moveRange = 0;
-      }
+  useEffect(() => getTopWriterList(), []);
 
-      if (topWriterRef.current) {
-        topWriterRef.current.style.transform = `translateY(${moveRange}px)`;
-      }
-    }, 1000);
-  }, []);
+  const getTopWriterList = () => {
+    client
+      .post<APIUserRankingType>(`user/ranking?page=0&size=3`, {
+        nickname: '',
+      })
+      .then(res => setTopWriterList(res.userRankingDtos));
+  };
 
   const logout = () => {
     removeCookie('accessToken');
@@ -38,13 +32,13 @@ function Header() {
   return (
     <HeaderWrap>
       <LogoWrap>
-        <img src="./src/asset/img/logo2.png" />
+        <img src="src/asset/img/logo2.png" />
         <TopWriterWrap>
           <p>Top Writers</p>
           <div>
-            <SlideWriter ref={topWriterRef}>
+            <SlideWriter>
               {topWriterList.map(tl => {
-                return <div key={tl.rank}>{tl.userId}</div>;
+                return <div key={tl.userId}>{tl.userId}</div>;
               })}
             </SlideWriter>
           </div>
@@ -64,7 +58,6 @@ const HeaderWrap = styled.div`
   min-width: 1230px;
   height: 60px;
   background-color: #ffc045;
-  //color: #0a91ab;
   display: flex;
   align-items: center;
   padding-right: 40px;
@@ -96,7 +89,22 @@ const TopWriterWrap = styled.div`
 const SlideWriter = styled.div`
   width: 100%;
   position: relative;
-  transition: 1s;
+  animation: rankView 3s linear infinite;
+
+  @keyframes rankView {
+    0% {
+      top: 0;
+    }
+    33% {
+      top: -20px;
+    }
+    66% {
+      top: -40px;
+    }
+    100% {
+      top: 0;
+    }
+  }
 `;
 
 const WidgetWrap = styled.div`
@@ -114,18 +122,3 @@ const WidgetWrap = styled.div`
 `;
 
 export default Header;
-
-const initTopWriters = [
-  {
-    rank: 1,
-    userId: 'COC',
-  },
-  {
-    rank: 2,
-    userId: 'ABC',
-  },
-  {
-    rank: 3,
-    userId: 'CMS',
-  },
-];

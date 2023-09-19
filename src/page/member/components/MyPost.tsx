@@ -1,7 +1,6 @@
-import { recentList } from '../../../../data';
 import MainPostList from '../../../component/post/MainPostList';
 import { useEffect, useState } from 'react';
-import { APIBoardType, APILatestBoardType, BoardType } from '../../../type/BoardType';
+import { APILatestBoardType, BoardType } from '../../../type/BoardType';
 import { client } from '../../../common/axios';
 import { getCookie } from '../../../common/Cookie';
 

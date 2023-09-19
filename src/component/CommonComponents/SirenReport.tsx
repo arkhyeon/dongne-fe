@@ -1,16 +1,32 @@
 import { PiSirenFill } from 'react-icons/pi';
 import styled from '@emotion/styled';
 import Modal from '../modal/Modal';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { MainButton, SubButton } from './Button';
 import ReactQuill from 'react-quill';
 
-function SirenReport() {
+function SirenReport({ boardId }: { boardId: string }) {
   const [open, setOpen] = useState(false);
+  const [reportContent, setReportContent] = useState('');
+
+  function handleTags() {
+    console.log('HANDLE TAG CLICK' + boardId);
+  }
+
+  const modules = useMemo(() => {
+    return {
+      toolbar: {
+        container: [['tags']],
+        handlers: {
+          tags: handleTags,
+        },
+      },
+    };
+  }, []);
 
   const insertPost = () => {
     // const getPostContent = editorRef.current.getInstance().getHTML();
-    if ('' === '<p><br></p>') {
+    if (reportContent === '<p><br></p>') {
       alert('신고 사유를 작성해 주세요.');
     }
   };
@@ -21,13 +37,12 @@ function SirenReport() {
         <Modal.Header closeButton>신고하기</Modal.Header>
         <Modal.Body>
           <ReactQuill
-            initialValue=" " // 글 수정 시 사용
-            placeholder="신고 사유를 작성해 주세요"
-            initialEditType="wysiwyg" // wysiwyg & markdown
-            hideModeSwitch={true} // wysiwyg & markdown 변경 버튼
-            height="350px"
-            usageStatistics={false} // 구글 애널리틱스에 호스트 이름 전송
-            toolbarItems={[]}
+            placeholder="댓글을 작성하세요"
+            theme="bubble"
+            value={reportContent}
+            formats={[]}
+            modules={modules}
+            onChange={e => setReportContent(e)}
           />
         </Modal.Body>
         <Modal.Footer>

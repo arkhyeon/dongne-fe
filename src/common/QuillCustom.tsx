@@ -1,8 +1,13 @@
-import React, { useMemo, useRef } from 'react';
+import React, { RefObject, useMemo, useRef } from 'react';
 import ReactQuill from 'react-quill';
 
-function QuillCustom({ content, setContent }) {
-  const quillRef = useRef();
+interface QuillStateType {
+  content: string;
+  setContent: React.Dispatch<React.SetStateAction<string>>;
+}
+
+function QuillCustom({ content, setContent }: QuillStateType) {
+  const quillRef = useRef(null) as RefObject<ReactQuill>;
 
   // const imageHandler = () => {
   //   const input = document.createElement('input');

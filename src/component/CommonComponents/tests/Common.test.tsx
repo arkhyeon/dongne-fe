@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import Modal from '../../modal/Modal';
 
 test.only('신고 버튼 클릭 시 모달 확인', async () => {
-  render(<SirenReport />);
+  render(<SirenReport boardId="1" />);
   const user = userEvent.setup();
 
   const sirenButton = screen.getByRole('button');

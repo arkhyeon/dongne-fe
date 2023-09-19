@@ -5,15 +5,15 @@ function Footer() {
     <FooterWrap>
       <img src="" />
       <div>
-        <a>XX소개</a>
-        <a>XXX소개</a>
-        <a>XX문의</a>
-        <a>버그제보</a>
+        <a>동커 소개</a>
+        <a>동커 바람</a>
+        <a>동커 문의</a>
+        <a>동커 제보</a>
       </div>
       <div>
         <FooterMenu>
           <div>
-            <a>XX이벤트</a>
+            <a>동네 이벤트</a>
             <a href="/board">동네 최신글</a>
           </div>
           <div>

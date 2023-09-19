@@ -1,5 +1,4 @@
 import MainPostList from '../../component/post/MainPostList';
-import { recentList } from '../../../data';
 import DongComTalk from '../../component/dongcomtalk/DongComTalk';
 import styled from '@emotion/styled';
 import BoardSearch from './BoardSearch';
@@ -12,6 +11,8 @@ import { client } from '../../common/axios';
 function BoardList() {
   const [page, setPage] = useState(1);
   const [recentList, setRecentList] = useState<BoardType[]>([]);
+  const [mainCategoryId, setMainCategory] = useState(0);
+  const [subCategoryId, setSubCategory] = useState(0);
 
   useEffect(() => {
     getRecentList();
@@ -27,7 +28,12 @@ function BoardList() {
   return (
     <BoardListWrap>
       <p className="main-title-text">게시글</p>
-      <DongComTalk onClick={r => console.log(r)} />
+      <DongComTalk
+        mainCategory={mainCategoryId}
+        subCategory={subCategoryId}
+        setMainCategory={setMainCategory}
+        setSubCategory={setSubCategory}
+      />
       <BoardSearch />
       <MainPostList postList={recentList} />
       <Pagination currentPage={page} totalLength={19} pageEvent={pageNum => setPage(pageNum)} />

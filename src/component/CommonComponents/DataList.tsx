@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { DataListInput } from './TextInput';
 
 interface DataListType {
-  id: string;
+  id?: string;
   valueList: string[];
   labelList: string[];
   setData: (value: string) => void;

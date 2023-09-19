@@ -35,6 +35,10 @@ const ExperienceWrap = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 6px;
+
+  p {
+    font-size: 12px;
+  }
 `;
 
 export default UserInfo;

@@ -1,24 +1,35 @@
 import styled from '@emotion/styled';
-import { HiShare } from 'react-icons/hi';
+import { HiCheck, HiShare } from 'react-icons/hi';
 import SirenReport from '../../../component/CommonComponents/SirenReport';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-function PostMenu() {
+function PostMenu({ boardId }: { boardId: string }) {
+  const [share, setShare] = useState(false);
   const postShare = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (e.target instanceof HTMLElement) {
-      e.target.innerHTML =
-        '<svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" ><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"></path></svg>복사 완료';
+      setShare(true);
       navigator.clipboard.writeText(window.location.href);
     }
   };
 
+  useEffect(() => setShare(false), [boardId]);
+
   return (
     <PostMenuWrap>
       <PostMenuItem className="flex-cc" onClick={postShare}>
-        <HiShare />
-        공유하기
+        {share ? (
+          <>
+            <HiCheck />
+            복사완료
+          </>
+        ) : (
+          <>
+            <HiShare />
+            공유하기
+          </>
+        )}
       </PostMenuItem>
-      <SirenReport />
+      <SirenReport boardId={boardId} />
     </PostMenuWrap>
   );
 }

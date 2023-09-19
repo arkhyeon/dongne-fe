@@ -2,6 +2,7 @@ import { GetResponse } from '../common/axios';
 import { BoardType, CommentType } from './BoardType';
 
 export interface UserType extends GetResponse {
+  userId: string;
   nickname: string;
   cityName: string;
   cityCode: string;
@@ -32,9 +33,12 @@ export interface UserMainInfo extends GetResponse {
   zoneName: string;
 }
 
-export interface UserRankType {
-  rank: number;
+export interface UserRankingType {
   userId: string;
+  nickname: string;
+  profileImg: string;
+  point: number;
+  createDate: string;
 }
 
 type Name = { name: string };
@@ -44,10 +48,14 @@ export interface DistrictType extends GetResponse {
   zoneCodeNames: ZoneCodeNames[];
 }
 
-interface CityCodeNames extends Name {
+export interface CityCodeNames extends Name {
   cityCode: string;
 }
 
-interface ZoneCodeNames extends Name {
+export interface ZoneCodeNames extends Name {
   zoneCode: string;
+}
+
+export interface APIUserRankingType extends GetResponse {
+  userRankingDtos: UserRankingType[];
 }

@@ -5,6 +5,7 @@ import CommentViewer from '../../../component/post/CommentViewer';
 import { BoardCommentType, ReplyType } from '../../../type/BoardType';
 import React from 'react';
 import { getCookie } from '../../../common/Cookie';
+import { useParams } from 'react-router-dom';
 
 function CommentTextBox({
   content,
@@ -13,13 +14,14 @@ function CommentTextBox({
   content: BoardCommentType | ReplyType;
   children?: React.ReactNode;
 }) {
+  const { boardId } = useParams<{ boardId: string }>();
   return (
     <CommentMain>
       <div className="list-text">
         {/*<span>LV.{content.level}</span>*/}
         <span>{content.userId}</span>
         <span>| {elapsedDate(new Date(content.createDate))}</span>
-        {getCookie('userId') !== content.userId && <SirenReport />}
+        {getCookie('userId') !== content.userId && <SirenReport boardId={boardId ?? '0'} />}
       </div>
       <CommentViewer initialValue={content.content} />
       {children}

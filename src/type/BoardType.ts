@@ -3,6 +3,7 @@ import { GetResponse } from '../common/axios';
 export interface BoardType {
   boardId: number;
   title: string;
+  fileImg?: string;
   commentTotal?: number;
   boardCommentCount?: number;
   boardLikesCount?: number;
@@ -30,15 +31,11 @@ export interface CategoryBoardType {
   findHotBoardsDtos: BoardType[];
 }
 
-export interface EventBoardType extends BoardType {
-  fileImg: string;
-}
-
 export interface APIBoardType extends GetResponse {
   findBestBoardsByPeriodDtos: BoardType[];
 }
 export interface APIEventBoardType extends GetResponse {
-  findEventBoardsByPeriodDtos: EventBoardType[];
+  findEventBoardsByPeriodDtos: BoardType[];
 }
 export interface APILatestBoardType extends GetResponse {
   findLatestBoardsDtos: BoardType[];
@@ -76,7 +73,7 @@ export interface CommentType {
 }
 
 export interface APICommentType extends GetResponse {
-  findBoardCommentDtos: CommentType[];
+  findBoardCommentDtos: BoardCommentType[];
 }
 
 export interface BoardCommentType extends CommentType {

@@ -1,6 +1,6 @@
 import { TbTriangleFilled } from 'react-icons/tb';
 import styled from '@emotion/styled';
-import { BoardType, PostType } from '../../type/BoardType';
+import { BoardType } from '../../type/BoardType';
 
 function MainPostList({ title = '', postList = [] }: { title?: string; postList: BoardType[] }) {
   return (

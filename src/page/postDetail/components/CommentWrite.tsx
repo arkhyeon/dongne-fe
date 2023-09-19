@@ -27,6 +27,7 @@ function CommentWrite({ type = 1, cancel }: { type?: number; cancel?: () => void
       },
     };
   }, []);
+
   return (
     <CommentWriteWrap>
       <CommentWriteHeader id="toolbar">LV.88 {getCookie('userId')}</CommentWriteHeader>
@@ -42,7 +43,6 @@ function CommentWrite({ type = 1, cancel }: { type?: number; cancel?: () => void
         <MainButton onClick={registerComment}>등록</MainButton>
         {type === 2 && <SubButton onClick={cancel}>취소</SubButton>}
       </ButtonWrap>
-      <div>{comment}</div>
     </CommentWriteWrap>
   );
 }

@@ -63,6 +63,7 @@ function App() {
             <Route index element={<MyPost />} />
             <Route path="mycomment" element={<PrivateRouter element={<MyComment />} />} />
             <Route path="postreaction" element={<PostReaction />} />
+            {/*<Route index element={<PrivateRouter element={<MemberEdit />} />} />*/}
             <Route path="memberEdit" element={<PrivateRouter element={<MemberEdit />} />} />
           </Route>
           <Route path="rank" element={<MemberRanking />} />

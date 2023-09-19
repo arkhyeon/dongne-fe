@@ -3,10 +3,10 @@ import EventBoardItem from './components/EventBoardItem';
 import { useEffect, useState } from 'react';
 import { client } from '../../common/axios';
 import { getCookie } from '../../common/Cookie';
-import { APIEventBoardType, EventBoardType } from '../../type/BoardType';
+import { APIEventBoardType, BoardType } from '../../type/BoardType';
 
 function EventBoard() {
-  const [eventBoardList, setEventBoardList] = useState<EventBoardType[]>([]);
+  const [eventBoardList, setEventBoardList] = useState<BoardType[]>([]);
 
   useEffect(() => {
     getEventBoardList();

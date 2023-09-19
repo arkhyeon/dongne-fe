@@ -23,8 +23,8 @@ function DongComTalk({
   setMainCategory,
   setSubCategory,
 }: CategorySettingType) {
-  const [mainView, setMainView] = useState(false);
-  const [subView, setSubView] = useState(false);
+  const [mainView, setMainView] = useState<boolean>(false);
+  const [subView, setSubView] = useState<boolean>(false);
   const [categoryList, setCategoryList] = useState<CategoryType[]>([]);
   const [subCategoryList, setSubCategoryList] = useState<SubCategoryType[]>([]);
 
@@ -38,7 +38,7 @@ function DongComTalk({
       .then(res => setCategoryList(res.mainCategoryDtos));
   };
 
-  const getSubCategory = mainCategoryId => {
+  const getSubCategory = (mainCategoryId: number) => {
     client
       .get<APISubCategoryType>(`sub-categories/${mainCategoryId}`)
       .then(res => setSubCategoryList(res.subCategoryDtos));
@@ -144,7 +144,7 @@ const DongComTalkItemWrap = styled.div`
     background-color: #d3d3d3;
   }
 
-  ${({ view }: { view: number }) => {
+  ${({ view }: { view: boolean }) => {
     if (view) {
       return css`
         height: 142px;

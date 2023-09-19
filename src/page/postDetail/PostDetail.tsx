@@ -7,15 +7,18 @@ import ReactQuill from 'react-quill';
 import PostNavigation from './components/PostNavigation';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { BoardDetailType } from '../../type/BoardType';
-import { useGetData } from '../../common/common';
 import { getCookie } from '../../common/Cookie';
 import { MdDelete, MdEdit } from 'react-icons/md';
+import { useQuery, UseQueryResult } from 'react-query';
+import { client } from '../../common/axios';
+import { BoardDetailType } from '../../type/BoardType';
 
 function PostDetail() {
   const navigate = useNavigate();
   const { boardId } = useParams();
-  const data: BoardDetailType = useGetData(`board/${boardId}`);
+  const { data, isFetching }: UseQueryResult<BoardDetailType> = useQuery('getPostDetail', () =>
+    client.get(`board/41`),
+  );
 
   useEffect(() => {
     if (!boardId) navigate('nopost');
@@ -27,7 +30,7 @@ function PostDetail() {
 
   return (
     <PostWrap>
-      {data && (
+      {!isFetching && data && (
         <>
           <PostHeader>
             <p>{data.title}</p>
@@ -67,12 +70,16 @@ function PostDetail() {
               readOnly={true}
               className="readonly-quill"
             />
-            <PostRecommend isLiked={data.isLiked} recommend={data.boardLikesCount} />
-            <PostMenu />
+            <PostRecommend
+              boardId={boardId}
+              isLiked={data.isLiked}
+              recommend={data.boardLikesCount}
+            />
+            <PostMenu boardId={boardId ?? '0'} />
           </PostMain>
+          <PostNavigation boardId={boardId ?? '0'} />
           <CommentWrite />
-          <PostComment />
-          <PostNavigation />
+          <PostComment boardId={boardId ?? '0'} />
         </>
       )}
     </PostWrap>

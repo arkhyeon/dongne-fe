@@ -1,24 +1,33 @@
 import styled from '@emotion/styled';
 import EventBoardItem from '../main/components/EventBoardItem';
-
-const eventList = [
-  { id: 1, img: '', title: 'R2WARE', text: 'r2ware123' },
-  { id: 2, img: '/img', title: 'R2WARE', text: 'r2ware123' },
-  { id: 3, img: '/img', title: 'R2WARE', text: 'r2ware123r2ware123r2ware123r2ware123r2ware123' },
-];
+import { useEffect, useState } from 'react';
+import { getCookie } from '../../common/Cookie';
+import { client } from '../../common/axios';
+import { APILatestBoardType, BoardType } from '../../type/BoardType';
 
 function EventBoardList() {
+  const [postList, setPostList] = useState<BoardType[]>([]);
+  useEffect(() => {
+    getPostList();
+  }, []);
+
+  const getPostList = () => {
+    const userCode = { cityCode: getCookie('cityCode'), zoneCode: getCookie('zoneCode') };
+    client
+      .post<APILatestBoardType>(`board/latest?page=0&size=10`, userCode)
+      .then(res => setPostList(res.findLatestBoardsDtos));
+  };
   return (
     <div>
       <EventBoardWrap>
-        {eventList.map(el => {
-          return <EventBoardItem key={el.id} eventBoard={el} />;
+        {postList.map(el => {
+          return <EventBoardItem key={el.boardId} eventBoard={el} />;
         })}
-        {eventList.map(el => {
-          return <EventBoardItem key={el.id} eventBoard={el} />;
+        {postList.map(el => {
+          return <EventBoardItem key={el.boardId} eventBoard={el} />;
         })}
-        {eventList.map(el => {
-          return <EventBoardItem key={el.id} eventBoard={el} />;
+        {postList.map(el => {
+          return <EventBoardItem key={el.boardId} eventBoard={el} />;
         })}
       </EventBoardWrap>
     </div>

@@ -1,12 +1,12 @@
 import styled from '@emotion/styled';
-import { EventBoardType } from '../../../type/BoardType';
+import { BoardType } from '../../../type/BoardType';
 
-function EventBoardItem({ eventBoard }: { eventBoard: EventBoardType }) {
+function EventBoardItem({ eventBoard }: { eventBoard: BoardType }) {
   return (
     <EventBoard>
       <a href={`post/${eventBoard.boardId}`}>
         <div>
-          <img src={eventBoard.fileImg} />
+          <img src={eventBoard?.fileImg} />
         </div>
         <p className="text-ellipsis">{eventBoard.title}</p>
       </a>

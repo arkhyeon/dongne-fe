@@ -12,12 +12,13 @@ import { useLocation } from 'react-router-dom';
 
 function PostWrite() {
   const { state } = useLocation();
+  const fileRef = useRef() as MutableRefObject<HTMLInputElement>;
   const [title, setTitle] = useState('');
   const [mainCategoryId, setMainCategory] = useState(0);
   const [subCategoryId, setSubCategory] = useState(0);
   const [boardType, setBoardType] = useState('NORMAL');
-  const [content, setContent] = useState('');
-  const [deadLineAt, setDeadLineAt] = useState(new Date());
+  const [content, setContent] = useState<string>('');
+  const [deadLineAt, setDeadLineAt] = useState<Date>(new Date());
 
   useEffect(() => {
     if (state) {
@@ -47,11 +48,13 @@ function PostWrite() {
       zoneCode: getCookie('zoneCode'),
       deadLineAt,
     };
-    console.log(fileRef.current?.files);
-    const files = fileRef.current?.files[0];
+    if (fileRef.current.files !== null) {
+      const files = fileRef.current?.files[0];
 
-    // formData.append('writeBoardRequestDto', writeBoardRequestDto);
-    formData.append('files', files);
+      // formData.append('writeBoardRequestDto', writeBoardRequestDto);
+      formData.append('files', files);
+    }
+
     formData.append(
       'writeBoardRequestDto',
       new Blob([JSON.stringify(writeBoardRequestDto)], {
@@ -62,7 +65,7 @@ function PostWrite() {
     state?.boardId ? updateBoard(formData) : insertBoard(formData);
   };
 
-  const insertBoard = formData => {
+  const insertBoard = (formData: FormData) => {
     client
       .post('board', formData, {
         headers: {
@@ -72,7 +75,7 @@ function PostWrite() {
       .then(r => console.log(r));
   };
 
-  const updateBoard = formData => {
+  const updateBoard = (formData: FormData) => {
     client
       .patch(`board/${state.boardId}`, formData, {
         headers: {
@@ -81,8 +84,6 @@ function PostWrite() {
       })
       .then(r => console.log(r));
   };
-
-  const fileRef = useRef() as MutableRefObject<HTMLInputElement>;
 
   return (
     <PostWriteWrap>
@@ -106,7 +107,7 @@ function PostWrite() {
             <p className="list-text">이벤트 종료 시간</p>
             <ReactDatePicker
               selected={deadLineAt}
-              onChange={date => setDeadLineAt(date)}
+              onChange={date => setDeadLineAt(date ?? new Date())}
               timeInputLabel="시간 :"
               dateFormat="yyyy-MM-dd HH:mm"
               showTimeInput
