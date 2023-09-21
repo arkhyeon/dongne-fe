@@ -26,12 +26,14 @@ function PostComment({ boardId }: { boardId: string }) {
     return () => io.disconnect();
   }, [io]);
 
-  useEffect(() => {
+  useEffect(() => resetComment(), [boardId]);
+
+  const resetComment = () => {
     setCommentList([]);
     setPage(0);
     setFetching(false);
     setNextPage(true);
-  }, [boardId]);
+  };
 
   const getCommentList = () => {
     setFetching(true);
