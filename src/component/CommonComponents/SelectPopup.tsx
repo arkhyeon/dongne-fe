@@ -10,13 +10,15 @@ import React, {
 } from 'react';
 import { HiSortDescending } from 'react-icons/hi';
 import { css } from '@emotion/react';
+import { IconType } from 'react-icons';
 
 interface PopUpType {
   children: React.ReactNode;
-  value: string;
+  value: string | undefined;
+  icon?: IconType;
 }
 
-function SelectPopup({ children, value }: PopUpType) {
+function SelectPopup({ children, value, icon }: PopUpType) {
   const [show, setShow] = useState(false);
   const selectRef = useRef() as MutableRefObject<HTMLDivElement>;
 
@@ -40,7 +42,7 @@ function SelectPopup({ children, value }: PopUpType) {
   return (
     <SelectPopupWrap ref={selectRef} onClick={() => setShow(prevState => !prevState)}>
       <SelectPopupLabel>
-        <HiSortDescending />
+        {icon ? <>{icon}</> : <HiSortDescending style={{ top: '2px' }} />}
         {value}
       </SelectPopupLabel>
       {/*<SelectOptionWrap>{children}</SelectOptionWrap>*/}
@@ -60,7 +62,7 @@ export function SelectPopupOption(
 }
 
 const SelectPopupWrap = styled.div`
-  width: 100px;
+  min-width: 80px;
   border: 1px solid #aaa;
   border-radius: 5px;
   position: relative;
@@ -76,11 +78,10 @@ const SelectPopupLabel = styled.div`
   & svg {
     font-size: 20px;
     position: relative;
-    top: 2px;
   }
 `;
 
-const SelectOptionWrap = styled.div<{ value: string }>`
+const SelectOptionWrap = styled.div<{ value: string | undefined }>`
   width: 120px;
   position: absolute;
   top: 40px;

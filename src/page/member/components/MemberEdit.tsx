@@ -14,23 +14,42 @@ function MemberEdit() {
     handleSubmit,
     formState: { errors },
     setValue,
+    setError,
   } = useForm({ mode: 'onChange' });
 
   const onSubmit: SubmitHandler<FieldValues> = data => {
     console.log({ ...data, cityCode: city, zoneCode: zone });
-    // client
-    //   .post(`user-basic/${getCookie('userId')}`, { ...data, cityCode: city, zoneCode: zone })
-    //   .then(res => {
-    //     console.log(res);
-    //   })
-    //   .catch(err => {
-    //     if (err.response.data.responseMessage === 'User Id Already Exist') {
-    //       setError('userId', { message: '이미 사용하고 있는 아이디입니다.' });
-    //     } else if (err.response.data.responseMessage === 'Nickname Already Exist') {
-    //       setError('nickname', { message: '이미 사용하고 있는 닉네입입니다.' });
-    //     }
-    //     console.log(err);
-    //   });
+    const formData = new FormData();
+    const blob = new Blob(
+      [
+        JSON.stringify({
+          nickname: data.nickname,
+          cityCode: city,
+          zoneCode: zone,
+          isProfileChanged: false,
+        }),
+      ],
+      { type: 'application/json' },
+    );
+
+    formData.append('basicRequestDto', blob);
+    formData.append('file', data.profile[0]);
+
+    client
+      .patch(`user-basic/${getCookie('userId')}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        if (err.response.data.responseMessage === 'User Id Already Exist') {
+          setError('userId', { message: '이미 사용하고 있는 아이디입니다.' });
+        } else if (err.response.data.responseMessage === 'Nickname Already Exist') {
+          setError('nickname', { message: '이미 사용하고 있는 닉네입입니다.' });
+        }
+        console.log(err);
+      });
   };
 
   const [districtList, setDistrictList] = useState<DistrictType>({
@@ -97,6 +116,13 @@ function MemberEdit() {
               message: '닉네임은 2 ~ 12자 한글과 영문과 숫자를 사용해 주세요.',
             },
           }}
+        />
+        <FormInput
+          id="profile"
+          label="프로필 사진"
+          name="profile"
+          register={register}
+          type="file"
         />
         <div>
           <label className="list-text">주소</label>

@@ -5,23 +5,21 @@ import { useLayoutEffect, useState } from 'react';
 import { client } from '../../common/axios';
 import { UserMainInfo } from '../../type/UserType';
 import { getDefaultImage } from '../../common/userCommon';
-
-const items = [
-  { value: 16, text: '서울' },
-  { value: 5, text: '부산' },
-  { value: 5, text: '경기' },
-  { value: 5, text: '인천' },
-  { value: 3, text: '대전' },
-];
+import { APIItemInitType, ItemInitType } from '../../type/BubbleType.ts';
 
 function SideMain() {
   const [userInfo, setUserInfo] = useState<UserMainInfo>();
-
+  const [items, setItems] = useState<ItemInitType[]>([]);
   useLayoutEffect(() => {
+    getCityOfTop();
     client.get<UserMainInfo>('user-main?page=0&size=5').then(res => {
       setUserInfo({ ...res, profileImg: res.profileImg || getDefaultImage(res.userId) });
     });
   }, []);
+
+  const getCityOfTop = () => {
+    client.get<APIItemInitType>('city/top/5').then(res => setItems(res.cityNameCountDtos));
+  };
 
   return (
     <SideMainWrap>

@@ -1,6 +1,7 @@
 import { TbTriangleFilled } from 'react-icons/tb';
 import styled from '@emotion/styled';
 import { BoardType } from '../../type/BoardType';
+import { userLevel } from '../../common/userCommon.ts';
 
 function MainPostList({ title = '', postList = [] }: { title?: string; postList: BoardType[] }) {
   return (
@@ -12,7 +13,7 @@ function MainPostList({ title = '', postList = [] }: { title?: string; postList:
             <MainPostItem>
               <RecommendWrap className="flex-cc">
                 <TbTriangleFilled />
-                {/*{wl.rec}*/}
+                {wl.boardLikesCount}
               </RecommendWrap>
               <MainPostWrap>
                 <p className="title-text">
@@ -20,14 +21,20 @@ function MainPostList({ title = '', postList = [] }: { title?: string; postList:
                   <span>[{wl.boardCommentCount}]</span>
                 </p>
                 <div>
-                  <span>{wl.channelName}</span>
-                  {/*<span>{wl.inputDate}</span>*/}
-                  {/*<span>*/}
-                  {/*  {wl.writer} LV.{wl.level}*/}
-                  {/*</span>*/}
+                  <span>{wl.channelName ?? '전체'}</span>
+                  <span>{wl.createDate}</span>
+                  <span>
+                    {wl.nickname} LV.{userLevel(wl.point)}
+                  </span>
                 </div>
               </MainPostWrap>
-              {/*<img src={wl.img} />*/}
+              {/*{wl.fileImg && <img src={wl.fileImg} alt="" />}*/}
+              {wl.boardId % 3 === 1 && (
+                <img
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRA-TMLc35v2O__9GIggczxRojGubcSNSZ99e1eGS-aOg&s"
+                  alt=""
+                />
+              )}
             </MainPostItem>
           </a>
         );
@@ -76,6 +83,13 @@ const RecommendWrap = styled.div`
 
 const MainPostWrap = styled.div`
   flex: 1;
+  overflow: hidden;
+
+  & p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
   & p span {
     font-size: 14px;

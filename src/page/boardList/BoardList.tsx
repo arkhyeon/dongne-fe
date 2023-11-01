@@ -4,39 +4,51 @@ import styled from '@emotion/styled';
 import BoardSearch from './BoardSearch';
 import Pagination from '../../component/CommonComponents/Pagination';
 import { useEffect, useState } from 'react';
-import { APILatestBoardType, BoardType } from '../../type/BoardType';
+import { APISearchBoardType, BoardType } from '../../type/BoardType';
 import { getCookie } from '../../common/Cookie';
 import { client } from '../../common/axios';
+import { searchStore } from '../../store/SearchStore.ts';
+import { CategoryStore } from '../../store/CategoryStore.ts';
 
 function BoardList() {
+  const { subCategory, channel } = CategoryStore();
+  const { searchText, sort, searchType } = searchStore();
   const [page, setPage] = useState(1);
   const [recentList, setRecentList] = useState<BoardType[]>([]);
-  const [mainCategoryId, setMainCategory] = useState(0);
-  const [subCategoryId, setSubCategory] = useState(0);
+  const [totalPageCount, setTotalPageCount] = useState<number>(0);
 
   useEffect(() => {
-    getRecentList();
-  }, [page]);
+    getRecentList(1);
+  }, [sort, subCategory, channel]);
 
-  const getRecentList = () => {
+  const getRecentList = (page_nm: number) => {
+    setPage(page_nm);
     const userCode = { cityCode: getCookie('cityCode'), zoneCode: getCookie('zoneCode') };
     client
-      .post<APILatestBoardType>(`board/latest?page=${page}&size=10`, userCode)
-      .then(res => setRecentList(res.findLatestBoardsDtos));
+      .post<APISearchBoardType>(`board/search?page=${page_nm - 1}&size=10&sort=${sort},desc`, {
+        ...userCode,
+        title: searchType === 'title' ? searchText : '',
+        userId: searchType === 'userId' ? searchText : '',
+        subCategoryId: subCategory || null,
+        // channelId,
+      })
+      .then(res => {
+        setRecentList(res.findSearchBoardsDtos);
+        setTotalPageCount(res.totalPageCount);
+      });
   };
 
   return (
     <BoardListWrap>
       <p className="main-title-text">게시글</p>
-      <DongComTalk
-        mainCategory={mainCategoryId}
-        subCategory={subCategoryId}
-        setMainCategory={setMainCategory}
-        setSubCategory={setSubCategory}
-      />
-      <BoardSearch />
+      <DongComTalk useMainCategory={false} />
+      <BoardSearch searchEvent={() => getRecentList(1)} />
       <MainPostList postList={recentList} />
-      <Pagination currentPage={page} totalLength={19} pageEvent={pageNum => setPage(pageNum)} />
+      <Pagination
+        currentPage={page}
+        totalLength={totalPageCount}
+        pageEvent={pageNum => getRecentList(pageNum)}
+      />
     </BoardListWrap>
   );
 }

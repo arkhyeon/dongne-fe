@@ -62,7 +62,7 @@ const Bubble = ({ labelScale, items, bounds }: BubbleType) => {
   }, [items, bounds, labelScale]);
 
   return (
-    <div ref={containerRef} style={{ transition: '2s', height: '100%' }}>
+    <div ref={containerRef} style={{ transition: '2s, font-size 2s', height: '100%' }}>
       <svg width={'100%'} height={'100%'}>
         {items.map(({ backgroundColor, text }, index) => (
           <g key={index}>

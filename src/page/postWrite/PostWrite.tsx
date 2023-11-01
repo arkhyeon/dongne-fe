@@ -9,29 +9,37 @@ import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import QuillCustom from '../../common/QuillCustom';
 import { useLocation } from 'react-router-dom';
+import { CategoryStore } from '../../store/CategoryStore.ts';
 
 function PostWrite() {
+  const { mainCategory, subCategory, channel, setChannel } = CategoryStore();
   const { state } = useLocation();
   const fileRef = useRef() as MutableRefObject<HTMLInputElement>;
   const [title, setTitle] = useState('');
-  const [mainCategoryId, setMainCategory] = useState(0);
-  const [subCategoryId, setSubCategory] = useState(0);
-  const [boardType, setBoardType] = useState('NORMAL');
+  const [boardType, setBoardType] = useState('일반');
   const [content, setContent] = useState<string>('');
   const [deadLineAt, setDeadLineAt] = useState<Date>(new Date());
 
   useEffect(() => {
     if (state) {
       setTitle(state.title);
-      setMainCategory(state.mainCategoryId ?? 0);
-      setSubCategory(state.subCategoryId ?? 0);
       setBoardType(state.boardType);
       setContent(state.content);
-      setDeadLineAt(state.boardType === 2 ? '' : state.deadLineAt);
+      setDeadLineAt(state.boardType === '일반' ? '' : state.deadLineAt);
     }
   }, []);
 
   const handlerBoardData = () => {
+    if (subCategory === 0) {
+      alert('서브 카테고리를 설정해 주세요.');
+      return;
+    }
+
+    if (channel === '') {
+      alert('채널톡을 설정해 주세요.');
+      return;
+    }
+
     if (content === '<p><br></p>') {
       alert('빈 게시글을 등록할 수 없습니다.');
       return;
@@ -42,12 +50,14 @@ function PostWrite() {
       title,
       content,
       boardType,
-      mainCategoryId,
-      subCategoryId,
+      channel,
+      subCategory,
+      mainCategory,
       cityCode: getCookie('cityCode'),
       zoneCode: getCookie('zoneCode'),
       deadLineAt,
     };
+
     if (fileRef.current.files !== null) {
       const files = fileRef.current?.files[0];
 
@@ -87,22 +97,21 @@ function PostWrite() {
 
   return (
     <PostWriteWrap>
-      <input type={'file'} ref={fileRef} accept="image/*" />
       <TypeButtonWrap className="flex">
         <p className="list-text">게시글 타입</p>
         <SubButton
-          className={boardType === 'NORMAL' ? 'type-on' : ''}
-          onClick={() => setBoardType('NORMAL')}
+          className={boardType === '일반' ? 'type-on' : ''}
+          onClick={() => setBoardType('일반')}
         >
           일반 게시글
         </SubButton>
         <SubButton
-          className={boardType === 'EVENT' ? 'type-on' : ''}
-          onClick={() => setBoardType('EVENT')}
+          className={boardType === '이벤트' ? 'type-on' : ''}
+          onClick={() => setBoardType('이벤트')}
         >
           이벤트 게시글
         </SubButton>
-        {boardType === 'EVENT' && (
+        {boardType === '이벤트' && (
           <TypeButtonWrap className="flex">
             <p className="list-text">이벤트 종료 시간</p>
             <ReactDatePicker
@@ -115,12 +124,17 @@ function PostWrite() {
           </TypeButtonWrap>
         )}
       </TypeButtonWrap>
-      <DongComTalk
-        mainCategory={mainCategoryId}
-        subCategory={subCategoryId}
-        setMainCategory={setMainCategory}
-        setSubCategory={setSubCategory}
-      />
+      {boardType === '일반' && (
+        <>
+          <DongComTalk />
+          <TextInput
+            label="채널톡"
+            value={channel}
+            onChange={e => setChannel(e.target.value)}
+            placeholder="직접 입력하여 새로운 채널톡을 만들어보세요."
+          />
+        </>
+      )}
       <TextInput label="제목" value={title} onChange={e => setTitle(e.target.value)} />
       <QuillCustom content={content} setContent={setContent} />
       <ButtonWrap>

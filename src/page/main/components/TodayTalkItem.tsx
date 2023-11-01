@@ -1,32 +1,78 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import { BoardType } from '../../../type/BoardType';
+import { APISearchBoardType, BoardType, CommentType } from '../../../type/BoardType';
+import { client } from '../../../common/axios.ts';
+import { getCookie } from '../../../common/Cookie.ts';
 
-function TodayTalkItem({ talkList }: { talkList: BoardType[] }) {
+interface TodayTalkType {
+  boardList?: BoardType[];
+  commentList?: CommentType[];
+  subCategoryId: number;
+}
+
+function TodayTalkItem({ boardList = [], commentList = [], subCategoryId }: TodayTalkType) {
   const [talkDivide, setTalkDivide] = useState('hot');
+  const [recentList, setRecentList] = useState<BoardType[]>([]);
+  const userCode = { cityCode: getCookie('cityCode'), zoneCode: getCookie('zoneCode') };
+
+  const getNewTalkList = () => {
+    client
+      .post<APISearchBoardType>('board/search?page=0&size=5&sort=latest,desc', {
+        ...userCode,
+        subCategoryId,
+      })
+      .then(res => setRecentList(res.findSearchBoardsDtos));
+  };
 
   return (
     <TodayTalkItemWrap>
-      <TodayTalkDivide>
-        <div className={talkDivide === 'hot' ? 'on' : ''} onClick={() => setTalkDivide('hot')}>
-          Hot
-        </div>
-        <div className={talkDivide === 'new' ? 'on' : ''} onClick={() => setTalkDivide('new')}>
-          New
-        </div>
-      </TodayTalkDivide>
+      {commentList?.length === 0 && (
+        <TodayTalkDivide>
+          <div className={talkDivide === 'hot' ? 'on' : ''} onClick={() => setTalkDivide('hot')}>
+            Hot
+          </div>
+
+          <div
+            className={talkDivide === 'new' ? 'on' : ''}
+            onClick={() => {
+              setTalkDivide('new');
+              getNewTalkList();
+            }}
+          >
+            New
+          </div>
+        </TodayTalkDivide>
+      )}
       <TodayTalkList>
-        {talkList.map((tl, i) => {
-          return (
-            <a key={tl.boardId} href={`post/${tl.boardId}`} className="list-text">
+        {talkDivide === 'new' &&
+          recentList.map((rl, i) => (
+            <a key={rl.boardId + talkDivide} href={`post/${rl.boardId}`} className="list-text">
               <TodayTalkPost>
                 <span className="title-text">{i + 1}</span>
-                <span className="text-ellipsis">{tl.title}</span>
-                <span>({tl.boardLikesCount})</span>
+                <span className="text-ellipsis">{rl.title}</span>
+                <span>({rl.boardLikesCount})</span>
               </TodayTalkPost>
             </a>
-          );
-        })}
+          ))}
+        {talkDivide === 'hot' &&
+          boardList.map((bl, i) => (
+            <a key={bl.boardId} href={`post/${bl.boardId}`} className="list-text">
+              <TodayTalkPost>
+                <span className="title-text">{i + 1}</span>
+                <span className="text-ellipsis">{bl.title}</span>
+                <span>({bl.boardLikesCount})</span>
+              </TodayTalkPost>
+            </a>
+          ))}
+        {commentList.map((cl, i) => (
+          <a key={cl.boardCommentId} href={`post/${cl.boardId}`} className="list-text">
+            <TodayTalkPost>
+              <span className="title-text">{i + 1}</span>
+              <span className="text-ellipsis">{cl.content}</span>
+              <span>({cl.boardCommentLikesCount})</span>
+            </TodayTalkPost>
+          </a>
+        ))}
       </TodayTalkList>
     </TodayTalkItemWrap>
   );
@@ -80,7 +126,10 @@ const TodayTalkList = styled.div`
   padding: 0 4px 8px;
   flex-direction: column;
   border: 1px solid #0a91ab;
-  border-top: none;
+
+  div ~ & {
+    border-top: none;
+  }
 
   & a:first-of-type span:first-of-type {
     color: red;

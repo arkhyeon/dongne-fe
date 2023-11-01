@@ -6,10 +6,11 @@ import { userLevel, userLevelGage } from '../../../common/userCommon';
 function UserInfo({ userInfo }: { userInfo: UserMainInfo }) {
   return (
     <UserInfoWrap>
-      <img width="420" height="420" src={userInfo.profileImg} />
-      <div>
+      <img src={userInfo.profileImg} alt="" />
+      <div style={{ width: '100%' }}>
         <a className="title-text" href="/memberDetail">
-          {userInfo.nickname}({userInfo.userId})
+          {userInfo.nickname}
+          <br />({userInfo.userId})
         </a>
         <ExperienceWrap>
           <p className="list-text">LV : {userLevel(userInfo.point)}</p>
@@ -25,16 +26,22 @@ const UserInfoWrap = styled.div`
   display: flex;
   gap: 16px;
 
+  & a {
+    line-height: 22px;
+  }
+
   & img {
-    width: 100px;
+    min-width: 100px;
     height: 100px;
   }
 `;
 
 const ExperienceWrap = styled.div`
+  width: 100%;
   display: flex;
   justify-content: space-between;
   margin-top: 6px;
+  gap: 5px;
 
   p {
     font-size: 12px;

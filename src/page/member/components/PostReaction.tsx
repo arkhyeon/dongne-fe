@@ -1,25 +1,39 @@
 import MainPostList from '../../../component/post/MainPostList';
+import { client } from '../../../common/axios.ts';
+import { useEffect, useState } from 'react';
+import { APIReactionBoardType, BoardType } from '../../../type/BoardType.ts';
+import styled from '@emotion/styled';
 
 function PostReaction() {
-  const recentList = [
-    {
-      boardId: 1,
-      title: '게시글 반응1 제목',
-      commentTotal: 22,
-      boardCommentCount: 31,
-      boardLikesCount: 41,
-      channelName: '요모조모',
-    },
-    {
-      boardId: 21,
-      title: '게시글 반응2 제목',
-      commentTotal: 23,
-      boardCommentCount: 57,
-      boardLikesCount: 10,
-      channelName: '시끌시끌',
-    },
-  ];
-  return <MainPostList postList={recentList} />;
+  const [likeBoardList, setLikeBoardList] = useState<BoardType[]>([]);
+  const [commentBoardList, setCommentBoardList] = useState<BoardType[]>([]);
+
+  useEffect(() => {
+    getReactionList();
+  }, []);
+
+  const getReactionList = () => {
+    client
+      .get<APIReactionBoardType>('user/board-likes/reaction?page=0&size=20')
+      .then(res => setLikeBoardList(res.findUserReactionDtos));
+    client
+      .get<APIReactionBoardType>('user/board-comment/reaction?page=0&size=20')
+      .then(res => setCommentBoardList(res.findUserReactionDtos));
+  };
+
+  return (
+    <ReactionWrap>
+      <MainPostList title="좋아요 받은 게시글" postList={likeBoardList} />
+      <MainPostList title="댓글 받은 게시글" postList={commentBoardList} />
+    </ReactionWrap>
+  );
 }
+
+const ReactionWrap = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+`;
 
 export default PostReaction;

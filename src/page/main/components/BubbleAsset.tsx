@@ -11,8 +11,8 @@ export function prepare(items: ItemInitType[]) {
   let itemsBounds: BoundsType = { bottom: 0, right: 0, left: 0, top: 0 };
 
   for (let i = 0; i < items.length; i++) {
-    const r = items[i].value ?? 0;
-    const text = items[i].text;
+    const r = items[i].boardCount ?? 0;
+    const text = items[i].name;
     const backgroundColor =
       '#' +
       Math.floor(Math.random() * 16777215)
@@ -31,17 +31,17 @@ export function prepare(items: ItemInitType[]) {
         itemsBounds = { left: -r, top: -r, right: r, bottom: r };
         break;
       case 1:
-        items[0].value = items[0].value ?? 0;
-        items[1].value = items[1].value ?? 0;
+        items[0].boardCount = items[0].boardCount ?? 0;
+        items[1].boardCount = items[1].boardCount ?? 0;
 
-        x = items[0].value + items[1].value;
+        x = items[0].boardCount + items[1].boardCount;
         y = 0;
         bounds = { left: -r, top: -r, right: r, bottom: r };
         itemsBounds = {
           top: 0,
           right: 0,
-          left: -items[0].value,
-          bottom: Math.max(items[0].value, items[1].value),
+          left: -items[0].boardCount,
+          bottom: Math.max(items[0].boardCount, items[1].boardCount),
         };
         break;
       default: {

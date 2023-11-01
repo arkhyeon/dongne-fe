@@ -1,110 +1,23 @@
 import styled from '@emotion/styled';
-import { AiOutlineMinusSquare, AiOutlinePlusSquare } from 'react-icons/ai';
-import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
-import { client } from '../../common/axios';
-import {
-  APICategoryType,
-  APISubCategoryType,
-  CategoryType,
-  SubCategoryType,
-} from '../../type/CategoryType';
-
-interface CategorySettingType {
-  mainCategory: number;
-  subCategory: number;
-  setMainCategory: (e: number) => void;
-  setSubCategory: (e: number) => void;
-}
+import MainCategory from './MainCategory.tsx';
+import SubCategory from './SubCategory.tsx';
+import ChannelTalk from './ChannelTalk.tsx';
 
 function DongComTalk({
-  mainCategory,
-  subCategory,
-  setMainCategory,
-  setSubCategory,
-}: CategorySettingType) {
-  const [mainView, setMainView] = useState<boolean>(false);
-  const [subView, setSubView] = useState<boolean>(false);
-  const [categoryList, setCategoryList] = useState<CategoryType[]>([]);
-  const [subCategoryList, setSubCategoryList] = useState<SubCategoryType[]>([]);
-
-  useEffect(() => {
-    getCategoryList();
-  }, []);
-
-  const getCategoryList = () => {
-    client
-      .get<APICategoryType>('main-categories')
-      .then(res => setCategoryList(res.mainCategoryDtos));
-  };
-
-  const getSubCategory = (mainCategoryId: number) => {
-    client
-      .get<APISubCategoryType>(`sub-categories/${mainCategoryId}`)
-      .then(res => setSubCategoryList(res.subCategoryDtos));
-  };
-
+  useMainCategory = true,
+  useSubCategory = true,
+  useChannelTalk = true,
+}: {
+  useMainCategory?: boolean;
+  useSubCategory?: boolean;
+  useChannelTalk?: boolean;
+}) {
   return (
     <DongComTalkWrap>
-      <p className="flex gap-5" onClick={() => setMainView(prevState => !prevState)}>
-        메인 채널톡 {mainView ? <AiOutlineMinusSquare /> : <AiOutlinePlusSquare />}
-      </p>
-      <DongComTalkItemWrap view={mainView}>
-        <DongComTalkItem
-          key={0}
-          className={mainCategory === 0 ? 'cate-on' : ''}
-          onClick={() => {
-            setMainCategory(0);
-            setSubCategory(0);
-          }}
-        >
-          없음
-          {/*<span>({dl.postCnt})</span>*/}
-        </DongComTalkItem>
-        {categoryList.map(dl => (
-          <DongComTalkItem
-            key={dl.mainCategoryId}
-            className={mainCategory === dl.mainCategoryId ? 'cate-on' : ''}
-            onClick={() => {
-              getSubCategory(dl.mainCategoryId);
-              setMainCategory(dl.mainCategoryId);
-              setSubCategory(0);
-            }}
-          >
-            {dl.mainCategoryType}
-            {/*<span>({dl.postCnt})</span>*/}
-          </DongComTalkItem>
-        ))}
-      </DongComTalkItemWrap>
-      {subCategoryList.length !== 0 && (
-        <>
-          <p className="flex gap-5" onClick={() => setSubView(prevState => !prevState)}>
-            서브 채널톡 {subView ? <AiOutlineMinusSquare /> : <AiOutlinePlusSquare />}
-          </p>
-          <DongComTalkItemWrap view={subView}>
-            <DongComTalkItem
-              key={0}
-              className={subCategory === 0 ? 'cate-on' : ''}
-              onClick={() => setSubCategory(0)}
-            >
-              없음
-              {/*<span>({dl.postCnt})</span>*/}
-            </DongComTalkItem>
-            {subCategoryList.map(dl => (
-              <DongComTalkItem
-                key={dl.subCategoryId}
-                className={subCategory === dl.subCategoryId ? 'cate-on' : ''}
-                onClick={() => {
-                  setSubCategory(dl.subCategoryId);
-                }}
-              >
-                {dl.name}
-                {/*<span>({dl.postCnt})</span>*/}
-              </DongComTalkItem>
-            ))}
-          </DongComTalkItemWrap>
-        </>
-      )}
+      {useMainCategory && <MainCategory />}
+      {useSubCategory && <SubCategory useMainCategory={useMainCategory} />}
+      {useChannelTalk && <ChannelTalk useMainCategory={useMainCategory} />}
     </DongComTalkWrap>
   );
 }
@@ -118,11 +31,12 @@ const DongComTalkWrap = styled.div`
   }
 `;
 
-const DongComTalkItemWrap = styled.div`
+export const DongComTalkItemWrap = styled.div`
   width: 100%;
+  max-height: 35px;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px 5px;
+  gap: 10px 25px;
   overflow: hidden;
 
   & .cate-on {
@@ -147,15 +61,14 @@ const DongComTalkItemWrap = styled.div`
   ${({ view }: { view: boolean }) => {
     if (view) {
       return css`
-        height: 142px;
+        max-height: 166px;
         overflow-y: scroll;
       `;
     }
   }}
 `;
 
-const DongComTalkItem = styled.div`
-  width: 105px;
+export const DongComTalkItem = styled.div`
   height: 34px;
   display: flex;
   align-items: center;

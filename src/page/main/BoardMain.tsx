@@ -6,7 +6,7 @@ import BestBoard from './BestBoard';
 import { useEffect, useState } from 'react';
 import { client } from '../../common/axios';
 import { getCookie } from '../../common/Cookie';
-import { APILatestBoardType, BoardType } from '../../type/BoardType';
+import { APISearchBoardType, BoardType } from '../../type/BoardType';
 
 function BoardMain() {
   const [recentList, setRecentList] = useState<BoardType[]>([]);
@@ -18,8 +18,8 @@ function BoardMain() {
   const getRecentList = () => {
     const userCode = { cityCode: getCookie('cityCode'), zoneCode: getCookie('zoneCode') };
     client
-      .post<APILatestBoardType>(`board/latest?page=0&size=10`, userCode)
-      .then(res => setRecentList(res.findLatestBoardsDtos));
+      .post<APISearchBoardType>(`board/search?page=0&size=10&sort=latest,desc`, { ...userCode })
+      .then(res => setRecentList(res.findSearchBoardsDtos));
   };
 
   return (

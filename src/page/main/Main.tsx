@@ -13,6 +13,7 @@ function Main() {
 
 const MainWrap = styled.div`
   width: 1230px;
+  min-height: 670px;
   margin: 30px auto 0;
   display: flex;
   gap: 30px;

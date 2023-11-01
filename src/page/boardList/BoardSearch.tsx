@@ -2,19 +2,33 @@ import styled from '@emotion/styled';
 import { BoardSearchInput } from '../../component/CommonComponents/SearchInput';
 import { MainButton } from '../../component/CommonComponents/Button';
 import SelectPopup, { SelectPopupOption } from '../../component/CommonComponents/SelectPopup';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { searchStore } from '../../store/SearchStore.ts';
+import { BsDot } from 'react-icons/bs';
 
-function BoardSearch() {
-  const [orderOption, setOrderOption] = useState('최신순');
+function BoardSearch({ searchEvent }: { searchEvent: () => void }) {
+  const { searchText, sort, searchType, setSearchText, setSort, setSearchType } = searchStore();
   const navigate = useNavigate();
   return (
     <BoardSearchWrap>
-      <BoardSearchInput />
-      <SelectPopup value={orderOption}>
-        {order.map(o => {
+      <SelectPopup value={SEARCH_TYPE.find(s => s.id === searchType)?.type} icon={<BsDot />}>
+        {SEARCH_TYPE.map(s => {
           return (
-            <SelectPopupOption key={o.id} onClick={() => setOrderOption(o.ordering)}>
+            <SelectPopupOption key={s.id} onClick={() => setSearchType(s.id)}>
+              {s.type}
+            </SelectPopupOption>
+          );
+        })}
+      </SelectPopup>
+      <BoardSearchInput
+        value={searchText}
+        onChange={e => setSearchText(e.target.value)}
+        searchEvent={searchEvent}
+      />
+      <SelectPopup value={ORDER_TYPE.find(o => o.id === sort)?.ordering}>
+        {ORDER_TYPE.map(o => {
+          return (
+            <SelectPopupOption key={o.id} onClick={() => setSort(o.id)}>
               {o.ordering}
             </SelectPopupOption>
           );
@@ -33,8 +47,13 @@ const BoardSearchWrap = styled.div`
 
 export default BoardSearch;
 
-const order = [
-  { id: 1, ordering: '최신순' },
-  { id: 2, ordering: '추천순' },
-  { id: 3, ordering: '댓글순' },
+const SEARCH_TYPE = [
+  { id: 'title', type: '제목' },
+  { id: 'userId', type: '아이디' },
+];
+
+const ORDER_TYPE = [
+  { id: 'latest', ordering: '최신순' },
+  { id: 'likes', ordering: '추천순' },
+  { id: 'comments', ordering: '댓글순' },
 ];

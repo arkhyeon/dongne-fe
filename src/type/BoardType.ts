@@ -6,29 +6,31 @@ export interface BoardType {
   fileImg?: string;
   commentTotal?: number;
   boardCommentCount?: number;
-  boardLikesCount?: number;
+  boardLikesCount: number;
   channelName?: string;
+  createDate: string;
+  nickname: string;
+  point: number;
 }
 
-export interface BoardDetailType extends GetResponse {
-  boardId: number;
-  title: string;
+export interface BoardDetailType extends GetResponse, BoardType {
   content: string;
-  createDate: string;
   deadlineAt: string | null;
   userId: string;
-  fileImg: string | null;
   viewCnt: number;
-  boardCommentCount: number;
-  boardLikesCount: number;
-  channelName: string | null;
   isLiked: boolean;
 }
 
-export interface CategoryBoardType {
+export interface HotCategoryBoardType {
   subCategoryId: number;
   subCategoryName: string;
   findHotBoardsDtos: BoardType[];
+}
+
+export interface HotCategoryCommentType {
+  subCategoryId: number;
+  subCategoryName: string;
+  findHotBoardCommentsDtos: CommentType[];
 }
 
 export interface APIBoardType extends GetResponse {
@@ -37,14 +39,21 @@ export interface APIBoardType extends GetResponse {
 export interface APIEventBoardType extends GetResponse {
   findEventBoardsByPeriodDtos: BoardType[];
 }
+export interface APIReactionBoardType extends GetResponse {
+  findUserReactionDtos: BoardType[];
+}
 export interface APILatestBoardType extends GetResponse {
   findLatestBoardsDtos: BoardType[];
 }
+export interface APISearchBoardType {
+  findSearchBoardsDtos: BoardType[];
+  totalPageCount: number;
+}
 export interface APIHotCategoryBoardType extends GetResponse {
-  findHotBoardsByCategoriesDtos: CategoryBoardType[];
+  findHotBoardsByCategoriesDtos: HotCategoryBoardType[];
 }
 export interface APIHotCategoryCommentType extends GetResponse {
-  com: CommentType[];
+  findHotBoardCommentsByCategoriesDtos: HotCategoryCommentType[];
 }
 
 export interface PostType {
@@ -70,6 +79,7 @@ export interface CommentType {
   boardId?: number;
   boardCommentId: number;
   content: string;
+  boardCommentLikesCount: number;
 }
 
 export interface APICommentType extends GetResponse {
@@ -78,10 +88,11 @@ export interface APICommentType extends GetResponse {
 
 export interface BoardCommentType extends CommentType {
   userId: string;
+  nickname: string;
   createDate: string;
   isLiked: boolean;
-  boardCommentLikesCount: number;
   replyCommentCount: number;
+  point: number;
 }
 
 export interface APIReplyType extends GetResponse {
@@ -92,6 +103,8 @@ export interface ReplyType {
   replyCommentId: number;
   content: string;
   userId: string;
+  nickname: string;
   createDate: string;
   isLiked: boolean;
+  point: number;
 }

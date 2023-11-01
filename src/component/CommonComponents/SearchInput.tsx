@@ -1,13 +1,21 @@
 import styled from '@emotion/styled';
 import { SearchButton } from './Button';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { InputHTMLAttributes } from 'react';
+import React, { InputHTMLAttributes } from 'react';
 
-export function HeaderSearchInput(props: InputHTMLAttributes<HTMLInputElement>) {
+const enterEvent = (e: React.KeyboardEvent<HTMLInputElement>, enterEvent: () => void) => {
+  if (e.key === 'Enter' && enterEvent) {
+    enterEvent();
+  }
+};
+
+export function HeaderSearchInput(
+  props: InputHTMLAttributes<HTMLInputElement> & { searchEvent: () => void },
+) {
   return (
     <HeaderSearchInputWrap>
-      <HeaderSearch type="text" {...props} />
-      <SearchButton>
+      <HeaderSearch type="text" {...props} onKeyDown={e => enterEvent(e, props.searchEvent)} />
+      <SearchButton onClick={props.searchEvent}>
         <AiOutlineSearch />
         검색
       </SearchButton>
@@ -15,11 +23,13 @@ export function HeaderSearchInput(props: InputHTMLAttributes<HTMLInputElement>) 
   );
 }
 
-export function BoardSearchInput(props: InputHTMLAttributes<HTMLInputElement>) {
+export function BoardSearchInput(
+  props: InputHTMLAttributes<HTMLInputElement> & { searchEvent: () => void },
+) {
   return (
     <BoardSearchInputWrap>
-      <HeaderSearch type="text" {...props} />
-      <SearchButton>
+      <HeaderSearch type="text" {...props} onKeyDown={e => enterEvent(e, props.searchEvent)} />
+      <SearchButton onClick={props.searchEvent}>
         <AiOutlineSearch />
         검색
       </SearchButton>

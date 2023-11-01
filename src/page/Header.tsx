@@ -32,20 +32,20 @@ function Header() {
   return (
     <HeaderWrap>
       <LogoWrap>
-        <img src="src/asset/img/logo2.png" />
+        <img src="/src/asset/img/logo2.png" />
         <TopWriterWrap>
           <p>Top Writers</p>
           <div>
             <SlideWriter>
               {topWriterList.map(tl => {
-                return <div key={tl.userId}>{tl.userId}</div>;
+                return <div key={tl.userId}>{tl.nickname}</div>;
               })}
             </SlideWriter>
           </div>
         </TopWriterWrap>
       </LogoWrap>
 
-      <HeaderSearchInput />
+      <HeaderSearchInput searchEvent={() => console.log('?')} />
       <WidgetWrap>
         <FiLogOut onClick={() => logout()} />
       </WidgetWrap>

@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { GoThumbsup } from 'react-icons/go';
 import { useEffect, useState } from 'react';
+import { client } from '../../../common/axios.ts';
 
 function PostRecommend({
   boardId,
@@ -16,8 +17,13 @@ function PostRecommend({
   useEffect(() => {
     setLike(isLiked);
   }, [boardId]);
+
+  const setPostLike = () => {
+    client.post(`boardLikes/check/${boardId}`).then(res => console.log(res));
+  };
+
   return (
-    <PostRecWrap className="flex-cc" onClick={() => setLike(prevState => !prevState)}>
+    <PostRecWrap className="flex-cc" onClick={() => setPostLike()}>
       <GoThumbsup className={like ? 'animation-like' : ''} />
       {like ? recommend + 1 : recommend}
     </PostRecWrap>

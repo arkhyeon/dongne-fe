@@ -12,12 +12,17 @@ import { MdDelete, MdEdit } from 'react-icons/md';
 import { useQuery, UseQueryResult } from 'react-query';
 import { client } from '../../common/axios';
 import { BoardDetailType } from '../../type/BoardType';
+import { userLevel } from '../../common/userCommon.ts';
 
 function PostDetail() {
   const navigate = useNavigate();
   const { boardId } = useParams();
-  const { data, isFetching }: UseQueryResult<BoardDetailType> = useQuery('getPostDetail', () =>
-    client.get(`board/41`),
+  const { data, isLoading }: UseQueryResult<BoardDetailType> = useQuery(
+    'getPostDetail',
+    () => client.get(`board/${boardId}`).then(res => res),
+    {
+      notifyOnChangeProps: ['data'],
+    },
   );
 
   useEffect(() => {
@@ -30,14 +35,14 @@ function PostDetail() {
 
   return (
     <PostWrap>
-      {!isFetching && data && (
+      {!isLoading && data && (
         <>
           <PostHeader>
             <p>{data.title}</p>
             <PostInfoWrap>
               <span>
-                {data.channelName ?? '없음'} <span>|</span> {data.createDate} <span>|</span>
-                {data.userId}
+                {data.channelName ?? '전체'} <span>|</span> {data.createDate} <span>|</span>
+                LV.{userLevel(data.point)} {data.nickname}
               </span>
               <span>
                 조회 : {data.viewCnt} | 댓글 : {data.boardCommentCount} | 추천 :{' '}

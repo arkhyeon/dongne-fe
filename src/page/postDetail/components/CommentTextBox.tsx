@@ -6,6 +6,7 @@ import { BoardCommentType, ReplyType } from '../../../type/BoardType';
 import React from 'react';
 import { getCookie } from '../../../common/Cookie';
 import { useParams } from 'react-router-dom';
+import { userLevel } from '../../../common/userCommon.ts';
 
 function CommentTextBox({
   content,
@@ -18,8 +19,8 @@ function CommentTextBox({
   return (
     <CommentMain>
       <div className="list-text">
-        {/*<span>LV.{content.level}</span>*/}
-        <span>{content.userId}</span>
+        <span>LV.{userLevel(content.point)}</span>
+        <span>{content.nickname}</span>
         <span>| {elapsedDate(new Date(content.createDate))}</span>
         {getCookie('userId') !== content.userId && <SirenReport boardId={boardId ?? '0'} />}
       </div>

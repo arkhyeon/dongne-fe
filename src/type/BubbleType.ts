@@ -1,3 +1,5 @@
+import { GetResponse } from '../common/axios.ts';
+
 export interface BubbleInitType {
   labelScale: number;
   items: ItemInitType[];
@@ -10,8 +12,12 @@ export interface BubbleType {
 }
 
 export interface ItemInitType {
-  text: string;
-  value: number;
+  name: string;
+  boardCount: number;
+}
+
+export interface APIItemInitType extends GetResponse {
+  cityNameCountDtos: ItemInitType[];
 }
 
 export interface CandidatType {
