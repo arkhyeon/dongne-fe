@@ -29,6 +29,10 @@ export const Pagination = ({
     pageEvent(pageNum);
   };
 
+  if (totalLength === 0) {
+    return <></>;
+  }
+
   return (
     <PaginationWrap>
       <PaginationItem onClick={() => movePage(currentPage - 1)}>
