@@ -72,7 +72,7 @@ function MemberLogin() {
         />
         <MainButton type="submit">로그인</MainButton>
         <NavLink className="list-text flex-end" to={'/join'}>
-          회원가입
+          아직 회원이 아니신가요?<span>회원가입</span>
         </NavLink>
       </JoinWrap>
     </form>
@@ -89,6 +89,16 @@ const JoinWrap = styled.div`
   & button {
     width: 100%;
     height: 34px;
+  }
+
+  & a {
+    font-size: 12px;
+  }
+
+  & span {
+    font-size: 14px;
+    color: #0a91ab;
+    margin-left: 5px;
   }
 `;
 
