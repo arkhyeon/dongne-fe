@@ -19,14 +19,16 @@ function PostNavigation({ boardId }: { boardId: string }) {
   const getNextPrev = () => {
     const numberBid = Number(boardId);
     const userCode = { cityCode: getCookie('cityCode'), zoneCode: getCookie('zoneCode') };
-    client.post<APILatestBoardType>('board/latest?page=0&size=99999', userCode).then(res => {
-      for (let i = 0; i < res.findLatestBoardsDtos.length; i++) {
-        if (numberBid === res.findLatestBoardsDtos[i].boardId) {
-          setNextPost(res.findLatestBoardsDtos[i + 1]);
-          setPrevPost(res.findLatestBoardsDtos[i - 1]);
+    client
+      .post<APILatestBoardType>(`board/search?page=0&size=9999&sort=latest,desc`, userCode)
+      .then(res => {
+        for (let i = 0; i < res.findSearchBoardsDtos.length; i++) {
+          if (numberBid === res.findSearchBoardsDtos[i].boardId) {
+            setNextPost(res.findSearchBoardsDtos[i + 1]);
+            setPrevPost(res.findSearchBoardsDtos[i - 1]);
+          }
         }
-      }
-    });
+      });
   };
 
   const navigatePost = (boardId: number | undefined) => {

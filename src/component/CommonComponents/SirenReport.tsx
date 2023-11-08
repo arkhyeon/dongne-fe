@@ -4,6 +4,7 @@ import Modal from '../modal/Modal';
 import { useMemo, useState } from 'react';
 import { MainButton, SubButton } from './Button';
 import ReactQuill from 'react-quill';
+import { DC } from '../../store/ToastStore.ts';
 
 function SirenReport({ boardId }: { boardId: string }) {
   const [open, setOpen] = useState(false);
@@ -27,7 +28,7 @@ function SirenReport({ boardId }: { boardId: string }) {
   const insertPost = () => {
     // const getPostContent = editorRef.current.getInstance().getHTML();
     if (reportContent === '<p><br></p>') {
-      alert('신고 사유를 작성해 주세요.');
+      DC.alert('신고 사유를 작성해 주세요.');
     }
   };
 

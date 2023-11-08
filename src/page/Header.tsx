@@ -2,13 +2,17 @@ import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { FiLogOut } from 'react-icons/fi';
 import { HeaderSearchInput } from '../component/CommonComponents/SearchInput';
-import { client, loginAxios } from '../common/axios';
+import { client } from '../common/axios';
 import { removeCookie } from '../common/Cookie';
 import { APIUserRankingType, UserRankingType } from '../type/UserType';
+import { useNavigate } from 'react-router-dom';
+import { searchStore } from '../store/SearchStore.ts';
+import { DC } from '../store/ToastStore.ts';
 
 function Header() {
+  const { setSearchText } = searchStore();
   const [topWriterList, setTopWriterList] = useState<UserRankingType[]>([]);
-
+  const navigate = useNavigate();
   useEffect(() => getTopWriterList(), []);
 
   const getTopWriterList = () => {
@@ -19,14 +23,21 @@ function Header() {
       .then(res => setTopWriterList(res.userRankingDtos));
   };
 
-  const logout = () => {
-    removeCookie('accessToken');
-    removeCookie('refreshToken');
-
-    loginAxios
+  const logout = async () => {
+    if (!(await DC.confirm('로그아웃 하시겠습니까?'))) {
+      return;
+    }
+    client
       .post('user/logout')
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
+      .then(() => {
+        DC.alertSuccess('정상적으로 로그아웃되셨습니다.');
+        navigate('/login');
+      })
+      .catch(err => console.log(err))
+      .finally(() => {
+        removeCookie('accessToken');
+        removeCookie('refreshToken');
+      });
   };
 
   return (
@@ -45,7 +56,10 @@ function Header() {
         </TopWriterWrap>
       </LogoWrap>
 
-      <HeaderSearchInput searchEvent={() => console.log('?')} />
+      <HeaderSearchInput
+        onChange={e => setSearchText(e.target.value)}
+        searchEvent={() => navigate('search')}
+      />
       <WidgetWrap>
         <FiLogOut onClick={() => logout()} />
       </WidgetWrap>

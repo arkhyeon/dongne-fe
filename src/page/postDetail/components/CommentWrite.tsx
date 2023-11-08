@@ -3,15 +3,33 @@ import 'react-quill/dist/quill.bubble.css';
 import styled from '@emotion/styled';
 import { MainButton, SubButton } from '../../../component/CommonComponents/Button';
 import { useMemo, useState } from 'react';
-import { getCookie } from '../../../common/Cookie';
 import { client } from '../../../common/axios';
 import { useParams } from 'react-router-dom';
+import { UserStore } from '../../../store/UserStore.ts';
+import { userLevel } from '../../../common/userCommon.ts';
+import { DC } from '../../../store/ToastStore.ts';
 
-function CommentWrite({ type = 1, cancel }: { type?: number; cancel?: () => void }) {
+function CommentWrite({
+  boardCommentId = 0,
+  cancel,
+}: {
+  boardCommentId?: number;
+  cancel?: () => void;
+}) {
+  const { UserInfo } = UserStore();
   const { boardId } = useParams();
   const [comment, setComment] = useState('');
+
   const registerComment = () => {
-    client.post('boardComment', { boardId, content: comment });
+    if (boardCommentId === 0) {
+      client.post('boardComment', { boardId, content: comment }).then(() => {
+        DC.alert('댓글을 작성하셨습니다.');
+      });
+    } else {
+      client.post('replyComment', { replyCommentId: boardCommentId, content: comment }).then(() => {
+        DC.alert('대댓글을 작성하셨습니다.');
+      });
+    }
   };
   function handleTags() {
     console.log('HANDLE TAG CLICK');
@@ -30,7 +48,9 @@ function CommentWrite({ type = 1, cancel }: { type?: number; cancel?: () => void
 
   return (
     <CommentWriteWrap>
-      <CommentWriteHeader id="toolbar">LV.88 {getCookie('userId')}</CommentWriteHeader>
+      <CommentWriteHeader id="toolbar">
+        LV.{userLevel(UserInfo.point)} {UserInfo.nickname}
+      </CommentWriteHeader>
       <ReactQuill
         placeholder="댓글을 작성하세요"
         theme="bubble"
@@ -41,7 +61,7 @@ function CommentWrite({ type = 1, cancel }: { type?: number; cancel?: () => void
       />
       <ButtonWrap>
         <MainButton onClick={registerComment}>등록</MainButton>
-        {type === 2 && <SubButton onClick={cancel}>취소</SubButton>}
+        {boardCommentId ? <SubButton onClick={cancel}>취소</SubButton> : ''}
       </ButtonWrap>
     </CommentWriteWrap>
   );

@@ -7,8 +7,10 @@ import styled from '@emotion/styled';
 import { CityCodeNames, DistrictType, UserMainInfo } from '../../../type/UserType';
 import { client } from '../../../common/axios';
 import { getCookie } from '../../../common/Cookie';
+import PasswordChange from '../modal/PasswordChange.tsx';
 
 function MemberEdit() {
+  const [pwdChangeOpen, setPwdChangeOpen] = useState(false);
   const {
     register,
     handleSubmit,
@@ -101,7 +103,6 @@ function MemberEdit() {
     <form onSubmit={handleSubmit(onSubmit)}>
       <JoinWrap>
         <FormInput id="userId" name="userId" label="아이디" value={getCookie('userId')} readOnly />
-        <p className="list-text">* 비밀번호 변경은 불가합니다.</p>
         <FormInput
           id="nickname"
           name="nickname"
@@ -148,9 +149,11 @@ function MemberEdit() {
           />
         </div>
         <ButtonWrap>
+          <MainButton onClick={() => setPwdChangeOpen(true)}>비밀번호 변경</MainButton>
           <MainButton type="submit">수정</MainButton>
         </ButtonWrap>
       </JoinWrap>
+      <PasswordChange open={pwdChangeOpen} handleClose={() => setPwdChangeOpen(false)} />
     </form>
   );
 }
@@ -161,7 +164,6 @@ const JoinWrap = styled.div`
   gap: 22px;
 
   & button {
-    width: 80px;
     min-width: 80px;
     height: 34px;
   }
@@ -171,6 +173,7 @@ const ButtonWrap = styled.div`
   width: 100%;
   display: flex;
   justify-content: flex-end;
+  gap: 15px;
 `;
 
 export default MemberEdit;

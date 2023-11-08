@@ -45,7 +45,7 @@ export const DataListInput = forwardRef(
   (props: InputHTMLAttributes<HTMLInputElement>, ref: React.Ref<HTMLInputElement>) => {
     return (
       <TextInputWrap>
-        <label htmlFor={props.id}>{props.id}</label>
+        <label htmlFor={props.id}>{props.name}</label>
         <input type="text" ref={ref} {...props} />
       </TextInputWrap>
     );

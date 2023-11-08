@@ -6,6 +6,7 @@ import { client, loginAxios } from '../../common/axios';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { UserType } from '../../type/UserType';
 import { setCookie } from '../../common/Cookie';
+import { DC } from '../../store/ToastStore.ts';
 
 function MemberLogin() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ function MemberLogin() {
     formState: { errors },
   } = useForm({ mode: 'onChange' });
 
-  const onSubmit: SubmitHandler<FieldValues> = ({ userId, password }) => {
+  const onSubmit: SubmitHandler<FieldValues> = async ({ userId, password }) => {
     if (!userId) {
       setError('userId', { message: '아이디를 입력해 주세요.' });
       return;
@@ -39,7 +40,7 @@ function MemberLogin() {
         } else if (err.response.data.responseMessage === 'Incorrect Password') {
           setError('password', { message: '비밀번호가 틀렸습니다.' });
         } else {
-          alert('로그인 오류로 인해 현재 접속할 수 없습니다.');
+          DC.alertError('로그인 오류로 인해 현재 접속할 수 없습니다.');
         }
       });
   };

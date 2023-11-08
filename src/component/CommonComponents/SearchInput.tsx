@@ -3,14 +3,21 @@ import { SearchButton } from './Button';
 import { AiOutlineSearch } from 'react-icons/ai';
 import React, { InputHTMLAttributes } from 'react';
 
-const enterEvent = (e: React.KeyboardEvent<HTMLInputElement>, enterEvent: () => void) => {
+const enterEvent = (
+  e: React.KeyboardEvent<HTMLInputElement>,
+  enterEvent: (e: React.KeyboardEvent<HTMLInputElement>) => void,
+) => {
   if (e.key === 'Enter' && enterEvent) {
-    enterEvent();
+    enterEvent(e);
   }
 };
 
 export function HeaderSearchInput(
-  props: InputHTMLAttributes<HTMLInputElement> & { searchEvent: () => void },
+  props: InputHTMLAttributes<HTMLInputElement> & {
+    searchEvent: (
+      e: React.KeyboardEvent<HTMLInputElement> | React.MouseEvent<HTMLButtonElement>,
+    ) => void;
+  },
 ) {
   return (
     <HeaderSearchInputWrap>
@@ -59,5 +66,4 @@ const BoardSearchInputWrap = styled.div`
 `;
 const HeaderSearchInputWrap = styled(BoardSearchInputWrap)`
   width: 50%;
-  border-radius: 5px;
 `;

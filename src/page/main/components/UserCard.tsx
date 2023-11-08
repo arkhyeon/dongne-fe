@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { UserMainInfo } from '../../../type/UserType';
 import { userLevel, userLevelGage } from '../../../common/userCommon';
 
-function UserInfo({ userInfo }: { userInfo: UserMainInfo }) {
+function UserCard({ userInfo }: { userInfo: UserMainInfo }) {
   return (
     <UserInfoWrap>
       <img src={userInfo.profileImg} alt="" />
@@ -48,4 +48,4 @@ const ExperienceWrap = styled.div`
   }
 `;
 
-export default UserInfo;
+export default UserCard;

@@ -3,7 +3,7 @@ import React, { createContext, useContext } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { createPortal } from 'react-dom';
 
-interface ModalType {
+export interface ModalType {
   open?: boolean;
   handleClose: () => void;
   children?: React.ReactNode;

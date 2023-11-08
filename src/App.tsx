@@ -7,8 +7,6 @@ import PostWrite from './page/postWrite/PostWrite';
 import MemberJoin from './page/member/MemberJoin';
 import MemberLogin from './page/member/MemberLogin';
 import MemberDetail from './page/member/MemberDetail';
-import MyPost from './page/member/components/MyPost';
-import MyComment from './page/member/components/MyComment';
 import PostReaction from './page/member/components/PostReaction';
 import MemberEdit from './page/member/components/MemberEdit';
 import EventBoardList from './page/boardList/EventBoardList';
@@ -16,6 +14,7 @@ import MemberRanking from './page/member/MemberRanking';
 import { HasLogin, PrivateRouter } from './component/router/RouterBranch';
 import { ComponentType, lazy, LazyExoticComponent, Suspense } from 'react';
 import Main from './page/main/Main';
+import SearchList from './page/search/SearchList.tsx';
 
 // const [Main, preload] = getLazyComponentAndPreload(() => import('./page/main/Main'));
 // const [Main, preload] = getLazyComponentAndPreload(() => import('./page/main/Main'));
@@ -60,13 +59,11 @@ function App() {
           </Route>
           <Route path="postwrite" element={<PrivateRouter element={<PostWrite />} />} />
           <Route path="memberDetail" element={<MemberDetail />}>
-            <Route index element={<MyPost />} />
-            <Route path="mycomment" element={<PrivateRouter element={<MyComment />} />} />
-            <Route path="postreaction" element={<PostReaction />} />
-            {/*<Route index element={<PrivateRouter element={<MemberEdit />} />} />*/}
+            <Route index element={<PostReaction />} />
             <Route path="memberEdit" element={<PrivateRouter element={<MemberEdit />} />} />
           </Route>
           <Route path="rank" element={<MemberRanking />} />
+          <Route path="search" element={<SearchList />} />
         </Route>
         <Route path="login" element={<HasLogin element={<MemberLogin />} />} />
         <Route path="join" element={<HasLogin element={<MemberJoin />} />} />

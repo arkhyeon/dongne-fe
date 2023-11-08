@@ -1,38 +1,23 @@
 import styled from '@emotion/styled';
-import UserInfo from '../main/components/UserInfo';
+import UserCard from '../main/components/UserCard.tsx';
 import { NavLink, Outlet } from 'react-router-dom';
-import { useLayoutEffect, useState } from 'react';
-import { client } from '../../common/axios';
-import { UserMainInfo } from '../../type/UserType';
-import Identicon from 'identicon.js';
-import SHA256 from '../../common/Sha256';
-import toHex from '../../common/toHex';
-import { userInitValue } from '../../common/userCommon';
+import { useEffect } from 'react';
+import { UserStore } from '../../store/UserStore.ts';
 
 function MemberDetail() {
-  const [userInfo, setUserInfo] = useState<UserMainInfo>(userInitValue);
-
-  useLayoutEffect(() => {
-    client.get<UserMainInfo>('user-main?page=0&size=3').then(res => {
-      if (!res.profileImg) {
-        res.profileImg = `data:image/png;base64,${new Identicon(
-          SHA256(toHex(res.userId)),
-          420,
-        ).toString()}`;
-      }
-      setUserInfo(res);
-    });
+  const { UserInfo, getUserInfo } = UserStore();
+  useEffect(() => {
+    getUserInfo();
   }, []);
+
   return (
     <MemberDetailWrap>
       <MemberSideWrap>
-        <UserInfo userInfo={userInfo} />
+        <UserCard userInfo={UserInfo} />
         <ul>
           <NavLink to="" end>
-            작성 글
+            내 글 반응
           </NavLink>
-          <NavLink to="myComment">작성 댓글</NavLink>
-          <NavLink to="postReaction">내 글 반응</NavLink>
           <NavLink to="memberEdit">내 정보 수정</NavLink>
           <NavLink to="/">돌아가기</NavLink>
         </ul>

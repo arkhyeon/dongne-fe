@@ -10,12 +10,11 @@ import React, {
 } from 'react';
 import { HiSortDescending } from 'react-icons/hi';
 import { css } from '@emotion/react';
-import { IconType } from 'react-icons';
 
 interface PopUpType {
   children: React.ReactNode;
   value: string | undefined;
-  icon?: IconType;
+  icon?: React.ReactNode | undefined;
 }
 
 function SelectPopup({ children, value, icon }: PopUpType) {

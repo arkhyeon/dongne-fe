@@ -2,43 +2,51 @@ import { TbTriangleFilled } from 'react-icons/tb';
 import styled from '@emotion/styled';
 import { BoardType } from '../../type/BoardType';
 import { userLevel } from '../../common/userCommon.ts';
+import { LuSearch } from 'react-icons/lu';
 
 function MainPostList({ title = '', postList = [] }: { title?: string; postList: BoardType[] }) {
   return (
     <MainPostListWrap>
       <p className="main-title-text">{title}</p>
-      {postList.map(wl => {
-        return (
-          <a href={`post/${wl.boardId}`} key={wl.boardId}>
-            <MainPostItem>
-              <RecommendWrap className="flex-cc">
-                <TbTriangleFilled />
-                {wl.boardLikesCount}
-              </RecommendWrap>
-              <MainPostWrap>
-                <p className="title-text">
-                  {wl.title}
-                  <span>[{wl.boardCommentCount}]</span>
-                </p>
-                <div>
-                  <span>{wl.channelName ?? '전체'}</span>
-                  <span>{wl.createDate}</span>
-                  <span>
-                    {wl.nickname} LV.{userLevel(wl.point)}
-                  </span>
-                </div>
-              </MainPostWrap>
-              {/*{wl.fileImg && <img src={wl.fileImg} alt="" />}*/}
-              {wl.boardId % 3 === 1 && (
-                <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRA-TMLc35v2O__9GIggczxRojGubcSNSZ99e1eGS-aOg&s"
-                  alt=""
-                />
-              )}
-            </MainPostItem>
-          </a>
-        );
-      })}
+      {postList.length ? (
+        postList.map(wl => {
+          return (
+            <a href={`post/${wl.boardId}`} key={wl.boardId}>
+              <MainPostItem>
+                <RecommendWrap className="flex-cc">
+                  <TbTriangleFilled />
+                  {wl.boardLikesCount}
+                </RecommendWrap>
+                <MainPostWrap>
+                  <p className="title-text">
+                    {wl.title}
+                    <span>[{wl.boardCommentCount}]</span>
+                  </p>
+                  <div>
+                    <span>{wl.channelName ?? '전체'}</span>
+                    <span>{wl.createDate}</span>
+                    <span>
+                      {wl.nickname} LV.{userLevel(wl.point)}
+                    </span>
+                  </div>
+                </MainPostWrap>
+                {/*{wl.fileImg && <img src={wl.fileImg} alt="" />}*/}
+                {wl.boardId % 3 === 1 && (
+                  <img
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRA-TMLc35v2O__9GIggczxRojGubcSNSZ99e1eGS-aOg&s"
+                    alt=""
+                  />
+                )}
+              </MainPostItem>
+            </a>
+          );
+        })
+      ) : (
+        <MainPostItem>
+          <LuSearch style={{ marginLeft: '5px' }} />
+          현재 조회된 게시글이 없습니다.
+        </MainPostItem>
+      )}
     </MainPostListWrap>
   );
 }

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
+import React, { ButtonHTMLAttributes, DetailedHTMLProps, forwardRef } from 'react';
 
 type ButtonProps = DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
 
@@ -8,15 +8,31 @@ export const SearchButton = (props: ButtonProps) => {
   return <SearchBtn {...props}>{children}</SearchBtn>;
 };
 
-export const MainButton = (props: ButtonProps) => {
-  const children = props.children;
-  return <MainBtn {...props}>{children}</MainBtn>;
-};
+export const MainButton = forwardRef(
+  (props: ButtonProps, ref: React.ForwardedRef<HTMLButtonElement>) => {
+    const children = props.children;
+    return (
+      <MainBtn {...props} ref={ref}>
+        {children}
+      </MainBtn>
+    );
+  },
+);
 
-export const SubButton = (props: ButtonProps) => {
-  const children = props.children;
-  return <SubBtn {...props}>{children}</SubBtn>;
-};
+MainButton.displayName = 'MainButton';
+
+export const SubButton = forwardRef(
+  (props: ButtonProps, ref: React.ForwardedRef<HTMLButtonElement>) => {
+    const children = props.children;
+    return (
+      <SubBtn {...props} ref={ref}>
+        {children}
+      </SubBtn>
+    );
+  },
+);
+
+SubButton.displayName = 'SubButton';
 
 const Button = styled.button`
   cursor: pointer;

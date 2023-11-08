@@ -161,7 +161,6 @@ function MemberJoin() {
         <div>
           <label className="list-text">주소</label>
           <DataList
-            id={'cityList'}
             height={'300px'}
             valueList={districtList.cityCodeNames.map(cl => cl.cityCode)}
             labelList={districtList.cityCodeNames.map(cl => cl.name)}
@@ -174,7 +173,6 @@ function MemberJoin() {
             select
           />
           <DataList
-            id={'zoneList'}
             height={'300px'}
             valueList={districtList.zoneCodeNames.map(zl => zl.zoneCode)}
             labelList={districtList.zoneCodeNames.map(zl => zl.name)}

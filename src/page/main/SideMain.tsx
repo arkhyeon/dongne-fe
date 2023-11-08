@@ -1,20 +1,18 @@
 import styled from '@emotion/styled';
 import ChartBubble from './components/Bubble';
-import UserInfo from './components/UserInfo';
+import UserCard from './components/UserCard.tsx';
 import { useLayoutEffect, useState } from 'react';
 import { client } from '../../common/axios';
-import { UserMainInfo } from '../../type/UserType';
-import { getDefaultImage } from '../../common/userCommon';
 import { APIItemInitType, ItemInitType } from '../../type/BubbleType.ts';
+import { UserStore } from '../../store/UserStore.ts';
 
 function SideMain() {
-  const [userInfo, setUserInfo] = useState<UserMainInfo>();
+  const { UserInfo, getUserInfo } = UserStore();
   const [items, setItems] = useState<ItemInitType[]>([]);
+
   useLayoutEffect(() => {
     getCityOfTop();
-    client.get<UserMainInfo>('user-main?page=0&size=5').then(res => {
-      setUserInfo({ ...res, profileImg: res.profileImg || getDefaultImage(res.userId) });
-    });
+    getUserInfo();
   }, []);
 
   const getCityOfTop = () => {
@@ -23,13 +21,13 @@ function SideMain() {
 
   return (
     <SideMainWrap>
-      {userInfo ? (
+      {UserInfo ? (
         <ProfileWrap>
-          <UserInfo userInfo={userInfo} />
+          <UserCard userInfo={UserInfo} />
           <PostReactWrap>
             <p className="title-text">최근 작성글</p>
             <ul>
-              {userInfo.findLatestBoardsByUserDtos?.map(pl => {
+              {UserInfo.findLatestBoardsByUserDtos?.map(pl => {
                 return (
                   <li key={pl.boardId}>
                     <a href={`/post/${pl.boardId}`} className="list-text text-ellipsis">
@@ -41,7 +39,7 @@ function SideMain() {
             </ul>
             <p className="title-text">최근 작성 댓글</p>
             <ul>
-              {userInfo.findLatestBoardCommentsByUserDtos?.map(pl => {
+              {UserInfo.findLatestBoardCommentsByUserDtos?.map(pl => {
                 return (
                   <li key={pl.boardCommentId}>
                     <a href={`/post/${pl.boardId}`} className="list-text text-ellipsis">

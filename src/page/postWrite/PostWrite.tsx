@@ -10,6 +10,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import QuillCustom from '../../common/QuillCustom';
 import { useLocation } from 'react-router-dom';
 import { CategoryStore } from '../../store/CategoryStore.ts';
+import { DC } from '../../store/ToastStore.ts';
 
 function PostWrite() {
   const { mainCategory, subCategory, channel, setChannel } = CategoryStore();
@@ -31,17 +32,17 @@ function PostWrite() {
 
   const handlerBoardData = () => {
     if (subCategory === 0) {
-      alert('서브 카테고리를 설정해 주세요.');
+      DC.alert('서브 카테고리를 설정해 주세요.');
       return;
     }
 
     if (channel === '') {
-      alert('채널톡을 설정해 주세요.');
+      DC.alert('채널톡을 설정해 주세요.');
       return;
     }
 
     if (content === '<p><br></p>') {
-      alert('빈 게시글을 등록할 수 없습니다.');
+      DC.alert('빈 게시글을 등록할 수 없습니다.');
       return;
     }
     const formData = new FormData();

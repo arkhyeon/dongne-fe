@@ -50,7 +50,10 @@ function Comment({
         {canCommentActive && (
           <CommentReply>
             {commentWrite ? (
-              <CommentWrite type={2} cancel={() => setCommentWrite(false)} />
+              <CommentWrite
+                boardCommentId={comment.boardCommentId}
+                cancel={() => setCommentWrite(false)}
+              />
             ) : (
               <MainButton onClick={() => setCommentWrite(true)}>댓글 작성</MainButton>
             )}
