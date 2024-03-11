@@ -38,7 +38,7 @@ function BestBoard() {
               <TodayTalkPost>
                 <span className="title-text">{i + 1}</span>
                 <span className="text-ellipsis">
-                  <span>[{bl.channelName}]</span> {bl.title}
+                  <span>[{bl.channelName ?? '전체'}]</span> {bl.title}
                 </span>
                 <span>
                   <TbTriangleFilled />
@@ -57,7 +57,7 @@ function BestBoard() {
               <TodayTalkPost>
                 <span className="title-text">{i + 1}</span>
                 <span className="text-ellipsis">
-                  <span>[{bl.channelName}]</span> {bl.title}
+                  <span>[{bl.channelName ?? '전체'}]</span> {bl.title}
                 </span>
                 <span>
                   <TbTriangleFilled />
@@ -101,6 +101,7 @@ const TodayTalkPost = styled.div`
     }
   }
   & span:nth-of-type(3) {
+    min-width: 36px;
     color: #777;
     margin-left: 5px;
     display: flex;

@@ -21,6 +21,7 @@ function MainCategory() {
       setMainCategoryList(res.mainCategoryDtos);
       setMainCategory(state?.mainCategory ?? res.mainCategoryDtos[0].mainCategoryId);
       if (state) {
+        console.log(state);
         setSubCategory(state.subCategory);
         setChannel(state.channel);
       }

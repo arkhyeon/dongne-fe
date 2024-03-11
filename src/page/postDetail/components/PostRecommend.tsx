@@ -1,31 +1,31 @@
 import styled from '@emotion/styled';
 import { GoThumbsup } from 'react-icons/go';
-import { useEffect, useState } from 'react';
 import { client } from '../../../common/axios.ts';
 
 function PostRecommend({
   boardId,
   isLiked,
   recommend,
+  getBoardDetail,
 }: {
   boardId: string | undefined;
   isLiked: boolean;
   recommend: number;
+  getBoardDetail: () => void;
 }) {
-  const [like, setLike] = useState(false);
-
-  useEffect(() => {
-    setLike(isLiked);
-  }, [boardId]);
-
-  const setPostLike = () => {
-    client.post(`boardLikes/check/${boardId}`).then(res => console.log(res));
+  const setPostLike = async () => {
+    if (isLiked) {
+      await client.post(`boardLikes/cancel/${boardId}`).then(res => console.log(res));
+    } else {
+      await client.post(`boardLikes/check/${boardId}`).then(res => console.log(res));
+    }
+    getBoardDetail();
   };
 
   return (
     <PostRecWrap className="flex-cc" onClick={() => setPostLike()}>
-      <GoThumbsup className={like ? 'animation-like' : ''} />
-      {like ? recommend + 1 : recommend}
+      <GoThumbsup className={isLiked ? 'animation-like' : ''} />
+      {recommend}
     </PostRecWrap>
   );
 }

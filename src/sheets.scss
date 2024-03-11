@@ -40,6 +40,10 @@
   gap:15px;
 }
 
+.c-pointer{
+  cursor: pointer; 
+}
+
 input[type='text'],
 input[type='password']{
   width: 100%;
@@ -52,4 +56,11 @@ input[type='password']{
   &:focus {
     border-color: #aaa;
   }
+}
+
+u{
+  text-decoration: underline !important;
+}
+s{
+  text-decoration: line-through !important;
 }

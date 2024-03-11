@@ -2,34 +2,10 @@ import styled from '@emotion/styled';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { BsList } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
-import { getCookie } from '../../../common/Cookie';
-import { client } from '../../../common/axios';
-import { APILatestBoardType, BoardType } from '../../../type/BoardType';
-import { useEffect, useState } from 'react';
+import { BoardDetailType } from '../../../type/BoardType';
 
-function PostNavigation({ boardId }: { boardId: string }) {
+function PostNavigation({ board }: { board: BoardDetailType }) {
   const navigate = useNavigate();
-  const [nextPost, setNextPost] = useState<BoardType>();
-  const [prevPost, setPrevPost] = useState<BoardType>();
-
-  useEffect(() => {
-    getNextPrev();
-  }, [boardId]);
-
-  const getNextPrev = () => {
-    const numberBid = Number(boardId);
-    const userCode = { cityCode: getCookie('cityCode'), zoneCode: getCookie('zoneCode') };
-    client
-      .post<APILatestBoardType>(`board/search?page=0&size=9999&sort=latest,desc`, userCode)
-      .then(res => {
-        for (let i = 0; i < res.findSearchBoardsDtos.length; i++) {
-          if (numberBid === res.findSearchBoardsDtos[i].boardId) {
-            setNextPost(res.findSearchBoardsDtos[i + 1]);
-            setPrevPost(res.findSearchBoardsDtos[i - 1]);
-          }
-        }
-      });
-  };
 
   const navigatePost = (boardId: number | undefined) => {
     if (!boardId) return;
@@ -38,21 +14,21 @@ function PostNavigation({ boardId }: { boardId: string }) {
 
   return (
     <PostNavigationWrap className="list-text">
-      <Navigation onClick={() => navigatePost(prevPost?.boardId)}>
+      <Navigation onClick={() => navigatePost(board.preBoardId)}>
         <IoIosArrowBack />
         <PageLabel className="text-ellipsis">
           <span>이전글</span> <br />
-          {prevPost?.title ? prevPost.title : '없음'}
+          {board.preBoardTitle ?? '없음'}
         </PageLabel>
         <div />
       </Navigation>
       <PostListWrap className="flex-cc" onClick={() => navigate('/board')}>
         <BsList />
       </PostListWrap>
-      <Navigation onClick={() => navigatePost(nextPost?.boardId)}>
+      <Navigation onClick={() => navigatePost(board.nextBoardId)}>
         <PageLabel className="text-ellipsis">
           <span>다음글</span> <br />
-          {nextPost?.title ? nextPost.title : '없음'}
+          {board.nextBoardTitle ?? '없음'}
         </PageLabel>
         <IoIosArrowForward />
         <div />

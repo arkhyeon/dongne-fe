@@ -43,6 +43,10 @@ const BoardSearchWrap = styled.div`
   width: 100%;
   display: flex;
   gap: 10px;
+
+  & button {
+    min-width: 90px;
+  }
 `;
 
 export default BoardSearch;

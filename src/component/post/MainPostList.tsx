@@ -20,7 +20,9 @@ function MainPostList({ title = '', postList = [] }: { title?: string; postList:
                 <MainPostWrap>
                   <p className="title-text">
                     {wl.title}
-                    <span>[{wl.boardCommentCount}]</span>
+                    <span>
+                      {wl.boardCommentCount === undefined ? '' : '[' + wl.boardCommentCount + ']'}
+                    </span>
                   </p>
                   <div>
                     <span>{wl.channelName ?? '전체'}</span>

@@ -19,6 +19,23 @@ export interface BoardDetailType extends GetResponse, BoardType {
   userId: string;
   viewCnt: number;
   isLiked: boolean;
+  preBoardId: number;
+  preBoardTitle: string;
+  nextBoardId: number;
+  nextBoardTitle: string;
+}
+
+export interface BoardInsertType {
+  title: string;
+  content: string;
+  boardType: string;
+  channelName: string;
+  subCategory: number;
+  mainCategory: number;
+  cityCode: string;
+  zoneCode: string;
+  deadLineAt: Date | null;
+  fileImg: string;
 }
 
 export interface HotCategoryBoardType {
@@ -107,4 +124,8 @@ export interface ReplyType {
   createDate: string;
   isLiked: boolean;
   point: number;
+}
+
+export interface APIUploadType extends GetResponse {
+  fileImg: string;
 }

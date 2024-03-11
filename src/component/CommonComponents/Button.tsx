@@ -36,10 +36,13 @@ SubButton.displayName = 'SubButton';
 
 const Button = styled.button`
   cursor: pointer;
+  padding: 10px 16px;
+  border-radius: 5px;
 `;
 
 const SearchBtn = styled(Button)`
   width: 60px;
+  padding: 0;
   display: flex;
   gap: 3px;
   align-items: center;
@@ -55,8 +58,6 @@ const SearchBtn = styled(Button)`
 `;
 
 const MainBtn = styled(Button)`
-  width: 100px;
-  border-radius: 5px;
   border: none;
   background-color: #ffc045;
 
@@ -67,8 +68,6 @@ const MainBtn = styled(Button)`
 `;
 
 const SubBtn = styled(Button)`
-  width: 100px;
-  border-radius: 5px;
   border: 1px solid #aaa;
   background-color: white;
 

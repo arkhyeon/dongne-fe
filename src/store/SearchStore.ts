@@ -29,3 +29,21 @@ export const searchStore = create<SearchStoreType>(set => ({
       searchType: text,
     })),
 }));
+
+interface IntegratedSearchStoreType {
+  sort: string;
+  searchText: string;
+  searchType: string;
+  setSearchText: (text: string) => void;
+}
+
+export const integratedSearchStore = create<IntegratedSearchStoreType>(set => ({
+  sort: 'latest',
+  searchType: 'title',
+  searchText: '',
+  setSearchText: (text: string) =>
+    set(prevState => ({
+      ...prevState,
+      searchText: text,
+    })),
+}));

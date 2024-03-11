@@ -21,6 +21,7 @@ function MemberEdit() {
 
   const onSubmit: SubmitHandler<FieldValues> = data => {
     console.log({ ...data, cityCode: city, zoneCode: zone });
+
     const formData = new FormData();
     const blob = new Blob(
       [
@@ -28,7 +29,7 @@ function MemberEdit() {
           nickname: data.nickname,
           cityCode: city,
           zoneCode: zone,
-          isProfileChanged: false,
+          isProfileChanged: !!data.profile.length,
         }),
       ],
       { type: 'application/json' },
@@ -82,6 +83,7 @@ function MemberEdit() {
     client.get<UserMainInfo>(`user-main?page=0&size=1`).then(res => {
       setValue('nickname', res.nickname);
       const cityCode = cityCodeNames.find(cn => cn.name === res.cityName)?.cityCode ?? '26';
+      setCity(cityCode);
       getZoneList(cityCode, res.zoneName);
     });
   };

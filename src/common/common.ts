@@ -1,7 +1,8 @@
 export const elapsedDate = (date: Date) => {
-  const TIME_ZONE = 3240 * 10000;
+  // const TIME_ZONE = 3240 * 10000;
   const start = new Date(date).getTime();
-  const end = new Date().getTime() + TIME_ZONE; // 현재 날짜
+  // const end = new Date().getTime() + TIME_ZONE; // 현재 날짜
+  const end = new Date().getTime(); // 현재 날짜
 
   const diff = (end - start) / 1000; // 경과 시간
 

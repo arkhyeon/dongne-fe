@@ -5,18 +5,37 @@ import { useLayoutEffect, useState } from 'react';
 import { client } from '../../common/axios';
 import { APIItemInitType, ItemInitType } from '../../type/BubbleType.ts';
 import { UserStore } from '../../store/UserStore.ts';
+import { APIUserRankingType, UserRankingType } from '../../type/UserType.ts';
+import Identicon from 'identicon.js';
+import SHA256 from '../../common/Sha256.ts';
+import toHex from '../../common/toHex.ts';
+import { LiaMedalSolid } from 'react-icons/lia';
+import { integratedSearchStore } from '../../store/SearchStore.ts';
+import { useNavigate } from 'react-router-dom';
 
 function SideMain() {
   const { UserInfo, getUserInfo } = UserStore();
+  const { setSearchText } = integratedSearchStore();
+  const navigate = useNavigate();
   const [items, setItems] = useState<ItemInitType[]>([]);
+  const [topWriterList, setTopWriterList] = useState<UserRankingType[]>([]);
 
   useLayoutEffect(() => {
     getCityOfTop();
     getUserInfo();
+    getTopWriterList();
   }, []);
 
   const getCityOfTop = () => {
     client.get<APIItemInitType>('city/top/5').then(res => setItems(res.cityNameCountDtos));
+  };
+
+  const getTopWriterList = () => {
+    client
+      .post<APIUserRankingType>(`user/ranking?page=0&size=10`, {
+        nickname: '',
+      })
+      .then(res => setTopWriterList(res.userRankingDtos));
   };
 
   return (
@@ -57,6 +76,35 @@ function SideMain() {
         </ProfileWrap>
       )}
       <ChartBubble items={items} labelScale={0.8} />
+      <ProfileWrap className="flex-col gap-5">
+        <p className="title-text c-pointer" onClick={() => navigate('/rank')}>
+          Top Writers
+        </p>
+        {topWriterList.map((ul, rank) => {
+          return (
+            <UserRank
+              key={ul.userId}
+              onClick={() => {
+                setSearchText(ul.userId);
+                navigate('search');
+              }}
+            >
+              <Ranking className={`rank-${rank + 1}`}>{rank > 2 && rank + 1}</Ranking>
+              <img
+                src={
+                  ul.profileImg ??
+                  `data:image/png;base64,${new Identicon(SHA256(toHex(ul.userId)), 50).toString()}`
+                }
+              />
+              <p className="list-text flex-cc gap-5 c-pointer">
+                {ul.nickname}
+                <LiaMedalSolid />
+                <small>{ul.point}</small>
+              </p>
+            </UserRank>
+          );
+        })}
+      </ProfileWrap>
     </SideMainWrap>
   );
 }
@@ -88,6 +136,34 @@ const PostReactWrap = styled.div`
   & ul li {
     margin-bottom: 5px;
   }
+`;
+
+const UserRank = styled.div`
+  width: 100%;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  padding: 4px 6px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+
+  & img {
+    width: 22px;
+    height: 22px;
+    border-radius: 100%;
+  }
+
+  &:hover p {
+    transition: 0.3s;
+    color: #ffc045;
+  }
+`;
+
+const Ranking = styled.span`
+  width: 22px;
+  height: 22px;
+  text-align: center;
+  font-size: 18px;
 `;
 
 export default SideMain;

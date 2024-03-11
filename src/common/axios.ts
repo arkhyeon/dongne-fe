@@ -14,7 +14,8 @@ export interface GetResponse {
   statusCode?: number;
 }
 
-const BASEURL = 'http://192.168.10.126:8787/api/';
+const BASEURL = 'http://192.168.10.197:8787/api/';
+// const BASEURL = 'http://192.168.10.126:8787/api/';
 const client: CustomInstance = axios.create();
 client.defaults.baseURL = BASEURL;
 client.defaults.withCredentials = true;

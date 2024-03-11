@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Index from './page';
+import Index from './page/Index.tsx';
 import BoardMain from './page/main/BoardMain';
 import BoardList from './page/boardList/BoardList';
 import PostDetail from './page/postDetail/PostDetail';
@@ -24,15 +24,6 @@ import SearchList from './page/search/SearchList.tsx';
 // const Main = lazy(() => import('./page/main/Main'));
 
 function App() {
-  // useEffect(() => {
-  //   preload();
-  // }, []);
-  // const di = () => {
-  //   import('./common/test').then(test => {
-  //     console.log(test.text());
-  //   });
-  // };
-
   return (
     <Router>
       <Routes>
@@ -40,9 +31,9 @@ function App() {
           <Route
             path="/"
             element={
-              //<Suspense fallback={<div>...Loading</div>}>
-              <Main />
-              //</Suspense>
+              <Suspense fallback={<div>...Loading</div>}>
+                <Main />
+              </Suspense>
             }
           >
             <Route index path="/" element={<BoardMain />} />

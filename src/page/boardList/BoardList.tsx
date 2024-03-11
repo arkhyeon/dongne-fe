@@ -30,7 +30,7 @@ function BoardList() {
         title: searchType === 'title' ? searchText : '',
         userId: searchType === 'userId' ? searchText : '',
         subCategoryId: subCategory || null,
-        // channelId,
+        channelId: channel || null,
       })
       .then(res => {
         setRecentList(res.findSearchBoardsDtos);

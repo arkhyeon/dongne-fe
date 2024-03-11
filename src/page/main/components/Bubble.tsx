@@ -104,7 +104,8 @@ const ChartBubble = ({ items, labelScale = 0.8 }: BubbleInitType) => {
 
 const BubbleWrap = styled.div`
   width: 100%;
-  height: 250px;
+  height: 270px;
+  margin-bottom: 30px;
 
   & svg {
     overflow: visible;

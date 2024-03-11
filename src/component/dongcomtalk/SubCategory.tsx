@@ -27,13 +27,13 @@ function SubCategory({ useMainCategory }: { useMainCategory: boolean }) {
 
     client.get<APISubCategoryType>(`sub-categories/${mainCategory}`).then(res => {
       setSubCategoryList(res.subCategoryDtos);
-      // setSubCategory(res.subCategoryDtos[0].subCategoryId);
+      setSubCategory(res.subCategoryDtos[0].subCategoryId);
     });
   };
 
   return (
     <>
-      <p className="flex gap-5" onClick={() => setIsView(prevState => !prevState)}>
+      <p className="flex gap-5 c-pointer" onClick={() => setIsView(prevState => !prevState)}>
         서브 카테고리 {isView ? <AiOutlineMinusSquare /> : <AiOutlinePlusSquare />}
       </p>
       <DongComTalkItemWrap view={isView}>

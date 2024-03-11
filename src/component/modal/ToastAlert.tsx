@@ -44,7 +44,7 @@ function ToastAlert({ id, content, interval, type }: ToastType & { interval: num
 
 function ToastConfirm({ title, message = '', buttons = ['취소', '확인'] }: ConfirmType) {
   const { responseHandler } = useNotifyStore();
-  const focusRef = useRef<HTMLButtonElement>();
+  const focusRef = useRef<HTMLButtonElement>(null);
 
   const escapeConfirm = (e: KeyboardEvent) => {
     if (e.code === 'Escape') handleCancelClick();

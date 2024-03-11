@@ -5,9 +5,11 @@ import CommentWrite from './CommentWrite';
 import styled from '@emotion/styled';
 import CommentTextBox from './CommentTextBox';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
-import { APIReplyType, BoardCommentType, ReplyType } from '../../../type/BoardType';
+import { BoardCommentType } from '../../../type/BoardType';
 import { client } from '../../../common/axios';
 import { useParams } from 'react-router-dom';
+import { ReplyStore } from '../../../store/CommentStore.ts';
+import { DC } from '../../../store/ToastStore.ts';
 
 function Comment({
   comment,
@@ -16,21 +18,15 @@ function Comment({
   comment: BoardCommentType;
   canCommentActive?: boolean;
 }) {
-  const { boardId } = useParams();
-  const [replyList, setReplyList] = useState<ReplyType[]>([]);
+  const { boardId = '0' } = useParams();
+  const { replyList, getReplyList } = ReplyStore();
   const [commentWrite, setCommentWrite] = useState(false);
   const [replyShow, setReplyShow] = useState(false);
   const [isLiked, setIsLiked] = useState(comment.isLiked);
 
   useEffect(() => {
-    getReplyList();
+    getReplyList(comment.boardCommentId);
   }, []);
-
-  const getReplyList = () => {
-    client
-      .get<APIReplyType>(`replyComment/${comment.boardCommentId}`)
-      .then(res => setReplyList(res.findReplyCommentDtos));
-  };
 
   const setCommentLike = () => {
     const url = `boardCommentLikes/${isLiked ? 'cancel' : 'check'}/${comment.boardCommentId}`;
@@ -38,6 +34,16 @@ function Comment({
       setIsLiked(prevState => !prevState);
       isLiked ? (comment.boardCommentLikesCount -= 1) : (comment.boardCommentLikesCount += 1);
     });
+  };
+
+  const insertReply = (commentText: string) => {
+    client
+      .post('replyComment', { boardCommentId: comment.boardCommentId, content: commentText })
+      .then(() => {
+        DC.alert('대댓글을 작성하셨습니다.');
+        getReplyList(comment.boardCommentId);
+      });
+    setCommentWrite(false);
   };
 
   return (
@@ -50,22 +56,32 @@ function Comment({
         {canCommentActive && (
           <CommentReply>
             {commentWrite ? (
-              <CommentWrite
-                boardCommentId={comment.boardCommentId}
-                cancel={() => setCommentWrite(false)}
-              />
+              <CommentWrite confirm={insertReply} cancel={() => setCommentWrite(false)} />
             ) : (
               <MainButton onClick={() => setCommentWrite(true)}>댓글 작성</MainButton>
             )}
-            {comment.replyCommentCount > 0 && (
+            {replyList[comment.boardCommentId]?.length > 0 && (
               <span className="list-text" onClick={() => setReplyShow(prevState => !prevState)}>
                 {replyShow ? <IoIosArrowDown /> : <IoIosArrowUp />}
-                댓글 {comment.replyCommentCount}개
+                댓글 {replyList[comment.boardCommentId]?.length}개
               </span>
             )}
           </CommentReply>
         )}
-        {replyShow && replyList.map(rl => <CommentTextBox content={rl} key={rl.replyCommentId} />)}
+        {replyShow &&
+          replyList[comment.boardCommentId].map(rl => (
+            <CommentWrap>
+              <CommentRecommendWrap>
+                <BiSolidUpArrow className={isLiked ? 'like-on' : ''} onClick={setCommentLike} />
+                {comment.boardCommentLikesCount}
+              </CommentRecommendWrap>
+              <CommentTextBox
+                content={rl}
+                key={rl.replyCommentId}
+                boardCommentId={comment.boardCommentId}
+              />
+            </CommentWrap>
+          ))}
       </CommentTextBox>
     </CommentWrap>
   );
@@ -77,6 +93,13 @@ const CommentWrap = styled.div`
   gap: 30px;
   padding: 10px 15px;
   border-bottom: 1px solid #bbb;
+
+  & & {
+    padding-left: 20px;
+    border-top: 1px dashed #aaa;
+    border-bottom: none;
+    padding-top: 10px;
+  }
 `;
 
 const CommentRecommendWrap = styled.div`
@@ -98,11 +121,6 @@ const CommentRecommendWrap = styled.div`
 
 const CommentReply = styled.div`
   margin: 12px 0;
-
-  & button {
-    width: 80px;
-    height: 34px;
-  }
 
   & span {
     margin-top: 5px;

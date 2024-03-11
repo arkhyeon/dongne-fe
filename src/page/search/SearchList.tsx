@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 import MainPostList from '../../component/post/MainPostList.tsx';
-import { searchStore } from '../../store/SearchStore.ts';
+import { integratedSearchStore } from '../../store/SearchStore.ts';
 import { APISearchBoardType, BoardType } from '../../type/BoardType.ts';
 import { getCookie } from '../../common/Cookie.ts';
 import { client } from '../../common/axios.ts';
 import Pagination from '../../component/CommonComponents/Pagination.tsx';
 import styled from '@emotion/styled';
 import { useLocation } from 'react-router-dom';
+import { DC } from '../../store/ToastStore.ts';
 
 function SearchList() {
-  const { searchText } = searchStore();
+  const { searchText } = integratedSearchStore();
   const location = useLocation();
   const [titleBoardList, setTitleBoardList] = useState<BoardType[]>([]);
   const [titlePage, setTitlePage] = useState(1);
@@ -20,6 +21,10 @@ function SearchList() {
   const userCode = { cityCode: getCookie('cityCode'), zoneCode: getCookie('zoneCode') };
 
   useEffect(() => {
+    if (searchText === '') {
+      DC.alert('검색어를 입력해 주세요.');
+      return;
+    }
     getTitleBoardList(1);
     getUserIdBoardList(1);
   }, [location]);
@@ -30,7 +35,6 @@ function SearchList() {
       .post<APISearchBoardType>(`board/search?page=${page_nm - 1}&size=5&sort=latest,desc`, {
         ...userCode,
         title: searchText,
-        // channelId,
       })
       .then(res => {
         setTitleBoardList(res.findSearchBoardsDtos);
@@ -43,7 +47,6 @@ function SearchList() {
       .post<APISearchBoardType>(`board/search?page=${page_nm - 1}&size=5&sort=latest,desc`, {
         ...userCode,
         userId: searchText,
-        // channelId,
       })
       .then(res => {
         setUserIdBoardList(res.findSearchBoardsDtos);

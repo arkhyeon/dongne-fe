@@ -182,26 +182,6 @@ const UserRank = styled.div`
   border-radius: 10px;
   position: relative;
   padding: 4px 45px;
-
-  & .rank-1,
-  & .rank-2,
-  & .rank-3 {
-    width: 22px;
-    height: 22px;
-    border-radius: 100%;
-  }
-
-  & .rank-1 {
-    background: linear-gradient(135deg, #fceabb 0%, #fccd4d 50%, #f8b500 51%, #fbdf93 100%);
-  }
-
-  & .rank-2 {
-    background: linear-gradient(135deg, #e6e6e6 0%, #d9d9d9 50%, #cbcbcb 51%, #dddddd 100%);
-  }
-
-  & .rank-3 {
-    background: linear-gradient(135deg, #f3e2c7 0%, #c19e67 50%, #b68d4c 51%, #e9d4b3 100%);
-  }
 `;
 
 const Ranking = styled.span`

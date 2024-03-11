@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import TextInput from '../../component/CommonComponents/TextInput';
 import DongComTalk from '../../component/dongcomtalk/DongComTalk';
 import { MainButton, SubButton } from '../../component/CommonComponents/Button';
@@ -11,22 +11,26 @@ import QuillCustom from '../../common/QuillCustom';
 import { useLocation } from 'react-router-dom';
 import { CategoryStore } from '../../store/CategoryStore.ts';
 import { DC } from '../../store/ToastStore.ts';
+import { BoardInsertType } from '../../type/BoardType.ts';
 
 function PostWrite() {
-  const { mainCategory, subCategory, channel, setChannel } = CategoryStore();
+  const { mainCategory, subCategory, channelName, setChannel, setChannelName, setMainCategory } =
+    CategoryStore();
   const { state } = useLocation();
-  const fileRef = useRef() as MutableRefObject<HTMLInputElement>;
   const [title, setTitle] = useState('');
-  const [boardType, setBoardType] = useState('일반');
+  const [boardType, setBoardType] = useState('NORMAL');
   const [content, setContent] = useState<string>('');
   const [deadLineAt, setDeadLineAt] = useState<Date>(new Date());
+  const [fileImg, setFileImg] = useState<string>('');
 
   useEffect(() => {
+    console.log(state);
     if (state) {
       setTitle(state.title);
       setBoardType(state.boardType);
       setContent(state.content);
-      setDeadLineAt(state.boardType === '일반' ? '' : state.deadLineAt);
+      setDeadLineAt(state.boardType === 'NORMAL' ? '' : state.deadLineAt);
+      setMainCategory(state);
     }
   }, []);
 
@@ -36,7 +40,7 @@ function PostWrite() {
       return;
     }
 
-    if (channel === '') {
+    if (channelName === '') {
       DC.alert('채널톡을 설정해 주세요.');
       return;
     }
@@ -45,40 +49,26 @@ function PostWrite() {
       DC.alert('빈 게시글을 등록할 수 없습니다.');
       return;
     }
-    const formData = new FormData();
 
     const writeBoardRequestDto = {
       title,
       content,
       boardType,
-      channel,
+      channelName,
       subCategory,
       mainCategory,
       cityCode: getCookie('cityCode'),
       zoneCode: getCookie('zoneCode'),
-      deadLineAt,
+      deadLineAt: boardType === 'NORMAL' ? null : deadLineAt,
+      fileImg,
     };
 
-    if (fileRef.current.files !== null) {
-      const files = fileRef.current?.files[0];
-
-      // formData.append('writeBoardRequestDto', writeBoardRequestDto);
-      formData.append('files', files);
-    }
-
-    formData.append(
-      'writeBoardRequestDto',
-      new Blob([JSON.stringify(writeBoardRequestDto)], {
-        type: 'application/json',
-      }),
-    );
-
-    state?.boardId ? updateBoard(formData) : insertBoard(formData);
+    state?.boardId ? updateBoard(writeBoardRequestDto) : insertBoard(writeBoardRequestDto);
   };
 
-  const insertBoard = (formData: FormData) => {
+  const insertBoard = (writeBoardRequestDto: BoardInsertType) => {
     client
-      .post('board', formData, {
+      .post('board', writeBoardRequestDto, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -86,9 +76,9 @@ function PostWrite() {
       .then(r => console.log(r));
   };
 
-  const updateBoard = (formData: FormData) => {
+  const updateBoard = (writeBoardRequestDto: BoardInsertType) => {
     client
-      .patch(`board/${state.boardId}`, formData, {
+      .patch(`board/${state.boardId}`, writeBoardRequestDto, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -101,18 +91,18 @@ function PostWrite() {
       <TypeButtonWrap className="flex">
         <p className="list-text">게시글 타입</p>
         <SubButton
-          className={boardType === '일반' ? 'type-on' : ''}
-          onClick={() => setBoardType('일반')}
+          className={boardType === 'NORMAL' ? 'type-on' : ''}
+          onClick={() => setBoardType('NORMAL')}
         >
           일반 게시글
         </SubButton>
         <SubButton
-          className={boardType === '이벤트' ? 'type-on' : ''}
-          onClick={() => setBoardType('이벤트')}
+          className={boardType === 'EVENT' ? 'type-on' : ''}
+          onClick={() => setBoardType('EVENT')}
         >
           이벤트 게시글
         </SubButton>
-        {boardType === '이벤트' && (
+        {boardType === 'EVENT' && (
           <TypeButtonWrap className="flex">
             <p className="list-text">이벤트 종료 시간</p>
             <ReactDatePicker
@@ -125,19 +115,27 @@ function PostWrite() {
           </TypeButtonWrap>
         )}
       </TypeButtonWrap>
-      {boardType === '일반' && (
+      {boardType === 'NORMAL' && (
         <>
           <DongComTalk />
           <TextInput
             label="채널톡"
-            value={channel}
-            onChange={e => setChannel(e.target.value)}
+            value={channelName}
+            onChange={e => {
+              setChannel(0);
+              setChannelName(e.target.value);
+            }}
             placeholder="직접 입력하여 새로운 채널톡을 만들어보세요."
           />
         </>
       )}
       <TextInput label="제목" value={title} onChange={e => setTitle(e.target.value)} />
-      <QuillCustom content={content} setContent={setContent} />
+      <QuillCustom
+        content={content}
+        setContent={setContent}
+        fileImg={fileImg}
+        setFileImg={setFileImg}
+      />
       <ButtonWrap>
         <SubButton>취소</SubButton>
         <MainButton onClick={handlerBoardData}>작성</MainButton>

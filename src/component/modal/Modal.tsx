@@ -70,7 +70,7 @@ const ModalWrap = styled.div`
 `;
 
 const ModalContent = styled.div`
-  width: 500px;
+  width: 800px;
   background-color: white;
   position: relative;
   z-index: 1;
@@ -89,6 +89,7 @@ const ModalHeaderWrap = styled.div`
   & .close-btn {
     font-size: 28px;
     float: right;
+    cursor: pointer;
   }
 `;
 

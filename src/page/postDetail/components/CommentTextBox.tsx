@@ -3,28 +3,116 @@ import SirenReport from '../../../component/CommonComponents/SirenReport';
 import styled from '@emotion/styled';
 import CommentViewer from '../../../component/post/CommentViewer';
 import { BoardCommentType, ReplyType } from '../../../type/BoardType';
-import React from 'react';
+import React, { useState } from 'react';
 import { getCookie } from '../../../common/Cookie';
 import { useParams } from 'react-router-dom';
 import { userLevel } from '../../../common/userCommon.ts';
+import { MdDelete, MdEdit } from 'react-icons/md';
+import { client } from '../../../common/axios.ts';
+import CommentWrite from './CommentWrite.tsx';
+import { DC } from '../../../store/ToastStore.ts';
+import { CommentStore, ReplyStore } from '../../../store/CommentStore.ts';
 
 function CommentTextBox({
   content,
   children,
+  boardCommentId,
 }: {
   content: BoardCommentType | ReplyType;
   children?: React.ReactNode;
+  boardCommentId?: number;
 }) {
   const { boardId } = useParams<{ boardId: string }>();
+  const [isReadyUpdate, setIsReadyUpdate] = useState(false);
+  const { setCommentInList, deleteCommentInList } = CommentStore();
+  const { getReplyList } = ReplyStore();
+
+  const updateComment = (commentText: string) => {
+    console.log(commentText);
+    console.log(content);
+    if ('boardCommentId' in content) {
+      client
+        .patch(`boardComment/${content.boardCommentId}`, {
+          userId: content.userId,
+          content: commentText,
+        })
+        .then(() => {
+          DC.alert('댓글을 수정하셨습니다.');
+          setCommentInList(content.boardCommentId, commentText);
+        });
+    }
+
+    if ('replyCommentId' in content && boardCommentId) {
+      client
+        .patch(`replyComment/${content.replyCommentId}`, {
+          userId: content.userId,
+          content: commentText,
+        })
+        .then(() => {
+          DC.alert('대댓글을 수정하셨습니다.');
+          getReplyList(boardCommentId);
+        });
+    }
+
+    setIsReadyUpdate(false);
+  };
+
+  const deleteComment = () => {
+    if ('boardCommentId' in content) {
+      client
+        .delete(`boardComment/${content.boardCommentId}`, {
+          data: { userId: content.userId },
+        })
+        .then(() => {
+          DC.alert('댓글을 삭제하셨습니다.');
+          deleteCommentInList(content.boardCommentId);
+          getReplyList(content.boardCommentId);
+        });
+    }
+
+    if ('replyCommentId' in content && boardCommentId) {
+      client
+        .delete(`replyComment/${content.replyCommentId}`, {
+          data: { userId: content.userId },
+        })
+        .then(() => {
+          DC.alert('대댓글을 삭제하셨습니다.');
+          getReplyList(boardCommentId);
+        });
+    }
+  };
+
   return (
     <CommentMain>
       <div className="list-text">
-        <span>LV.{userLevel(content.point)}</span>
-        <span>{content.nickname}</span>
-        <span>| {elapsedDate(new Date(content.createDate))}</span>
-        {getCookie('userId') !== content.userId && <SirenReport boardId={boardId ?? '0'} />}
+        <b>
+          LV.{userLevel(content.point)} {content.nickname}
+        </b>
+        <span>{elapsedDate(new Date(content.createDate))}</span>
+        {getCookie('userId') !== content.userId ? (
+          <SirenReport boardId={boardId ?? '0'} />
+        ) : (
+          <>
+            <span onClick={() => setIsReadyUpdate(true)}>
+              <MdEdit />
+              수정
+            </span>
+            <span onClick={() => deleteComment()}>
+              <MdDelete />
+              삭제
+            </span>
+          </>
+        )}
       </div>
-      <CommentViewer initialValue={content.content} />
+      {isReadyUpdate ? (
+        <CommentWrite
+          confirm={updateComment}
+          cancel={() => setIsReadyUpdate(false)}
+          comment={content.content}
+        />
+      ) : (
+        <CommentViewer initialValue={content.content} />
+      )}
       {children}
     </CommentMain>
   );
@@ -33,26 +121,19 @@ function CommentTextBox({
 const CommentMain = styled.div`
   width: 100%;
 
-  & div.list-text {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-
-    & span {
-      font-weight: bold;
-    }
-
-    & span:nth-of-type(n + 3) {
-      color: #666;
-      margin-left: 3px;
-      font-weight: normal;
-    }
+  & div:has(#toolbar) {
+    margin: 12px 0;
   }
 
-  & & {
-    padding-left: 20px;
-    border-top: 1px dashed #aaa;
-    padding-top: 10px;
+  & div.list-text {
+    display: flex;
+    gap: 6px;
+
+    & span {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
   }
 `;
 

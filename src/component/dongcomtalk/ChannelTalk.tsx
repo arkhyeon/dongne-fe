@@ -7,14 +7,15 @@ import { client } from '../../common/axios.ts';
 import { getCookie } from '../../common/Cookie.ts';
 
 function ChannelTalk({ useMainCategory }: { useMainCategory: boolean }) {
-  const { channel, setChannel, subCategory } = CategoryStore();
+  const { channel, setChannel, setChannelName, subCategory, mainCategory } = CategoryStore();
   const [channelList, setChannelList] = useState<ChannelType[]>([]);
   const [isView, setIsView] = useState<boolean>(false);
   const userCode = { cityCode: getCookie('cityCode'), zoneCode: getCookie('zoneCode') };
 
   useEffect(() => {
     getChannelList();
-  }, [subCategory]);
+    setChannelObj(0, '');
+  }, [mainCategory, subCategory]);
 
   const getChannelList = () => {
     client
@@ -22,17 +23,22 @@ function ChannelTalk({ useMainCategory }: { useMainCategory: boolean }) {
       .then(res => setChannelList(res.channelDtos));
   };
 
+  const setChannelObj = (id: number, name: string) => {
+    setChannel(id);
+    setChannelName(name);
+  };
+
   return (
     <>
-      <p className="flex gap-5" onClick={() => setIsView(prevState => !prevState)}>
+      <p className="flex gap-5 c-pointer" onClick={() => setIsView(prevState => !prevState)}>
         채널톡 {isView ? <AiOutlineMinusSquare /> : <AiOutlinePlusSquare />}
       </p>
       <DongComTalkItemWrap view={isView}>
         {!useMainCategory && (
           <DongComTalkItem
             key={0}
-            className={channel === '' ? 'cate-on' : ''}
-            onClick={() => setChannel('')}
+            className={channel === 0 ? 'cate-on' : ''}
+            onClick={() => setChannelObj(0, '')}
           >
             전체
           </DongComTalkItem>
@@ -40,8 +46,8 @@ function ChannelTalk({ useMainCategory }: { useMainCategory: boolean }) {
         {channelList.map(cl => (
           <DongComTalkItem
             key={cl.channelId}
-            className={channel === cl.name ? 'cate-on' : ''}
-            onClick={() => setChannel(cl.name)}
+            className={channel === cl.channelId ? 'cate-on' : ''}
+            onClick={() => setChannelObj(cl.channelId, cl.name)}
           >
             {cl.name}
             {!useMainCategory && <span>({cl.boardCount})</span>}

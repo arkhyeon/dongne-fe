@@ -1,14 +1,25 @@
 import React, { RefObject, useMemo, useRef } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { client } from './axios.ts';
+import { APIUploadType } from '../type/BoardType.ts';
+import { DC } from '../store/ToastStore.ts';
 
 interface QuillStateType {
   content: string;
   setContent: React.Dispatch<React.SetStateAction<string>>;
+  fileImg: string;
+  setFileImg: (fileImg: string) => void;
 }
 
-function QuillCustom({ content, setContent }: QuillStateType) {
+function QuillCustom({ content, setContent, fileImg, setFileImg }: QuillStateType) {
   const quillRef = useRef(null) as RefObject<ReactQuill>;
+
+  const imageApi = async (img: File): Promise<APIUploadType> => {
+    const formData = new FormData();
+    formData.append('files', img);
+    return client.post('board/upload', formData);
+  };
 
   const imageHandler = () => {
     const input = document.createElement('input');
@@ -17,16 +28,34 @@ function QuillCustom({ content, setContent }: QuillStateType) {
     input.click();
 
     input.addEventListener('change', async () => {
+      if (input.files === null) {
+        DC.alert('파일이 준비되지 않았습니다. 다시 시도해 주세요.');
+        return;
+      }
+
+      if (quillRef.current === null) {
+        DC.alert('텍스트 작성기 오류입니다. 새로고침 해주세요.');
+        return;
+      }
+
       const file = input.files[0];
 
       try {
         //이미지 업로드 API
-        const res = await imageApi({ img: file });
-        const imgUrl = res.data.imgUrl;
+        const res: APIUploadType = await imageApi(file);
+        console.log(res);
+        const imgUrl = 'http://192.168.10.197:8787/image/' + res.fileImg.split('/image/')[1];
         const editor = quillRef.current.getEditor();
         const range = editor.getSelection();
+        if (range === null) {
+          DC.alert('텍스트 작성기 오류입니다. 새로고침 해주세요.');
+          return;
+        }
         editor.insertEmbed(range.index, 'image', imgUrl);
-        editor.setSelection(range.index + 1);
+        if (fileImg === '') {
+          setFileImg(imgUrl);
+        }
+        editor.setSelection({ ...range, index: range.index + 1 });
       } catch (error) {
         console.log(error);
       }
