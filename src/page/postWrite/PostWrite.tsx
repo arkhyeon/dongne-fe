@@ -57,8 +57,8 @@ function PostWrite() {
       channelName,
       subCategory,
       mainCategory,
-      cityCode: getCookie('cityCode'),
-      zoneCode: getCookie('zoneCode'),
+      cityCode: getCookie('cityCode') || '',
+      zoneCode: getCookie('zoneCode') || '',
       deadLineAt: boardType === 'NORMAL' ? null : deadLineAt,
       fileImg,
     };
